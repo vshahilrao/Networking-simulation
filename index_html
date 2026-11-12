@@ -1,0 +1,1723 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NetForge Network Emulator & Topology Studio</title>
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Inter & JetBrains Mono Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+            mono: ['JetBrains Mono', 'monospace'],
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    body {
+      user-select: none;
+      -webkit-user-select: none;
+    }
+    .canvas-bg {
+      background-color: #f8fafc;
+      background-image: radial-gradient(#cbd5e1 1.5px, transparent 1.5px);
+      background-size: 24px 24px;
+    }
+    .node-card {
+      transition: box-shadow 0.15s ease;
+    }
+    .custom-scrollbar::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    .custom-scrollbar::-webkit-scrollbar-track {
+      background: transparent;
+    }
+    .custom-scrollbar::-webkit-scrollbar-thumb {
+      background: #cbd5e1;
+      border-radius: 3px;
+    }
+    .terminal-scroll::-webkit-scrollbar {
+      width: 6px;
+    }
+    .terminal-scroll::-webkit-scrollbar-track {
+      background: #090d16;
+    }
+    .terminal-scroll::-webkit-scrollbar-thumb {
+      background: #334155;
+      border-radius: 3px;
+    }
+    .floating-terminal {
+      resize: both;
+      overflow: hidden;
+      min-width: 440px;
+      min-height: 280px;
+      max-width: 92vw;
+      max-height: 85vh;
+    }
+  </style>
+</head>
+<body class="bg-slate-100 text-slate-800 h-screen w-screen overflow-hidden flex flex-col font-sans">
+
+  <!-- TOP NAVBAR -->
+  <header class="h-14 bg-white border-b border-slate-200 px-5 flex items-center justify-between z-20 shrink-0 shadow-sm">
+    <div class="flex items-center gap-3">
+      <div class="h-9 w-9 rounded-lg bg-blue-600 flex items-center justify-center font-bold text-white shadow-md shadow-blue-500/20">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h14M5 12a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v4a2 2 0 01-2 2M5 12a2 2 0 00-2 2v4a2 2 0 002 2h14a2 2 0 002-2v-4a2 2 0 00-2-2m-2-4h.01M17 16h.01"></path></svg>
+      </div>
+      <div>
+        <div class="flex items-center gap-2">
+          <h1 class="font-bold text-slate-800 text-sm leading-tight">NetForge Topology Studio</h1>
+          <span class="px-2 py-0.5 text-[10px] font-bold bg-blue-50 text-blue-600 border border-blue-200 rounded-full">Enterprise</span>
+        </div>
+        <p class="text-[11px] text-slate-500">Executive Network Orchestration & Zero-Lag CLI</p>
+      </div>
+    </div>
+
+    <!-- MAIN CONTROLS -->
+    <div class="flex items-center gap-2">
+      <button id="btnConnectMode" onclick="toggleLinkMode()" class="px-3.5 py-1.5 rounded-lg text-xs font-semibold bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-300 transition flex items-center gap-1.5 shadow-sm">
+        <svg class="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"></path></svg>
+        <span id="linkModeText">Add Cable Link</span>
+      </button>
+
+      <div class="h-5 w-[1px] bg-slate-200 mx-1"></div>
+
+      <button onclick="exportTopologyJSON()" class="px-3.5 py-1.5 rounded-lg text-xs font-semibold bg-blue-600 hover:bg-blue-500 text-white shadow-sm transition flex items-center gap-1.5">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
+        <span>Export JSON</span>
+      </button>
+
+      <label class="px-3.5 py-1.5 rounded-lg text-xs font-semibold bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-300 transition flex items-center gap-1.5 cursor-pointer shadow-sm">
+        <svg class="w-4 h-4 text-slate-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path></svg>
+        <span>Import JSON</span>
+        <input type="file" id="importFileInput" accept=".json" class="hidden" onchange="importTopologyJSON(event)">
+      </label>
+
+      <button onclick="openClearModal()" class="px-3.5 py-1.5 rounded-lg text-xs font-semibold bg-rose-50 hover:bg-rose-100 text-rose-600 border border-rose-200 transition">
+        Clear Canvas
+      </button>
+    </div>
+  </header>
+
+  <div class="flex-1 flex overflow-hidden relative">
+
+    <!-- LEFT SIDEBAR: HARDWARE PALETTE -->
+    <aside class="w-64 bg-white border-r border-slate-200 flex flex-col z-10 shrink-0 shadow-sm">
+      <div class="p-3.5 border-b border-slate-100 bg-slate-50/70">
+        <h2 class="text-xs font-bold uppercase tracking-wider text-slate-700">Hardware Palette</h2>
+        <p class="text-[11px] text-slate-500 mt-0.5">Click or drag devices onto workspace</p>
+      </div>
+
+      <div class="flex-1 overflow-y-auto p-3 space-y-4 custom-scrollbar">
+        <!-- CATEGORY: CISCO ROUTERS -->
+        <div>
+          <span class="text-[10px] font-bold text-blue-600 uppercase tracking-wider block mb-2">Cisco Routers</span>
+          <div class="space-y-2">
+            <div onclick="addDeviceFromTemplate('cisco_router')" draggable="true" ondragstart="handleDragStart(event, 'cisco_router')" class="node-card p-2.5 rounded-lg bg-white hover:bg-slate-50 border border-slate-200 cursor-pointer flex items-center gap-3 shadow-sm">
+              <div class="w-8 h-8 rounded-md bg-blue-50 border border-blue-200 flex items-center justify-center text-blue-600 shrink-0">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9"></path></svg>
+              </div>
+              <div class="truncate">
+                <div class="text-xs font-semibold text-slate-800 truncate">Cisco IOSv Router</div>
+                <div class="text-[10px] text-slate-400 truncate">cisco_iosv-15.9.qcow2</div>
+              </div>
+            </div>
+
+            <div onclick="addDeviceFromTemplate('csr1000v')" draggable="true" ondragstart="handleDragStart(event, 'csr1000v')" class="node-card p-2.5 rounded-lg bg-white hover:bg-slate-50 border border-slate-200 cursor-pointer flex items-center gap-3 shadow-sm">
+              <div class="w-8 h-8 rounded-md bg-blue-50 border border-blue-200 flex items-center justify-center text-blue-600 shrink-0">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 3v2m6-2v2M9 19v2m6-2v2M5 9H3m2 6H3m18-6h-2m2 6h-2M7 19h10a2 2 0 002-2V7a2 2 0 00-2-2H7a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>
+              </div>
+              <div class="truncate">
+                <div class="text-xs font-semibold text-slate-800 truncate">Cisco CSR1000v</div>
+                <div class="text-[10px] text-slate-400 truncate">csr1000v-16.12.qcow2</div>
+              </div>
+            </div>
+
+            <div onclick="addDeviceFromTemplate('xrv')" draggable="true" ondragstart="handleDragStart(event, 'xrv')" class="node-card p-2.5 rounded-lg bg-white hover:bg-slate-50 border border-slate-200 cursor-pointer flex items-center gap-3 shadow-sm">
+              <div class="w-8 h-8 rounded-md bg-blue-50 border border-blue-200 flex items-center justify-center text-blue-600 shrink-0">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
+              </div>
+              <div class="truncate">
+                <div class="text-xs font-semibold text-slate-800 truncate">Cisco XRv 9000</div>
+                <div class="text-[10px] text-slate-400 truncate">xrv9k-7.2.qcow2</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- CATEGORY: CISCO SWITCHES -->
+        <div>
+          <span class="text-[10px] font-bold text-cyan-600 uppercase tracking-wider block mb-2">Cisco L2/L3 Switches</span>
+          <div class="space-y-2">
+            <div onclick="addDeviceFromTemplate('cisco_switch')" draggable="true" ondragstart="handleDragStart(event, 'cisco_switch')" class="node-card p-2.5 rounded-lg bg-white hover:bg-slate-50 border border-slate-200 cursor-pointer flex items-center gap-3 shadow-sm">
+              <div class="w-8 h-8 rounded-md bg-cyan-50 border border-cyan-200 flex items-center justify-center text-cyan-600 shrink-0">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4m0 5c0 2.21-3.582 4-8 4s-8-1.79-8-4"></path></svg>
+              </div>
+              <div class="truncate">
+                <div class="text-xs font-semibold text-slate-800 truncate">Cisco IOSvL2 Switch</div>
+                <div class="text-[10px] text-slate-400 truncate">cisco_iosvl2-15.2.qcow2</div>
+              </div>
+            </div>
+
+            <div onclick="addDeviceFromTemplate('cat9kv')" draggable="true" ondragstart="handleDragStart(event, 'cat9kv')" class="node-card p-2.5 rounded-lg bg-white hover:bg-slate-50 border border-slate-200 cursor-pointer flex items-center gap-3 shadow-sm">
+              <div class="w-8 h-8 rounded-md bg-cyan-50 border border-cyan-200 flex items-center justify-center text-cyan-600 shrink-0">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path></svg>
+              </div>
+              <div class="truncate">
+                <div class="text-xs font-semibold text-slate-800 truncate">Catalyst 9000v L3</div>
+                <div class="text-[10px] text-slate-400 truncate">cat9kv-17.6.qcow2</div>
+              </div>
+            </div>
+
+            <div onclick="addDeviceFromTemplate('nxosv')" draggable="true" ondragstart="handleDragStart(event, 'nxosv')" class="node-card p-2.5 rounded-lg bg-white hover:bg-slate-50 border border-slate-200 cursor-pointer flex items-center gap-3 shadow-sm">
+              <div class="w-8 h-8 rounded-md bg-cyan-50 border border-cyan-200 flex items-center justify-center text-cyan-600 shrink-0">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 9l3 3-3 3m5 0h3M5 20h14a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+              </div>
+              <div class="truncate">
+                <div class="text-xs font-semibold text-slate-800 truncate">Nexus 9000v NX-OS</div>
+                <div class="text-[10px] text-slate-400 truncate">nxosv9k-9.3.qcow2</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- CATEGORY: FIREWALLS -->
+        <div>
+          <span class="text-[10px] font-bold text-amber-600 uppercase tracking-wider block mb-2">Firewalls</span>
+          <div class="space-y-2">
+            <div onclick="addDeviceFromTemplate('paloalto_fw')" draggable="true" ondragstart="handleDragStart(event, 'paloalto_fw')" class="node-card p-2.5 rounded-lg bg-white hover:bg-slate-50 border border-slate-200 cursor-pointer flex items-center gap-3 shadow-sm">
+              <div class="w-8 h-8 rounded-md bg-amber-50 border border-amber-200 flex items-center justify-center text-amber-600 shrink-0">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path></svg>
+              </div>
+              <div class="truncate">
+                <div class="text-xs font-semibold text-slate-800 truncate">Palo Alto PAN-OS</div>
+                <div class="text-[10px] text-slate-400 truncate">PA-VM-10.1.0.qcow2</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- CATEGORY: END DEVICES -->
+        <div>
+          <span class="text-[10px] font-bold text-emerald-600 uppercase tracking-wider block mb-2">End Devices</span>
+          <div class="space-y-2">
+            <div onclick="addDeviceFromTemplate('pc')" draggable="true" ondragstart="handleDragStart(event, 'pc')" class="node-card p-2.5 rounded-lg bg-white hover:bg-slate-50 border border-slate-200 cursor-pointer flex items-center gap-3 shadow-sm">
+              <div class="w-8 h-8 rounded-md bg-emerald-50 border border-emerald-200 flex items-center justify-center text-emerald-600 shrink-0">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>
+              </div>
+              <div class="truncate">
+                <div class="text-xs font-semibold text-slate-800 truncate">Workstation PC</div>
+                <div class="text-[10px] text-slate-400 truncate">vpcs-micro.qcow2</div>
+              </div>
+            </div>
+
+            <div onclick="addDeviceFromTemplate('laptop')" draggable="true" ondragstart="handleDragStart(event, 'laptop')" class="node-card p-2.5 rounded-lg bg-white hover:bg-slate-50 border border-slate-200 cursor-pointer flex items-center gap-3 shadow-sm">
+              <div class="w-8 h-8 rounded-md bg-emerald-50 border border-emerald-200 flex items-center justify-center text-emerald-600 shrink-0">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z"></path></svg>
+              </div>
+              <div class="truncate">
+                <div class="text-xs font-semibold text-slate-800 truncate">Admin Laptop</div>
+                <div class="text-[10px] text-slate-400 truncate">vpcs-micro.qcow2</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="p-3.5 border-t border-slate-200 bg-slate-50">
+        <div class="text-xs text-slate-600 flex items-center justify-between">
+          <span>Active Nodes:</span>
+          <span id="nodeCount" class="font-bold text-blue-600">0</span>
+        </div>
+        <div class="text-xs text-slate-600 flex items-center justify-between mt-1">
+          <span>Cable Links:</span>
+          <span id="linkCount" class="font-bold text-blue-600">0</span>
+        </div>
+      </div>
+    </aside>
+
+    <!-- MAIN CANVAS WORKSPACE -->
+    <main id="canvasContainer" ondragover="handleDragOver(event)" ondrop="handleDrop(event)" class="flex-1 canvas-bg relative overflow-hidden">
+      <svg id="svgLayer" class="absolute inset-0 w-full h-full pointer-events-none z-0"></svg>
+      <div id="nodesContainer" class="absolute inset-0 z-10"></div>
+
+      <!-- Cable Wiring Banner Hint -->
+      <div id="linkBanner" class="hidden absolute top-4 left-1/2 -translate-x-1/2 bg-white border border-blue-200 text-slate-800 px-4 py-2 rounded-full text-xs font-semibold shadow-lg z-20 flex items-center gap-2">
+        <span class="w-2 h-2 rounded-full bg-blue-600 animate-ping"></span>
+        <span id="linkBannerText">Select the first device to connect...</span>
+        <button onclick="toggleLinkMode()" class="ml-2 text-slate-400 hover:text-slate-600 font-bold">✕</button>
+      </div>
+
+      <!-- Toast Notification -->
+      <div id="toastNotification" class="hidden absolute bottom-5 right-5 bg-slate-800 text-white px-4 py-2.5 rounded-lg text-xs font-medium shadow-xl z-30 transition-opacity">
+        <span id="toastMessage">Action completed</span>
+      </div>
+    </main>
+
+  </div>
+
+  <!-- MODAL: INTERACTIVE INTERFACE SELECTION -->
+  <div id="interfaceModal" class="hidden fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+    <div class="bg-white border border-slate-200 rounded-xl w-full max-w-md shadow-2xl overflow-hidden">
+      <div class="px-5 py-4 border-b border-slate-100 flex justify-between items-center bg-slate-50">
+        <div>
+          <h3 class="font-bold text-slate-800 text-sm">Select Cable Interfaces</h3>
+          <p class="text-xs text-slate-500">Choose exact physical ports to patch</p>
+        </div>
+        <button onclick="closeInterfaceModal()" class="text-slate-400 hover:text-slate-600 text-lg font-bold">✕</button>
+      </div>
+
+      <div class="p-5 space-y-4">
+        <div class="grid grid-cols-2 gap-4">
+          <div class="bg-slate-50 p-3 rounded-lg border border-slate-200 space-y-2">
+            <div class="text-xs font-bold text-blue-600 truncate" id="ifaceSrcName">Device A</div>
+            <label class="block text-[11px] font-medium text-slate-500">Source Interface</label>
+            <select id="ifaceSrcSelect" class="w-full bg-white border border-slate-300 rounded-md px-2.5 py-2 text-xs font-mono text-slate-800 focus:outline-none focus:border-blue-500"></select>
+          </div>
+
+          <div class="bg-slate-50 p-3 rounded-lg border border-slate-200 space-y-2">
+            <div class="text-xs font-bold text-emerald-600 truncate" id="ifaceDstName">Device B</div>
+            <label class="block text-[11px] font-medium text-slate-500">Target Interface</label>
+            <select id="ifaceDstSelect" class="w-full bg-white border border-slate-300 rounded-md px-2.5 py-2 text-xs font-mono text-slate-800 focus:outline-none focus:border-blue-500"></select>
+          </div>
+        </div>
+        <div id="ifaceWarning" class="hidden text-xs text-rose-600 bg-rose-50 border border-rose-200 rounded-lg p-2.5">
+          Selected interface is already in use. Please choose an available port.
+        </div>
+      </div>
+
+      <div class="px-5 py-3 border-t border-slate-100 bg-slate-50 flex justify-end gap-2">
+        <button onclick="closeInterfaceModal()" class="px-4 py-2 rounded-lg text-xs font-semibold text-slate-600 hover:bg-slate-200 transition">Cancel</button>
+        <button onclick="confirmInterfaceLink()" class="px-4 py-2 rounded-lg text-xs font-semibold bg-blue-600 hover:bg-blue-500 text-white transition shadow-sm">Connect Cable</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: IP CONFIGURATION (FOR PC & LAPTOP) -->
+  <div id="ipModal" class="hidden fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+    <div class="bg-white border border-slate-200 rounded-xl w-full max-w-md shadow-2xl overflow-hidden">
+      <div class="px-5 py-4 border-b border-slate-100 flex justify-between items-center bg-slate-50">
+        <div>
+          <h3 id="ipModalTitle" class="font-bold text-slate-800 text-sm">IP Configuration</h3>
+          <p class="text-xs text-slate-500">Configure IPv4 host networking parameters</p>
+        </div>
+        <button onclick="closeIpModal()" class="text-slate-400 hover:text-slate-600 text-lg font-bold">✕</button>
+      </div>
+
+      <div class="p-5 space-y-4">
+        <div>
+          <label class="block text-xs font-semibold text-slate-600 mb-2">Assignment Mode</label>
+          <div class="grid grid-cols-2 gap-2 bg-slate-100 p-1 rounded-lg border border-slate-200">
+            <button id="btnModeDhcp" onclick="setIpConfigMode('dhcp')" class="py-1.5 text-xs font-semibold rounded-md transition text-slate-500">DHCP</button>
+            <button id="btnModeStatic" onclick="setIpConfigMode('static')" class="py-1.5 text-xs font-semibold rounded-md transition bg-blue-600 text-white shadow-sm">Static</button>
+          </div>
+        </div>
+
+        <div id="staticIpFields" class="space-y-3">
+          <div>
+            <label class="block text-xs font-medium text-slate-600 mb-1">IPv4 Address</label>
+            <input type="text" id="inputIpAddress" placeholder="192.168.1.10" class="w-full bg-white border border-slate-300 rounded-md px-3 py-2 text-xs font-mono text-slate-800 focus:outline-none focus:border-blue-500">
+          </div>
+          <div>
+            <label class="block text-xs font-medium text-slate-600 mb-1">Subnet Mask</label>
+            <input type="text" id="inputSubnetMask" placeholder="255.255.255.0" class="w-full bg-white border border-slate-300 rounded-md px-3 py-2 text-xs font-mono text-slate-800 focus:outline-none focus:border-blue-500">
+          </div>
+          <div>
+            <label class="block text-xs font-medium text-slate-600 mb-1">Default Gateway</label>
+            <input type="text" id="inputGateway" placeholder="192.168.1.1" class="w-full bg-white border border-slate-300 rounded-md px-3 py-2 text-xs font-mono text-slate-800 focus:outline-none focus:border-blue-500">
+          </div>
+          <div>
+            <label class="block text-xs font-medium text-slate-600 mb-1">DNS Server</label>
+            <input type="text" id="inputDns" placeholder="8.8.8.8" class="w-full bg-white border border-slate-300 rounded-md px-3 py-2 text-xs font-mono text-slate-800 focus:outline-none focus:border-blue-500">
+          </div>
+        </div>
+      </div>
+
+      <div class="px-5 py-3 border-t border-slate-100 bg-slate-50 flex justify-end gap-2">
+        <button onclick="closeIpModal()" class="px-4 py-2 rounded-lg text-xs font-semibold text-slate-600 hover:bg-slate-200 transition">Cancel</button>
+        <button onclick="saveIpConfig()" class="px-4 py-2 rounded-lg text-xs font-semibold bg-blue-600 hover:bg-blue-500 text-white transition shadow-sm">Save Settings</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- FLOATING, DRAGGABLE & RESIZABLE TERMINAL WINDOWS CONTAINER -->
+  <div id="floatingTerminalsLayer" class="fixed inset-0 pointer-events-none z-40"></div>
+
+  <!-- MODAL: CLEAR CANVAS CONFIRMATION -->
+  <div id="clearModal" class="hidden fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+    <div class="bg-white border border-slate-200 rounded-xl w-full max-w-sm shadow-2xl overflow-hidden p-5 space-y-4">
+      <h3 class="font-bold text-slate-800 text-sm">Clear Workspace Canvas?</h3>
+      <p class="text-xs text-slate-500">This will remove all network devices, configurations, and cable links from the current workspace.</p>
+      <div class="flex justify-end gap-2 pt-2">
+        <button onclick="closeClearModal()" class="px-4 py-2 rounded-lg text-xs font-semibold text-slate-600 hover:bg-slate-100 transition">Cancel</button>
+        <button onclick="confirmClearCanvas()" class="px-4 py-2 rounded-lg text-xs font-semibold bg-rose-600 hover:bg-rose-500 text-white transition shadow-sm">Clear All</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Application State
+    let nodes = [];
+    let links = [];
+    let linkModeActive = false;
+    let linkStartNodeId = null;
+    let pendingTargetNodeId = null;
+
+    let activeIpNodeId = null;
+    let ipConfigMode = 'static';
+    let topTerminalZIndex = 41;
+
+    let draggedNodeId = null;
+    let dragOffsetX = 0;
+    let dragOffsetY = 0;
+
+    let draggedTermId = null;
+    let termOffsetX = 0;
+    let termOffsetY = 0;
+
+    // Device Templates Catalog with Professional SVG Icons
+    const DEVICE_TEMPLATES = {
+      cisco_router: {
+        type: 'cisco_router',
+        vendor: 'cisco',
+        label: 'Cisco IOSv Router',
+        prefix: 'R',
+        badgeBg: 'bg-blue-50 border-blue-200 text-blue-600',
+        svgIcon: '<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9"></path></svg>',
+        qcow2: 'cisco_iosv-15.9.qcow2',
+        ram: 512,
+        cpus: 1,
+        interfaces: ['Gi0/0', 'Gi0/1', 'Gi0/2', 'Gi0/3']
+      },
+      csr1000v: {
+        type: 'csr1000v',
+        vendor: 'cisco',
+        label: 'Cisco CSR1000v',
+        prefix: 'CSR',
+        badgeBg: 'bg-blue-50 border-blue-200 text-blue-600',
+        svgIcon: '<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 3v2m6-2v2M9 19v2m6-2v2M5 9H3m2 6H3m18-6h-2m2 6h-2M7 19h10a2 2 0 002-2V7a2 2 0 00-2-2H7a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>',
+        qcow2: 'csr1000v-16.12.qcow2',
+        ram: 3072,
+        cpus: 1,
+        interfaces: ['Gi1', 'Gi2', 'Gi3', 'Gi4']
+      },
+      xrv: {
+        type: 'xrv',
+        vendor: 'cisco',
+        label: 'Cisco XRv 9000',
+        prefix: 'XRv',
+        badgeBg: 'bg-blue-50 border-blue-200 text-blue-600',
+        svgIcon: '<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>',
+        qcow2: 'xrv9k-7.2.qcow2',
+        ram: 4096,
+        cpus: 2,
+        interfaces: ['Gi0/0/0/0', 'Gi0/0/0/1', 'Gi0/0/0/2']
+      },
+      cisco_switch: {
+        type: 'cisco_switch',
+        vendor: 'cisco',
+        label: 'Cisco IOSvL2 Switch',
+        prefix: 'SW',
+        badgeBg: 'bg-cyan-50 border-cyan-200 text-cyan-600',
+        svgIcon: '<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4m0 5c0 2.21-3.582 4-8 4s-8-1.79-8-4"></path></svg>',
+        qcow2: 'cisco_iosvl2-15.2.qcow2',
+        ram: 768,
+        cpus: 1,
+        interfaces: ['Gi0/0', 'Gi0/1', 'Gi0/2', 'Gi0/3', 'Gi1/0']
+      },
+      cat9kv: {
+        type: 'cat9kv',
+        vendor: 'cisco',
+        label: 'Catalyst 9000v L3',
+        prefix: 'Cat9k',
+        badgeBg: 'bg-cyan-50 border-cyan-200 text-cyan-600',
+        svgIcon: '<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path></svg>',
+        qcow2: 'cat9kv-17.6.qcow2',
+        ram: 4096,
+        cpus: 2,
+        interfaces: ['Gi1/0/1', 'Gi1/0/2', 'Gi1/0/3', 'Gi1/0/4']
+      },
+      nxosv: {
+        type: 'nxosv',
+        vendor: 'cisco',
+        label: 'Nexus 9000v NX-OS',
+        prefix: 'NX',
+        badgeBg: 'bg-cyan-50 border-cyan-200 text-cyan-600',
+        svgIcon: '<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 9l3 3-3 3m5 0h3M5 20h14a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>',
+        qcow2: 'nxosv9k-9.3.qcow2',
+        ram: 8192,
+        cpus: 2,
+        interfaces: ['Eth1/1', 'Eth1/2', 'Eth1/3', 'Eth1/4']
+      },
+      paloalto_fw: {
+        type: 'paloalto_fw',
+        vendor: 'paloalto',
+        label: 'Palo Alto PAN-OS',
+        prefix: 'PA-FW',
+        badgeBg: 'bg-amber-50 border-amber-200 text-amber-600',
+        svgIcon: '<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path></svg>',
+        qcow2: 'PA-VM-10.1.0.qcow2',
+        ram: 4505,
+        cpus: 2,
+        interfaces: ['mgmt', 'ethernet1/1', 'ethernet1/2', 'ethernet1/3']
+      },
+      pc: {
+        type: 'pc',
+        vendor: 'host',
+        label: 'Workstation PC',
+        prefix: 'PC-',
+        badgeBg: 'bg-emerald-50 border-emerald-200 text-emerald-600',
+        svgIcon: '<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>',
+        qcow2: 'vpcs-micro.qcow2',
+        ram: 256,
+        cpus: 1,
+        interfaces: ['eth0']
+      },
+      laptop: {
+        type: 'laptop',
+        vendor: 'host',
+        label: 'Admin Laptop',
+        prefix: 'LT-',
+        badgeBg: 'bg-emerald-50 border-emerald-200 text-emerald-600',
+        svgIcon: '<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z"></path></svg>',
+        qcow2: 'vpcs-micro.qcow2',
+        ram: 256,
+        cpus: 1,
+        interfaces: ['eth0']
+      }
+    };
+
+    // Initialize default sample lab topology
+    window.addEventListener('DOMContentLoaded', () => {
+      addDeviceFromTemplate('cisco_router', 160, 140);
+      addDeviceFromTemplate('cisco_switch', 440, 140);
+      addDeviceFromTemplate('paloalto_fw', 160, 340);
+      addDeviceFromTemplate('pc', 440, 340);
+
+      setTimeout(() => {
+        if (nodes.length >= 4) {
+          createLink(nodes[0].id, nodes[1].id, 'Gi0/0', 'Gi0/0');
+          createLink(nodes[0].id, nodes[2].id, 'Gi0/1', 'ethernet1/1');
+          createLink(nodes[1].id, nodes[3].id, 'Gi0/1', 'eth0');
+        }
+      }, 60);
+    });
+
+    function showToast(msg) {
+      const toast = document.getElementById('toastNotification');
+      document.getElementById('toastMessage').textContent = msg;
+      toast.classList.remove('hidden');
+      clearTimeout(toast._timer);
+      toast._timer = setTimeout(() => toast.classList.add('hidden'), 2600);
+    }
+
+    // Drag & Drop from Sidebar
+    function handleDragStart(e, templateType) {
+      e.dataTransfer.setData('text/plain', templateType);
+    }
+
+    function handleDragOver(e) {
+      e.preventDefault();
+    }
+
+    function handleDrop(e) {
+      e.preventDefault();
+      const templateType = e.dataTransfer.getData('text/plain');
+      if (!templateType || !DEVICE_TEMPLATES[templateType]) return;
+
+      const rect = document.getElementById('canvasContainer').getBoundingClientRect();
+      const x = Math.max(20, e.clientX - rect.left - 88);
+      const y = Math.max(20, e.clientY - rect.top - 45);
+
+      addDeviceFromTemplate(templateType, x, y);
+    }
+
+    // Create New Node Instance
+    function addDeviceFromTemplate(templateType, posX, posY) {
+      const template = DEVICE_TEMPLATES[templateType];
+      if (!template) return;
+
+      const count = nodes.filter(n => n.type === templateType).length + 1;
+      const nodeId = 'node_' + Date.now() + '_' + Math.floor(Math.random() * 10000);
+      const hostname = `${template.prefix}${count}`;
+
+      const canvas = document.getElementById('canvasContainer');
+      const defaultX = posX !== undefined ? posX : Math.max(40, (nodes.length % 4) * 200 + 80);
+      const defaultY = posY !== undefined ? posY : Math.max(40, Math.floor(nodes.length / 4) * 160 + 80);
+
+      const ifaceConfigs = {};
+      template.interfaces.forEach(iface => {
+        ifaceConfigs[iface] = {
+          ip: 'unassigned',
+          mask: '',
+          cidr: '',
+          status: 'administratively down',
+          protocol: 'down',
+          zone: ''
+        };
+      });
+
+      const newNode = {
+        id: nodeId,
+        type: templateType,
+        vendor: template.vendor,
+        name: hostname,
+        x: defaultX,
+        y: defaultY,
+        ram: template.ram,
+        cpus: template.cpus,
+        qcow2: template.qcow2,
+        interfaces: [...template.interfaces],
+        ipConfig: {
+          mode: 'dhcp',
+          ip: '192.168.1.' + (10 + count),
+          subnet: '255.255.255.0',
+          gateway: '192.168.1.1',
+          dns: '8.8.8.8'
+        },
+        cliState: {
+          mode: 'user',
+          hostname: hostname,
+          activeIface: null,
+          activeOspf: null,
+          activeVlan: null,
+          ifaceConfigs: ifaceConfigs,
+          ospf: { processId: null, networks: [] },
+          vlans: { '1': { name: 'default', status: 'active' } },
+          panZones: {},
+          history: [],
+          historyIndex: -1,
+          terminalLog: []
+        }
+      };
+
+      nodes.push(newNode);
+      renderNodeDOM(newNode);
+      updateCounts();
+    }
+
+    // Render Single Node Card onto Canvas
+    function renderNodeDOM(node) {
+      const template = DEVICE_TEMPLATES[node.type];
+      const container = document.getElementById('nodesContainer');
+
+      const existing = document.getElementById(node.id);
+      if (existing) existing.remove();
+
+      const el = document.createElement('div');
+      el.id = node.id;
+      el.style.left = node.x + 'px';
+      el.style.top = node.y + 'px';
+      el.className = `absolute w-44 bg-white border border-slate-200 rounded-xl shadow-md p-3 cursor-grab select-none transition-shadow hover:border-blue-500 hover:shadow-lg`;
+
+      const isEndDevice = (node.vendor === 'host');
+
+      el.innerHTML = `
+        <div class="flex items-center justify-between gap-2 pointer-events-none mb-2">
+          <div class="flex items-center gap-2.5 overflow-hidden">
+            <div class="w-8 h-8 rounded-lg border ${template.badgeBg} flex items-center justify-center shrink-0">${template.svgIcon}</div>
+            <div class="truncate">
+              <div class="text-xs font-bold text-slate-800 truncate">${node.cliState.hostname}</div>
+              <div class="text-[10px] text-slate-400 truncate">${template.label}</div>
+            </div>
+          </div>
+        </div>
+
+        ${isEndDevice ? `
+          <div class="text-[10px] bg-slate-50 rounded px-2 py-1 mb-2 font-mono text-emerald-600 border border-slate-200 truncate">
+            ${node.ipConfig.mode === 'dhcp' ? 'DHCP: ' + node.ipConfig.ip : node.ipConfig.ip}
+          </div>
+        ` : ''}
+
+        <div class="flex items-center justify-between gap-1 pt-1.5 border-t border-slate-100">
+          ${isEndDevice ? `
+            <button onclick="openCliModal('${node.id}')" class="flex-1 py-1 bg-slate-800 hover:bg-slate-700 text-[10px] font-semibold text-white rounded transition truncate px-1" title="Open Command Prompt">Command Prompt</button>
+            <button onclick="openIpModal('${node.id}')" class="py-1 px-1.5 bg-blue-50 hover:bg-blue-100 text-[10px] font-semibold text-blue-600 rounded border border-blue-200 transition shrink-0">IP Config</button>
+          ` : `
+            <button onclick="openCliModal('${node.id}')" class="flex-1 py-1 bg-slate-100 hover:bg-blue-600 hover:text-white text-[11px] font-semibold text-slate-700 rounded transition">Console</button>
+          `}
+          <button onclick="deleteNode('${node.id}')" class="px-2 py-1 bg-rose-50 hover:bg-rose-100 text-[11px] font-semibold text-rose-600 rounded border border-rose-200 transition shrink-0" title="Remove Device">✕</button>
+        </div>
+      `;
+
+      el.addEventListener('mousedown', (e) => {
+        if (e.target.tagName === 'BUTTON') return;
+
+        if (linkModeActive) {
+          handleLinkNodeClick(node.id);
+          return;
+        }
+
+        draggedNodeId = node.id;
+        dragOffsetX = e.clientX - node.x;
+        dragOffsetY = e.clientY - node.y;
+        el.style.cursor = 'grabbing';
+      });
+
+      container.appendChild(el);
+    }
+
+    // Smooth Canvas Node & Floating Terminal Dragging
+    window.addEventListener('mousemove', (e) => {
+      if (draggedNodeId) {
+        const node = nodes.find(n => n.id === draggedNodeId);
+        if (!node) return;
+
+        const canvas = document.getElementById('canvasContainer');
+        const rect = canvas.getBoundingClientRect();
+
+        node.x = Math.max(10, Math.min(rect.width - 185, e.clientX - dragOffsetX));
+        node.y = Math.max(10, Math.min(rect.height - 110, e.clientY - dragOffsetY));
+
+        const el = document.getElementById(node.id);
+        if (el) {
+          el.style.left = node.x + 'px';
+          el.style.top = node.y + 'px';
+        }
+
+        renderLinks();
+      }
+
+      if (draggedTermId) {
+        const termWin = document.getElementById(draggedTermId);
+        if (termWin) {
+          const newX = Math.max(0, Math.min(window.innerWidth - 180, e.clientX - termOffsetX));
+          const newY = Math.max(56, Math.min(window.innerHeight - 60, e.clientY - termOffsetY));
+          termWin.style.left = newX + 'px';
+          termWin.style.top = newY + 'px';
+        }
+      }
+    });
+
+    window.addEventListener('mouseup', () => {
+      if (draggedNodeId) {
+        const el = document.getElementById(draggedNodeId);
+        if (el) el.style.cursor = 'grab';
+        draggedNodeId = null;
+      }
+      if (draggedTermId) {
+        draggedTermId = null;
+      }
+    });
+
+    // Cable Linking Mode & Interactive Interface Selection
+    function toggleLinkMode() {
+      linkModeActive = !linkModeActive;
+      if (linkStartNodeId) {
+        document.getElementById(linkStartNodeId)?.classList.remove('ring-2', 'ring-blue-500');
+      }
+      linkStartNodeId = null;
+      pendingTargetNodeId = null;
+
+      const btn = document.getElementById('btnConnectMode');
+      const txt = document.getElementById('linkModeText');
+      const banner = document.getElementById('linkBanner');
+
+      if (linkModeActive) {
+        btn.classList.remove('bg-slate-100', 'text-slate-700', 'border-slate-300');
+        btn.classList.add('bg-blue-600', 'text-white', 'border-blue-600');
+        txt.textContent = 'Cancel Linking';
+        banner.classList.remove('hidden');
+        document.getElementById('linkBannerText').textContent = 'Select the first device to connect...';
+      } else {
+        btn.classList.remove('bg-blue-600', 'text-white', 'border-blue-600');
+        btn.classList.add('bg-slate-100', 'text-slate-700', 'border-slate-300');
+        txt.textContent = 'Add Cable Link';
+        banner.classList.add('hidden');
+      }
+    }
+
+    function handleLinkNodeClick(nodeId) {
+      if (!linkStartNodeId) {
+        linkStartNodeId = nodeId;
+        const srcNode = nodes.find(n => n.id === nodeId);
+        document.getElementById(nodeId)?.classList.add('ring-2', 'ring-blue-500');
+        document.getElementById('linkBannerText').textContent = `Source: ${srcNode.cliState.hostname} — Now click the target device...`;
+      } else if (linkStartNodeId === nodeId) {
+        document.getElementById(nodeId)?.classList.remove('ring-2', 'ring-blue-500');
+        linkStartNodeId = null;
+        document.getElementById('linkBannerText').textContent = 'Select the first device to connect...';
+      } else {
+        pendingTargetNodeId = nodeId;
+        openInterfaceModal(linkStartNodeId, pendingTargetNodeId);
+      }
+    }
+
+    function isPortInUse(nodeId, portName) {
+      return links.some(l =>
+        (l.source === nodeId && l.sourceInterface === portName) ||
+        (l.target === nodeId && l.targetInterface === portName)
+      );
+    }
+
+    function openInterfaceModal(srcId, dstId) {
+      const srcNode = nodes.find(n => n.id === srcId);
+      const dstNode = nodes.find(n => n.id === dstId);
+      if (!srcNode || !dstNode) return;
+
+      document.getElementById('ifaceSrcName').textContent = srcNode.cliState.hostname;
+      document.getElementById('ifaceDstName').textContent = dstNode.cliState.hostname;
+      document.getElementById('ifaceWarning').classList.add('hidden');
+
+      const srcSelect = document.getElementById('ifaceSrcSelect');
+      const dstSelect = document.getElementById('ifaceDstSelect');
+
+      srcSelect.innerHTML = srcNode.interfaces.map(port => {
+        const used = isPortInUse(srcId, port);
+        return `<option value="${port}" ${used ? 'disabled' : ''}>${port}${used ? ' (In Use)' : ''}</option>`;
+      }).join('');
+
+      dstSelect.innerHTML = dstNode.interfaces.map(port => {
+        const used = isPortInUse(dstId, port);
+        return `<option value="${port}" ${used ? 'disabled' : ''}>${port}${used ? ' (In Use)' : ''}</option>`;
+      }).join('');
+
+      const firstFreeSrc = srcNode.interfaces.find(p => !isPortInUse(srcId, p));
+      const firstFreeDst = dstNode.interfaces.find(p => !isPortInUse(dstId, p));
+      if (firstFreeSrc) srcSelect.value = firstFreeSrc;
+      if (firstFreeDst) dstSelect.value = firstFreeDst;
+
+      document.getElementById('interfaceModal').classList.remove('hidden');
+    }
+
+    function closeInterfaceModal() {
+      document.getElementById('interfaceModal').classList.add('hidden');
+      if (linkStartNodeId) {
+        document.getElementById(linkStartNodeId)?.classList.remove('ring-2', 'ring-blue-500');
+      }
+      if (linkModeActive) {
+        toggleLinkMode();
+      }
+    }
+
+    function confirmInterfaceLink() {
+      const srcPort = document.getElementById('ifaceSrcSelect').value;
+      const dstPort = document.getElementById('ifaceDstSelect').value;
+
+      if (!srcPort || !dstPort || isPortInUse(linkStartNodeId, srcPort) || isPortInUse(pendingTargetNodeId, dstPort)) {
+        document.getElementById('ifaceWarning').classList.remove('hidden');
+        return;
+      }
+
+      createLink(linkStartNodeId, pendingTargetNodeId, srcPort, dstPort);
+      closeInterfaceModal();
+      showToast(`Patched ${srcPort} ↔ ${dstPort}`);
+    }
+
+    function createLink(nodeAId, nodeBId, intA, intB) {
+      const nodeA = nodes.find(n => n.id === nodeAId);
+      const nodeB = nodes.find(n => n.id === nodeBId);
+      if (!nodeA || !nodeB) return;
+
+      const linkId = 'link_' + Date.now() + '_' + Math.floor(Math.random() * 10000);
+      links.push({
+        id: linkId,
+        source: nodeAId,
+        target: nodeBId,
+        sourceInterface: intA,
+        targetInterface: intB
+      });
+
+      renderLinks();
+      updateCounts();
+    }
+
+    function renderLinks() {
+      const svg = document.getElementById('svgLayer');
+      svg.innerHTML = '';
+
+      links.forEach(link => {
+        const nodeA = nodes.find(n => n.id === link.source);
+        const nodeB = nodes.find(n => n.id === link.target);
+        if (!nodeA || !nodeB) return;
+
+        const x1 = nodeA.x + 88;
+        const y1 = nodeA.y + 42;
+        const x2 = nodeB.x + 88;
+        const y2 = nodeB.y + 42;
+
+        const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+        line.setAttribute('x1', x1);
+        line.setAttribute('y1', y1);
+        line.setAttribute('x2', x2);
+        line.setAttribute('y2', y2);
+        line.setAttribute('stroke', '#2563eb');
+        line.setAttribute('stroke-width', '2');
+        line.setAttribute('stroke-dasharray', '5 4');
+        svg.appendChild(line);
+
+        const midX = (x1 + x2) / 2;
+        const midY = (y1 + y2) / 2;
+
+        const labelStr = `${link.sourceInterface} ↔ ${link.targetInterface}`;
+        const pillWidth = labelStr.length * 6.5 + 12;
+        const rect = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+        rect.setAttribute('x', midX - pillWidth / 2);
+        rect.setAttribute('y', midY - 11);
+        rect.setAttribute('width', pillWidth);
+        rect.setAttribute('height', 18);
+        rect.setAttribute('rx', '4');
+        rect.setAttribute('fill', '#ffffff');
+        rect.setAttribute('stroke', '#cbd5e1');
+        rect.setAttribute('stroke-width', '1');
+        svg.appendChild(rect);
+
+        const text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+        text.setAttribute('x', midX);
+        text.setAttribute('y', midY + 1);
+        text.setAttribute('fill', '#334155');
+        text.setAttribute('font-size', '10');
+        text.setAttribute('font-weight', '600');
+        text.setAttribute('text-anchor', 'middle');
+        text.setAttribute('font-family', 'JetBrains Mono, monospace');
+        text.textContent = labelStr;
+        svg.appendChild(text);
+      });
+    }
+
+    function deleteNode(nodeId) {
+      nodes = nodes.filter(n => n.id !== nodeId);
+      links = links.filter(l => l.source !== nodeId && l.target !== nodeId);
+      document.getElementById(nodeId)?.remove();
+      document.getElementById(`term_win_${nodeId}`)?.remove();
+      renderLinks();
+      updateCounts();
+    }
+
+    function openClearModal() {
+      document.getElementById('clearModal').classList.remove('hidden');
+    }
+
+    function closeClearModal() {
+      document.getElementById('clearModal').classList.add('hidden');
+    }
+
+    function confirmClearCanvas() {
+      nodes = [];
+      links = [];
+      document.getElementById('nodesContainer').innerHTML = '';
+      document.getElementById('floatingTerminalsLayer').innerHTML = '';
+      renderLinks();
+      updateCounts();
+      closeClearModal();
+      showToast('Canvas cleared');
+    }
+
+    function updateCounts() {
+      document.getElementById('nodeCount').textContent = nodes.length;
+      document.getElementById('linkCount').textContent = links.length;
+    }
+
+    // IP Configuration Modal (PC / Laptop)
+    function openIpModal(nodeId) {
+      activeIpNodeId = nodeId;
+      const node = nodes.find(n => n.id === nodeId);
+      if (!node) return;
+
+      document.getElementById('ipModalTitle').textContent = `IP Configuration — ${node.cliState.hostname}`;
+      setIpConfigMode(node.ipConfig.mode || 'static');
+
+      document.getElementById('inputIpAddress').value = node.ipConfig.ip || '192.168.1.10';
+      document.getElementById('inputSubnetMask').value = node.ipConfig.subnet || '255.255.255.0';
+      document.getElementById('inputGateway').value = node.ipConfig.gateway || '192.168.1.1';
+      document.getElementById('inputDns').value = node.ipConfig.dns || '8.8.8.8';
+
+      document.getElementById('ipModal').classList.remove('hidden');
+    }
+
+    function closeIpModal() {
+      document.getElementById('ipModal').classList.add('hidden');
+    }
+
+    function setIpConfigMode(mode) {
+      ipConfigMode = mode;
+      const btnDhcp = document.getElementById('btnModeDhcp');
+      const btnStatic = document.getElementById('btnModeStatic');
+      const fields = document.getElementById('staticIpFields');
+
+      if (mode === 'dhcp') {
+        btnDhcp.className = 'py-1.5 text-xs font-semibold rounded-md transition bg-blue-600 text-white shadow-sm';
+        btnStatic.className = 'py-1.5 text-xs font-semibold rounded-md transition text-slate-500';
+        fields.classList.add('opacity-40', 'pointer-events-none');
+      } else {
+        btnStatic.className = 'py-1.5 text-xs font-semibold rounded-md transition bg-blue-600 text-white shadow-sm';
+        btnDhcp.className = 'py-1.5 text-xs font-semibold rounded-md transition text-slate-500';
+        fields.classList.remove('opacity-40', 'pointer-events-none');
+      }
+    }
+
+    function saveIpConfig() {
+      const node = nodes.find(n => n.id === activeIpNodeId);
+      if (node) {
+        node.ipConfig = {
+          mode: ipConfigMode,
+          ip: document.getElementById('inputIpAddress').value.trim() || '192.168.1.10',
+          subnet: document.getElementById('inputSubnetMask').value.trim() || '255.255.255.0',
+          gateway: document.getElementById('inputGateway').value.trim() || '192.168.1.1',
+          dns: document.getElementById('inputDns').value.trim() || '8.8.8.8'
+        };
+        renderNodeDOM(node);
+        showToast(`Saved IP settings for ${node.cliState.hostname}`);
+      }
+      closeIpModal();
+    }
+
+    // =========================================================================
+    // ZERO-LAG STATEFUL MULTI-VENDOR CLI ENGINE
+    // =========================================================================
+
+    function getPromptString(node) {
+      const st = node.cliState;
+      if (node.vendor === 'host') {
+        return `C:\\Users\\Admin>`;
+      }
+      if (node.vendor === 'paloalto') {
+        return st.mode === 'pan-conf' ? `admin@${st.hostname}#` : `admin@${st.hostname}>`;
+      }
+      switch (st.mode) {
+        case 'user': return `${st.hostname}>`;
+        case 'priv': return `${st.hostname}#`;
+        case 'config': return `${st.hostname}(config)#`;
+        case 'config-if': return `${st.hostname}(config-if)#`;
+        case 'config-router': return `${st.hostname}(config-router)#`;
+        case 'config-vlan': return `${st.hostname}(config-vlan)#`;
+        default: return `${st.hostname}>`;
+      }
+    }
+
+    function bringTerminalToFront(winEl) {
+      topTerminalZIndex++;
+      winEl.style.zIndex = topTerminalZIndex;
+    }
+
+    function openCliModal(nodeId) {
+      const node = nodes.find(n => n.id === nodeId);
+      if (!node) return;
+
+      const winId = `term_win_${nodeId}`;
+      let winEl = document.getElementById(winId);
+
+      if (winEl) {
+        bringTerminalToFront(winEl);
+        winEl.querySelector('input')?.focus();
+        return;
+      }
+
+      if (node.vendor === 'paloalto' && node.cliState.mode === 'user') {
+        node.cliState.mode = 'pan-op';
+      }
+
+      const isHost = (node.vendor === 'host');
+      const openCount = document.getElementById('floatingTerminalsLayer').children.length;
+      const initialLeft = Math.min(window.innerWidth - 580, 290 + openCount * 32);
+      const initialTop = Math.min(window.innerHeight - 380, 84 + openCount * 28);
+
+      winEl = document.createElement('div');
+      winEl.id = winId;
+      winEl.style.left = `${Math.max(20, initialLeft)}px`;
+      winEl.style.top = `${Math.max(64, initialTop)}px`;
+      winEl.style.width = '560px';
+      winEl.style.height = '360px';
+      winEl.style.zIndex = ++topTerminalZIndex;
+      winEl.className = 'floating-terminal fixed pointer-events-auto bg-[#090d16] border border-slate-700 rounded-xl shadow-2xl flex flex-col';
+
+      winEl.addEventListener('mousedown', () => bringTerminalToFront(winEl));
+
+      const headerTitle = isHost
+        ? `Command Prompt — ${node.cliState.hostname} (${DEVICE_TEMPLATES[node.type].label})`
+        : `Console — ${node.cliState.hostname} (${DEVICE_TEMPLATES[node.type].label})`;
+
+      winEl.innerHTML = `
+        <div id="term_hdr_${nodeId}" class="px-3.5 py-2.5 border-b border-slate-800 flex justify-between items-center bg-slate-900 cursor-move shrink-0 select-none">
+          <div class="flex items-center gap-2 overflow-hidden">
+            <span class="w-2.5 h-2.5 rounded-full ${isHost ? 'bg-blue-400' : 'bg-emerald-400'} shrink-0"></span>
+            <h3 class="font-bold text-slate-100 text-xs font-mono truncate">${headerTitle}</h3>
+          </div>
+          <div class="flex items-center gap-2 shrink-0">
+            ${isHost ? `
+              <button onclick="openIpModal('${node.id}')" class="px-2 py-0.5 bg-blue-600 hover:bg-blue-500 text-white rounded text-[10px] font-semibold transition">IP Configuration</button>
+            ` : ''}
+            <button onclick="closeCliModal('${node.id}')" class="text-slate-400 hover:text-white text-sm font-bold px-1.5 rounded hover:bg-slate-800 transition" title="Close Window">✕</button>
+          </div>
+        </div>
+
+        <div id="term_scr_${nodeId}" class="flex-1 bg-[#090d16] p-3.5 font-mono text-xs text-slate-200 overflow-y-auto space-y-1 terminal-scroll cursor-text select-text"></div>
+
+        <div class="px-3.5 py-2 border-t border-slate-800 bg-slate-950 flex items-center gap-2 shrink-0">
+          <span id="term_prm_${nodeId}" class="text-xs font-mono ${isHost ? 'text-slate-200' : 'text-emerald-400'} font-bold shrink-0">${getPromptString(node)}</span>
+          <input type="text" id="term_inp_${nodeId}" autocomplete="off" spellcheck="false" class="flex-1 bg-transparent text-xs font-mono ${isHost ? 'text-white' : 'text-emerald-300'} focus:outline-none">
+          <span class="text-[9px] text-slate-600 font-mono select-none" title="Drag bottom-right corner to resize">◢</span>
+        </div>
+      `;
+
+      document.getElementById('floatingTerminalsLayer').appendChild(winEl);
+
+      const hdr = document.getElementById(`term_hdr_${nodeId}`);
+      hdr.addEventListener('mousedown', (e) => {
+        if (e.target.tagName === 'BUTTON') return;
+        draggedTermId = winId;
+        const rect = winEl.getBoundingClientRect();
+        termOffsetX = e.clientX - rect.left;
+        termOffsetY = e.clientY - rect.top;
+      });
+
+      const screen = document.getElementById(`term_scr_${nodeId}`);
+      const input = document.getElementById(`term_inp_${nodeId}`);
+
+      screen.addEventListener('click', () => {
+        if (window.getSelection().toString() === '') input.focus();
+      });
+
+      input.addEventListener('keydown', (e) => handleCliKeydown(e, node.id));
+
+      if (node.cliState.terminalLog.length === 0) {
+        if (isHost) {
+          appendTerminalLine(screen, `NetForge Workstation OS [Version 10.0.22631]`, 'text-slate-300', node);
+          appendTerminalLine(screen, `(c) NetForge Corporation. Type 'help' for network utilities.`, 'text-slate-400', node);
+          appendTerminalLine(screen, '', '', node);
+        } else {
+          appendTerminalLine(screen, `NetForge Serial Console Connected [${node.qcow2}]`, 'text-emerald-400 font-semibold', node);
+          appendTerminalLine(screen, `Type '?' or 'help' for supported commands.`, 'text-slate-400', node);
+          appendTerminalLine(screen, '', '', node);
+        }
+      } else {
+        const frag = document.createDocumentFragment();
+        node.cliState.terminalLog.forEach(entry => {
+          const div = document.createElement('div');
+          div.className = entry.cls;
+          div.textContent = entry.text;
+          frag.appendChild(div);
+        });
+        screen.appendChild(frag);
+      }
+
+      screen.scrollTop = screen.scrollHeight;
+      setTimeout(() => input.focus(), 10);
+    }
+
+    function closeCliModal(nodeId) {
+      document.getElementById(`term_win_${nodeId}`)?.remove();
+    }
+
+    function appendTerminalLine(screen, text, cls, node) {
+      const div = document.createElement('div');
+      div.className = cls || 'text-slate-200 whitespace-pre';
+      div.textContent = text;
+      screen.appendChild(div);
+      if (node) {
+        node.cliState.terminalLog.push({ text, cls: div.className });
+      }
+    }
+
+    function handleCliKeydown(e, nodeId) {
+      const node = nodes.find(n => n.id === nodeId);
+      if (!node) return;
+
+      const input = document.getElementById(`term_inp_${nodeId}`);
+      const screen = document.getElementById(`term_scr_${nodeId}`);
+      const st = node.cliState;
+      const isHost = (node.vendor === 'host');
+
+      if (e.key === 'ArrowUp') {
+        e.preventDefault();
+        if (st.history.length > 0) {
+          if (st.historyIndex < st.history.length - 1) {
+            st.historyIndex++;
+          }
+          input.value = st.history[st.history.length - 1 - st.historyIndex];
+        }
+        return;
+      }
+      if (e.key === 'ArrowDown') {
+        e.preventDefault();
+        if (st.historyIndex > 0) {
+          st.historyIndex--;
+          input.value = st.history[st.history.length - 1 - st.historyIndex];
+        } else {
+          st.historyIndex = -1;
+          input.value = '';
+        }
+        return;
+      }
+
+      if (e.key === '?' && !isHost) {
+        e.preventDefault();
+        const currentPrompt = getPromptString(node);
+        appendTerminalLine(screen, `${currentPrompt} ${input.value}?`, 'text-emerald-300 font-bold', node);
+        const helpText = getContextualHelp(node);
+        helpText.split('\n').forEach(line => appendTerminalLine(screen, line, 'text-slate-400 whitespace-pre', node));
+        screen.scrollTop = screen.scrollHeight;
+        return;
+      }
+
+      if (e.key !== 'Enter') return;
+
+      const rawCmd = input.value;
+      const cmd = rawCmd.trim();
+      input.value = '';
+      st.historyIndex = -1;
+
+      const promptBefore = getPromptString(node);
+      const echoClass = isHost ? 'text-white font-semibold whitespace-pre' : 'text-emerald-300 font-bold whitespace-pre';
+
+      appendTerminalLine(screen, `${promptBefore}${isHost ? '' : ' '}${rawCmd}`, echoClass, node);
+
+      if (cmd !== '') {
+        st.history.push(cmd);
+        const outputLines = executeVendorCommand(node, cmd, screen);
+        outputLines.forEach(line => {
+          appendTerminalLine(screen, line.text, line.cls || 'text-slate-200 whitespace-pre', node);
+        });
+      }
+
+      const prmEl = document.getElementById(`term_prm_${nodeId}`);
+      if (prmEl) prmEl.textContent = getPromptString(node);
+      screen.scrollTop = screen.scrollHeight;
+    }
+
+    function getContextualHelp(node) {
+      if (node.vendor === 'host') {
+        return [
+          'IPCONFIG            Display IPv4 network adapter configuration.',
+          'IPCONFIG /ALL       Display full TCP/IP and MAC adapter details.',
+          'IPCONFIG /RELEASE   Release the IPv4 address for the adapter.',
+          'IPCONFIG /RENEW     Renew the IPv4 address via DHCP.',
+          'PING <ip>           Send ICMP echo requests to a remote host.',
+          'TRACERT <ip>        Trace route packets take to destination.',
+          'ARP -A              Display current ARP resolution cache.',
+          'CLS                 Clear the Command Prompt screen.'
+        ].join('\n');
+      }
+      if (node.vendor === 'paloalto') {
+        return node.cliState.mode === 'pan-conf'
+          ? ['set network interface ...', 'set zone ...', 'commit', 'exit'].join('\n')
+          : ['configure', 'show config running', 'ping host <ip>'].join('\n');
+      }
+      switch (node.cliState.mode) {
+        case 'user': return ['enable', 'ping', 'show ip interface brief'].join('\n');
+        case 'priv': return ['configure terminal', 'show running-config', 'show vlan brief', 'write memory'].join('\n');
+        case 'config': return ['hostname', 'interface', 'router ospf', 'vlan', 'end', 'exit'].join('\n');
+        case 'config-if': return ['ip address', 'no shutdown', 'shutdown', 'exit'].join('\n');
+        case 'config-router': return ['network', 'exit'].join('\n');
+        case 'config-vlan': return ['name', 'exit'].join('\n');
+        default: return 'help';
+      }
+    }
+
+    function resolveCiscoInterface(node, raw) {
+      const lowerRaw = raw.toLowerCase();
+      return node.interfaces.find(i => i.toLowerCase() === lowerRaw || i.toLowerCase().startsWith(lowerRaw)) || null;
+    }
+
+    function executeVendorCommand(node, cmd, screen) {
+      const lower = cmd.toLowerCase();
+      const tokens = cmd.split(/\s+/);
+      const st = node.cliState;
+
+      if (lower === 'clear' || (node.vendor === 'host' && lower === 'cls')) {
+        st.terminalLog = [];
+        if (screen) screen.innerHTML = '';
+        return [];
+      }
+
+      if (lower === 'help') {
+        return getContextualHelp(node).split('\n').map(t => ({ text: t, cls: 'text-slate-400 whitespace-pre' }));
+      }
+
+      // 1. END DEVICES (PC / LAPTOP COMMAND PROMPT)
+      if (node.vendor === 'host') {
+        if (lower === 'ipconfig') {
+          return [
+            { text: '' },
+            { text: `Windows IP Configuration` },
+            { text: '' },
+            { text: `Ethernet adapter Ethernet0:` },
+            { text: '' },
+            { text: `   Connection-specific DNS Suffix  . : netforge.local` },
+            { text: `   IPv4 Address. . . . . . . . . . . : ${node.ipConfig.ip}` },
+            { text: `   Subnet Mask . . . . . . . . . . . : ${node.ipConfig.subnet}` },
+            { text: `   Default Gateway . . . . . . . . . : ${node.ipConfig.gateway}` },
+            { text: '' }
+          ];
+        }
+        if (lower === 'ipconfig /all') {
+          const macSuffix = node.id.slice(-4).toUpperCase().match(/.{1,2}/g).join('-');
+          return [
+            { text: '' },
+            { text: `Windows IP Configuration` },
+            { text: '' },
+            { text: `   Host Name . . . . . . . . . . . . : ${st.hostname}` },
+            { text: `   Node Type . . . . . . . . . . . . : Hybrid` },
+            { text: `   IP Routing Enabled. . . . . . . . : No` },
+            { text: '' },
+            { text: `Ethernet adapter Ethernet0:` },
+            { text: '' },
+            { text: `   Description . . . . . . . . . . . : Intel(R) PRO/1000 MT Network Connection` },
+            { text: `   Physical Address. . . . . . . . . : 52-54-00-12-${macSuffix}` },
+            { text: `   DHCP Enabled. . . . . . . . . . . : ${node.ipConfig.mode === 'dhcp' ? 'Yes' : 'No'}` },
+            { text: `   IPv4 Address. . . . . . . . . . . : ${node.ipConfig.ip}` },
+            { text: `   Subnet Mask . . . . . . . . . . . : ${node.ipConfig.subnet}` },
+            { text: `   Default Gateway . . . . . . . . . : ${node.ipConfig.gateway}` },
+            { text: `   DNS Servers . . . . . . . . . . . : ${node.ipConfig.dns}` },
+            { text: '' }
+          ];
+        }
+        if (lower === 'ipconfig /release') {
+          node.ipConfig.ip = '0.0.0.0';
+          node.ipConfig.subnet = '0.0.0.0';
+          node.ipConfig.gateway = '';
+          renderNodeDOM(node);
+          return [{ text: 'IPv4 Address released for adapter Ethernet0.', cls: 'text-slate-300' }];
+        }
+        if (lower === 'ipconfig /renew') {
+          const hostOctet = 10 + (nodes.indexOf(node) % 200);
+          node.ipConfig.mode = 'dhcp';
+          node.ipConfig.ip = `192.168.1.${hostOctet}`;
+          node.ipConfig.subnet = '255.255.255.0';
+          node.ipConfig.gateway = '192.168.1.1';
+          renderNodeDOM(node);
+          return [
+            { text: `Ethernet adapter Ethernet0:` },
+            { text: `   IPv4 Address. . . . . . . . . . . : ${node.ipConfig.ip}` },
+            { text: `   Subnet Mask . . . . . . . . . . . : ${node.ipConfig.subnet}` },
+            { text: `   Default Gateway . . . . . . . . . : ${node.ipConfig.gateway}` }
+          ];
+        }
+        if (lower === 'arp -a') {
+          const gw = node.ipConfig.gateway || '192.168.1.1';
+          return [
+            { text: `Interface: ${node.ipConfig.ip} --- 0x4` },
+            { text: `  Internet Address      Physical Address      Type` },
+            { text: `  ${gw.padEnd(22, ' ')}52-54-00-aa-bb-01     dynamic` }
+          ];
+        }
+        if (lower.startsWith('tracert ')) {
+          const target = tokens[1] || '8.8.8.8';
+          const gw = node.ipConfig.gateway || '192.168.1.1';
+          return [
+            { text: `Tracing route to ${target} over a maximum of 30 hops:` },
+            { text: `  1    <1 ms    <1 ms    <1 ms  ${gw}` },
+            { text: `  2     2 ms     1 ms     2 ms  ${target}` },
+            { text: `Trace complete.` }
+          ];
+        }
+        if (lower.startsWith('ping ')) {
+          const target = tokens[1];
+          if (!target) {
+            return [{ text: 'Usage: ping <ip_address>', cls: 'text-rose-400' }];
+          }
+          const isReachable =
+            target === node.ipConfig.ip ||
+            target === node.ipConfig.gateway ||
+            target === '127.0.0.1' ||
+            nodes.some(n =>
+              (n.vendor === 'host' && n.ipConfig.ip === target) ||
+              Object.values(n.cliState.ifaceConfigs || {}).some(ic => ic.ip === target && ic.status === 'up')
+            );
+
+          if (isReachable) {
+            return [
+              { text: `Pinging ${target} with 32 bytes of data:` },
+              { text: `Reply from ${target}: bytes=32 time=1ms TTL=64`, cls: 'text-emerald-400' },
+              { text: `Reply from ${target}: bytes=32 time<1ms TTL=64`, cls: 'text-emerald-400' },
+              { text: `Reply from ${target}: bytes=32 time=1ms TTL=64`, cls: 'text-emerald-400' },
+              { text: `Ping statistics for ${target}: Packets: Sent = 3, Received = 3, Lost = 0 (0% loss)` }
+            ];
+          } else {
+            return [
+              { text: `Pinging ${target} with 32 bytes of data:` },
+              { text: `Request timed out.`, cls: 'text-amber-400' },
+              { text: `Request timed out.`, cls: 'text-amber-400' },
+              { text: `Ping statistics for ${target}: Packets: Sent = 2, Received = 0, Lost = 2 (100% loss)` }
+            ];
+          }
+        }
+        return [{ text: `'${tokens[0]}' is not recognized as an internal or external command,\noperable program or batch file.`, cls: 'text-rose-400 whitespace-pre' }];
+      }
+
+      // 2. PALO ALTO PAN-OS
+      if (node.vendor === 'paloalto') {
+        if (st.mode === 'pan-op') {
+          if (lower === 'configure' || lower === 'conf') {
+            st.mode = 'pan-conf';
+            return [{ text: 'Entering configuration mode', cls: 'text-slate-400' }];
+          }
+          if (lower === 'show config running') {
+            const lines = ['config {', '  devices {', '    localhost.localdomain {', '      network {', '        interface {', '          ethernet {'];
+            for (const [iface, cfg] of Object.entries(st.ifaceConfigs)) {
+              if (iface.startsWith('ethernet') && cfg.cidr) {
+                lines.push(`            ${iface} { layer3 { ip { ${cfg.cidr}; } } }`);
+              }
+            }
+            lines.push('          }', '        }', '      }', '    }', '  }', '}');
+            return lines.map(t => ({ text: t, cls: 'text-slate-300 whitespace-pre' }));
+          }
+          if (lower.startsWith('ping host ')) {
+            const target = tokens[2] || '8.8.8.8';
+            return [
+              { text: `PING ${target} (${target}) 56(84) bytes of data.` },
+              { text: `64 bytes from ${target}: icmp_seq=1 ttl=63 time=0.84 ms` },
+              { text: `64 bytes from ${target}: icmp_seq=2 ttl=63 time=0.79 ms` }
+            ];
+          }
+          return [{ text: `Unknown command: ${cmd}`, cls: 'text-rose-400' }];
+        } else {
+          if (lower === 'exit') {
+            st.mode = 'pan-op';
+            return [{ text: 'Exiting configuration mode', cls: 'text-slate-400' }];
+          }
+          if (lower === 'commit') {
+            return [
+              { text: 'Commit job 14 is in progress. Use Ctrl+C to return to command prompt', cls: 'text-slate-400' },
+              { text: '........100%', cls: 'text-emerald-400' },
+              { text: 'Configuration committed successfully', cls: 'text-emerald-400 font-semibold' }
+            ];
+          }
+          const ipMatch = cmd.match(/^set\s+network\s+interface\s+ethernet\s+(\S+)\s+layer3\s+ip\s+(\S+)$/i);
+          if (ipMatch) {
+            const iface = ipMatch[1];
+            const cidr = ipMatch[2];
+            if (!st.ifaceConfigs[iface]) {
+              return [{ text: `Invalid interface: ${iface}`, cls: 'text-rose-400' }];
+            }
+            st.ifaceConfigs[iface].cidr = cidr;
+            st.ifaceConfigs[iface].ip = cidr.split('/')[0];
+            st.ifaceConfigs[iface].status = 'up';
+            st.ifaceConfigs[iface].protocol = 'up';
+            return [];
+          }
+          const zoneMatch = cmd.match(/^set\s+zone\s+(\S+)\s+network\s+layer3\s+(\S+)$/i);
+          if (zoneMatch) {
+            const zone = zoneMatch[1];
+            const iface = zoneMatch[2];
+            if (!st.ifaceConfigs[iface]) {
+              return [{ text: `Invalid interface: ${iface}`, cls: 'text-rose-400' }];
+            }
+            st.ifaceConfigs[iface].zone = zone;
+            st.panZones[zone] = iface;
+            return [];
+          }
+          return [{ text: `Invalid syntax: ${cmd}`, cls: 'text-rose-400' }];
+        }
+      }
+
+      // 3. CISCO IOS / IOS-XE / NX-OS STATE MACHINE
+      if (st.mode === 'user') {
+        if (lower === 'enable' || lower === 'en') {
+          st.mode = 'priv';
+          return [];
+        }
+        if (lower.startsWith('sh') && lower.includes('ip int')) {
+          return formatCiscoIpIntBrief(node);
+        }
+        if (lower.startsWith('ping ')) {
+          return runCiscoPing(tokens[1]);
+        }
+        return [{ text: `% Invalid input detected at '^' marker.`, cls: 'text-rose-400' }];
+      }
+
+      if (st.mode === 'priv') {
+        if (lower === 'disable') {
+          st.mode = 'user';
+          return [];
+        }
+        if (lower === 'configure terminal' || lower === 'conf t' || lower === 'config t') {
+          st.mode = 'config';
+          return [{ text: 'Enter configuration commands, one per line.  End with CNTL/Z.', cls: 'text-slate-400' }];
+        }
+        if (lower === 'write memory' || lower === 'wr' || lower === 'copy running-config startup-config') {
+          return [
+            { text: 'Building configuration...', cls: 'text-slate-400' },
+            { text: '[OK]', cls: 'text-emerald-400 font-semibold' }
+          ];
+        }
+        if (lower.startsWith('sh') && lower.includes('ip int')) {
+          return formatCiscoIpIntBrief(node);
+        }
+        if (lower.startsWith('sh') && lower.includes('run')) {
+          return formatCiscoRunningConfig(node);
+        }
+        if (lower.startsWith('sh') && lower.includes('vlan')) {
+          return formatCiscoVlanBrief(node);
+        }
+        if (lower.startsWith('ping ')) {
+          return runCiscoPing(tokens[1]);
+        }
+        return [{ text: `% Invalid input detected at '^' marker.`, cls: 'text-rose-400' }];
+      }
+
+      if (lower === 'end') {
+        st.mode = 'priv';
+        st.activeIface = null;
+        st.activeOspf = null;
+        st.activeVlan = null;
+        return [];
+      }
+
+      if (lower === 'exit') {
+        if (st.mode === 'config') {
+          st.mode = 'priv';
+        } else {
+          st.mode = 'config';
+          st.activeIface = null;
+          st.activeOspf = null;
+          st.activeVlan = null;
+        }
+        return [];
+      }
+
+      if (st.mode === 'config') {
+        if (lower.startsWith('hostname ')) {
+          const newHost = tokens[1];
+          if (!newHost) return [{ text: '% Incomplete command.', cls: 'text-rose-400' }];
+          st.hostname = newHost;
+          node.name = newHost;
+          renderNodeDOM(node);
+          renderLinks();
+          return [];
+        }
+        if (lower.startsWith('interface ') || lower.startsWith('int ')) {
+          const rawIface = tokens.slice(1).join('');
+          const matchedIface = resolveCiscoInterface(node, rawIface);
+          if (!matchedIface) {
+            return [{ text: `% Invalid interface type and number: ${rawIface}`, cls: 'text-rose-400' }];
+          }
+          st.activeIface = matchedIface;
+          st.mode = 'config-if';
+          return [];
+        }
+        if (lower.startsWith('router ospf ')) {
+          const pid = tokens[2];
+          if (!pid || isNaN(pid)) return [{ text: '% Incomplete command.', cls: 'text-rose-400' }];
+          st.ospf.processId = pid;
+          st.activeOspf = pid;
+          st.mode = 'config-router';
+          return [];
+        }
+        if (lower.startsWith('vlan ')) {
+          const vid = tokens[1];
+          if (!vid || isNaN(vid)) return [{ text: '% Incomplete command.', cls: 'text-rose-400' }];
+          if (!st.vlans[vid]) {
+            st.vlans[vid] = { name: `VLAN${vid.padStart(4, '0')}`, status: 'active' };
+          }
+          st.activeVlan = vid;
+          st.mode = 'config-vlan';
+          return [];
+        }
+        return [{ text: `% Invalid input detected at '^' marker.`, cls: 'text-rose-400' }];
+      }
+
+      if (st.mode === 'config-if') {
+        const ifaceObj = st.ifaceConfigs[st.activeIface];
+        if (lower.startsWith('ip address ') || lower.startsWith('ip add ')) {
+          const ip = tokens[2];
+          const mask = tokens[3];
+          if (!ip || !mask) return [{ text: '% Incomplete command.', cls: 'text-rose-400' }];
+          ifaceObj.ip = ip;
+          ifaceObj.mask = mask;
+          return [];
+        }
+        if (lower === 'no shutdown' || lower === 'no shut') {
+          ifaceObj.status = 'up';
+          ifaceObj.protocol = 'up';
+          return [
+            { text: `%LINK-3-UPDOWN: Interface ${st.activeIface}, changed state to up`, cls: 'text-amber-300' },
+            { text: `%LINEPROTO-5-UPDOWN: Line protocol on Interface ${st.activeIface}, changed state to up`, cls: 'text-amber-300' }
+          ];
+        }
+        if (lower === 'shutdown' || lower === 'shut') {
+          ifaceObj.status = 'administratively down';
+          ifaceObj.protocol = 'down';
+          return [
+            { text: `%LINK-5-CHANGED: Interface ${st.activeIface}, changed state to administratively down`, cls: 'text-amber-300' }
+          ];
+        }
+        return [{ text: `% Invalid input detected at '^' marker.`, cls: 'text-rose-400' }];
+      }
+
+      if (st.mode === 'config-router') {
+        if (lower.startsWith('network ')) {
+          if (tokens.length < 5 || tokens[3].toLowerCase() !== 'area') {
+            return [{ text: '% Incomplete command. Usage: network <ip> <wildcard> area <id>', cls: 'text-rose-400' }];
+          }
+          const entry = `network ${tokens[1]} ${tokens[2]} area ${tokens[4]}`;
+          if (!st.ospf.networks.includes(entry)) {
+            st.ospf.networks.push(entry);
+          }
+          return [];
+        }
+        return [{ text: `% Invalid input detected at '^' marker.`, cls: 'text-rose-400' }];
+      }
+
+      if (st.mode === 'config-vlan') {
+        if (lower.startsWith('name ')) {
+          const vname = tokens[1];
+          if (!vname) return [{ text: '% Incomplete command.', cls: 'text-rose-400' }];
+          st.vlans[st.activeVlan].name = vname;
+          return [];
+        }
+        return [{ text: `% Invalid input detected at '^' marker.`, cls: 'text-rose-400' }];
+      }
+
+      return [{ text: `% Invalid input detected at '^' marker.`, cls: 'text-rose-400' }];
+    }
+
+    function formatCiscoIpIntBrief(node) {
+      const header = 'Interface              IP-Address      OK? Method Status                Protocol';
+      const lines = [{ text: header, cls: 'text-slate-300 font-semibold whitespace-pre' }];
+      node.interfaces.forEach(iface => {
+        const cfg = node.cliState.ifaceConfigs[iface];
+        const col1 = iface.padEnd(23, ' ');
+        const col2 = cfg.ip.padEnd(16, ' ');
+        const col3 = 'YES '.padEnd(4, ' ');
+        const col4 = (cfg.ip === 'unassigned' ? 'unset' : 'manual').padEnd(7, ' ');
+        const col5 = cfg.status.padEnd(22, ' ');
+        const col6 = cfg.protocol;
+        lines.push({ text: `${col1}${col2}${col3}${col4}${col5}${col6}`, cls: 'text-slate-200 whitespace-pre' });
+      });
+      return lines;
+    }
+
+    function formatCiscoRunningConfig(node) {
+      const st = node.cliState;
+      const lines = [
+        'Building configuration...',
+        '!',
+        `hostname ${st.hostname}`,
+        '!'
+      ];
+      node.interfaces.forEach(iface => {
+        const cfg = st.ifaceConfigs[iface];
+        lines.push(`interface ${iface}`);
+        if (cfg.ip !== 'unassigned') {
+          lines.push(` ip address ${cfg.ip} ${cfg.mask}`);
+        } else {
+          lines.push(' no ip address');
+        }
+        if (cfg.status !== 'up') {
+          lines.push(' shutdown');
+        }
+        lines.push('!');
+      });
+      if (st.ospf.processId) {
+        lines.push(`router ospf ${st.ospf.processId}`);
+        st.ospf.networks.forEach(net => lines.push(` ${net}`));
+        lines.push('!');
+      }
+      lines.push('end');
+      return lines.map(t => ({ text: t, cls: 'text-slate-300 whitespace-pre' }));
+    }
+
+    function formatCiscoVlanBrief(node) {
+      const lines = [
+        { text: 'VLAN Name                             Status    Ports', cls: 'text-slate-300 font-semibold whitespace-pre' },
+        { text: '---- -------------------------------- --------- -------------------------------', cls: 'text-slate-400 whitespace-pre' }
+      ];
+      for (const [vid, vinfo] of Object.entries(node.cliState.vlans)) {
+        const c1 = vid.padEnd(5, ' ');
+        const c2 = vinfo.name.padEnd(33, ' ');
+        const c3 = vinfo.status.padEnd(10, ' ');
+        lines.push({ text: `${c1}${c2}${c3}`, cls: 'text-slate-200 whitespace-pre' });
+      }
+      return lines;
+    }
+
+    function runCiscoPing(target) {
+      const dest = target || '127.0.0.1';
+      return [
+        { text: `Type escape sequence to abort.` },
+        { text: `Sending 5, 100-byte ICMP Echos to ${dest}, timeout is 2 seconds:` },
+        { text: `!!!!!`, cls: 'text-emerald-400 font-bold' },
+        { text: `Success rate is 100 percent (5/5), round-trip min/avg/max = 1/1/2 ms` }
+      ];
+    }
+
+    // Export & Import JSON Topology
+    function exportTopologyJSON() {
+      const exportData = {
+        app: 'NetForge Topology Studio',
+        version: '4.2',
+        timestamp: new Date().toISOString(),
+        topology: {
+          nodes: nodes,
+          links: links
+        }
+      };
+
+      const dataStr = 'data:text/json;charset=utf-8,' + encodeURIComponent(JSON.stringify(exportData, null, 2));
+      const a = document.createElement('a');
+      a.setAttribute('href', dataStr);
+      a.setAttribute('download', 'topology.json');
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      showToast('Exported topology.json');
+    }
+
+    function importTopologyJSON(e) {
+      const file = e.target.files[0];
+      if (!file) return;
+
+      const reader = new FileReader();
+      reader.onload = function(evt) {
+        try {
+          const parsed = JSON.parse(evt.target.result);
+          if (parsed.topology && Array.isArray(parsed.topology.nodes)) {
+            nodes = [];
+            links = [];
+            document.getElementById('nodesContainer').innerHTML = '';
+            document.getElementById('floatingTerminalsLayer').innerHTML = '';
+
+            parsed.topology.nodes.forEach(n => {
+              if (!n.cliState) {
+                const ifaceConfigs = {};
+                (n.interfaces || []).forEach(iface => {
+                  ifaceConfigs[iface] = { ip: 'unassigned', mask: '', cidr: '', status: 'administratively down', protocol: 'down', zone: '' };
+                });
+                n.cliState = {
+                  mode: n.vendor === 'paloalto' ? 'pan-op' : 'user',
+                  hostname: n.name,
+                  activeIface: null,
+                  activeOspf: null,
+                  activeVlan: null,
+                  ifaceConfigs: ifaceConfigs,
+                  ospf: { processId: null, networks: [] },
+                  vlans: { '1': { name: 'default', status: 'active' } },
+                  panZones: {},
+                  history: [],
+                  historyIndex: -1,
+                  terminalLog: []
+                };
+              }
+              nodes.push(n);
+              renderNodeDOM(n);
+            });
+
+            if (Array.isArray(parsed.topology.links)) {
+              links = parsed.topology.links;
+            }
+
+            renderLinks();
+            updateCounts();
+            showToast('Topology imported successfully');
+          } else {
+            showToast('Invalid topology JSON structure');
+          }
+        } catch (err) {
+          showToast('Error reading JSON file');
+        }
+      };
+      reader.readAsText(file);
+      e.target.value = '';
+    }
+  </script>
+</body>
+</html>
