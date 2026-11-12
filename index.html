@@ -26,12 +26,12 @@
       -webkit-user-select: none;
     }
     .canvas-bg {
-      background-color: #f8fafc;
-      background-image: radial-gradient(#cbd5e1 1.5px, transparent 1.5px);
+      background-color: #ffffff;
+      background-image: radial-gradient(#cbd5e1 1.35px, transparent 1.35px);
       background-size: 24px 24px;
     }
     .node-card {
-      transition: box-shadow 0.15s ease;
+      transition: box-shadow 0.15s ease, border-color 0.15s ease;
     }
     .custom-scrollbar::-webkit-scrollbar {
       width: 6px;
@@ -57,14 +57,21 @@
     .floating-terminal {
       resize: both;
       overflow: hidden;
-      min-width: 440px;
-      min-height: 280px;
-      max-width: 92vw;
-      max-height: 85vh;
+      min-width: 460px;
+      min-height: 290px;
+      max-width: 94vw;
+      max-height: 88vh;
+    }
+    .link-line {
+      cursor: pointer;
+      transition: stroke-width 0.15s ease;
+    }
+    .link-line:hover {
+      stroke-width: 3.5;
     }
   </style>
 </head>
-<body class="bg-slate-100 text-slate-800 h-screen w-screen overflow-hidden flex flex-col font-sans">
+<body class="bg-slate-50 text-slate-800 h-screen w-screen overflow-hidden flex flex-col font-sans">
 
   <!-- TOP NAVBAR -->
   <header class="h-14 bg-white border-b border-slate-200 px-5 flex items-center justify-between z-20 shrink-0 shadow-sm">
@@ -75,9 +82,9 @@
       <div>
         <div class="flex items-center gap-2">
           <h1 class="font-bold text-slate-800 text-sm leading-tight">NetForge Topology Studio</h1>
-          <span class="px-2 py-0.5 text-[10px] font-bold bg-blue-50 text-blue-600 border border-blue-200 rounded-full">Enterprise</span>
+          <span class="px-2 py-0.5 text-[10px] font-bold bg-blue-50 text-blue-600 border border-blue-200 rounded-full">Enterprise v5.0</span>
         </div>
-        <p class="text-[11px] text-slate-500">Executive Network Orchestration & Zero-Lag CLI</p>
+        <p class="text-[11px] text-slate-500">Executive Network Orchestration & Full Multi-Vendor CLI</p>
       </div>
     </div>
 
@@ -89,6 +96,10 @@
       </button>
 
       <div class="h-5 w-[1px] bg-slate-200 mx-1"></div>
+
+      <button onclick="loadSampleLab()" class="px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-300 transition shadow-sm" title="Load Pre-Wired Sample Topology">
+        Sample Lab
+      </button>
 
       <button onclick="exportTopologyJSON()" class="px-3.5 py-1.5 rounded-lg text-xs font-semibold bg-blue-600 hover:bg-blue-500 text-white shadow-sm transition flex items-center gap-1.5">
         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
@@ -116,138 +127,27 @@
         <p class="text-[11px] text-slate-500 mt-0.5">Click or drag devices onto workspace</p>
       </div>
 
-      <div class="flex-1 overflow-y-auto p-3 space-y-4 custom-scrollbar">
-        <!-- CATEGORY: CISCO ROUTERS -->
-        <div>
-          <span class="text-[10px] font-bold text-blue-600 uppercase tracking-wider block mb-2">Cisco Routers</span>
-          <div class="space-y-2">
-            <div onclick="addDeviceFromTemplate('cisco_router')" draggable="true" ondragstart="handleDragStart(event, 'cisco_router')" class="node-card p-2.5 rounded-lg bg-white hover:bg-slate-50 border border-slate-200 cursor-pointer flex items-center gap-3 shadow-sm">
-              <div class="w-8 h-8 rounded-md bg-blue-50 border border-blue-200 flex items-center justify-center text-blue-600 shrink-0">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9"></path></svg>
-              </div>
-              <div class="truncate">
-                <div class="text-xs font-semibold text-slate-800 truncate">Cisco IOSv Router</div>
-                <div class="text-[10px] text-slate-400 truncate">cisco_iosv-15.9.qcow2</div>
-              </div>
-            </div>
+      <div id="paletteContainer" class="flex-1 overflow-y-auto p-3 space-y-4 custom-scrollbar"></div>
 
-            <div onclick="addDeviceFromTemplate('csr1000v')" draggable="true" ondragstart="handleDragStart(event, 'csr1000v')" class="node-card p-2.5 rounded-lg bg-white hover:bg-slate-50 border border-slate-200 cursor-pointer flex items-center gap-3 shadow-sm">
-              <div class="w-8 h-8 rounded-md bg-blue-50 border border-blue-200 flex items-center justify-center text-blue-600 shrink-0">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 3v2m6-2v2M9 19v2m6-2v2M5 9H3m2 6H3m18-6h-2m2 6h-2M7 19h10a2 2 0 002-2V7a2 2 0 00-2-2H7a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>
-              </div>
-              <div class="truncate">
-                <div class="text-xs font-semibold text-slate-800 truncate">Cisco CSR1000v</div>
-                <div class="text-[10px] text-slate-400 truncate">csr1000v-16.12.qcow2</div>
-              </div>
-            </div>
-
-            <div onclick="addDeviceFromTemplate('xrv')" draggable="true" ondragstart="handleDragStart(event, 'xrv')" class="node-card p-2.5 rounded-lg bg-white hover:bg-slate-50 border border-slate-200 cursor-pointer flex items-center gap-3 shadow-sm">
-              <div class="w-8 h-8 rounded-md bg-blue-50 border border-blue-200 flex items-center justify-center text-blue-600 shrink-0">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
-              </div>
-              <div class="truncate">
-                <div class="text-xs font-semibold text-slate-800 truncate">Cisco XRv 9000</div>
-                <div class="text-[10px] text-slate-400 truncate">xrv9k-7.2.qcow2</div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- CATEGORY: CISCO SWITCHES -->
-        <div>
-          <span class="text-[10px] font-bold text-cyan-600 uppercase tracking-wider block mb-2">Cisco L2/L3 Switches</span>
-          <div class="space-y-2">
-            <div onclick="addDeviceFromTemplate('cisco_switch')" draggable="true" ondragstart="handleDragStart(event, 'cisco_switch')" class="node-card p-2.5 rounded-lg bg-white hover:bg-slate-50 border border-slate-200 cursor-pointer flex items-center gap-3 shadow-sm">
-              <div class="w-8 h-8 rounded-md bg-cyan-50 border border-cyan-200 flex items-center justify-center text-cyan-600 shrink-0">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4m0 5c0 2.21-3.582 4-8 4s-8-1.79-8-4"></path></svg>
-              </div>
-              <div class="truncate">
-                <div class="text-xs font-semibold text-slate-800 truncate">Cisco IOSvL2 Switch</div>
-                <div class="text-[10px] text-slate-400 truncate">cisco_iosvl2-15.2.qcow2</div>
-              </div>
-            </div>
-
-            <div onclick="addDeviceFromTemplate('cat9kv')" draggable="true" ondragstart="handleDragStart(event, 'cat9kv')" class="node-card p-2.5 rounded-lg bg-white hover:bg-slate-50 border border-slate-200 cursor-pointer flex items-center gap-3 shadow-sm">
-              <div class="w-8 h-8 rounded-md bg-cyan-50 border border-cyan-200 flex items-center justify-center text-cyan-600 shrink-0">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path></svg>
-              </div>
-              <div class="truncate">
-                <div class="text-xs font-semibold text-slate-800 truncate">Catalyst 9000v L3</div>
-                <div class="text-[10px] text-slate-400 truncate">cat9kv-17.6.qcow2</div>
-              </div>
-            </div>
-
-            <div onclick="addDeviceFromTemplate('nxosv')" draggable="true" ondragstart="handleDragStart(event, 'nxosv')" class="node-card p-2.5 rounded-lg bg-white hover:bg-slate-50 border border-slate-200 cursor-pointer flex items-center gap-3 shadow-sm">
-              <div class="w-8 h-8 rounded-md bg-cyan-50 border border-cyan-200 flex items-center justify-center text-cyan-600 shrink-0">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 9l3 3-3 3m5 0h3M5 20h14a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
-              </div>
-              <div class="truncate">
-                <div class="text-xs font-semibold text-slate-800 truncate">Nexus 9000v NX-OS</div>
-                <div class="text-[10px] text-slate-400 truncate">nxosv9k-9.3.qcow2</div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- CATEGORY: FIREWALLS -->
-        <div>
-          <span class="text-[10px] font-bold text-amber-600 uppercase tracking-wider block mb-2">Firewalls</span>
-          <div class="space-y-2">
-            <div onclick="addDeviceFromTemplate('paloalto_fw')" draggable="true" ondragstart="handleDragStart(event, 'paloalto_fw')" class="node-card p-2.5 rounded-lg bg-white hover:bg-slate-50 border border-slate-200 cursor-pointer flex items-center gap-3 shadow-sm">
-              <div class="w-8 h-8 rounded-md bg-amber-50 border border-amber-200 flex items-center justify-center text-amber-600 shrink-0">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path></svg>
-              </div>
-              <div class="truncate">
-                <div class="text-xs font-semibold text-slate-800 truncate">Palo Alto PAN-OS</div>
-                <div class="text-[10px] text-slate-400 truncate">PA-VM-10.1.0.qcow2</div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- CATEGORY: END DEVICES -->
-        <div>
-          <span class="text-[10px] font-bold text-emerald-600 uppercase tracking-wider block mb-2">End Devices</span>
-          <div class="space-y-2">
-            <div onclick="addDeviceFromTemplate('pc')" draggable="true" ondragstart="handleDragStart(event, 'pc')" class="node-card p-2.5 rounded-lg bg-white hover:bg-slate-50 border border-slate-200 cursor-pointer flex items-center gap-3 shadow-sm">
-              <div class="w-8 h-8 rounded-md bg-emerald-50 border border-emerald-200 flex items-center justify-center text-emerald-600 shrink-0">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>
-              </div>
-              <div class="truncate">
-                <div class="text-xs font-semibold text-slate-800 truncate">Workstation PC</div>
-                <div class="text-[10px] text-slate-400 truncate">vpcs-micro.qcow2</div>
-              </div>
-            </div>
-
-            <div onclick="addDeviceFromTemplate('laptop')" draggable="true" ondragstart="handleDragStart(event, 'laptop')" class="node-card p-2.5 rounded-lg bg-white hover:bg-slate-50 border border-slate-200 cursor-pointer flex items-center gap-3 shadow-sm">
-              <div class="w-8 h-8 rounded-md bg-emerald-50 border border-emerald-200 flex items-center justify-center text-emerald-600 shrink-0">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z"></path></svg>
-              </div>
-              <div class="truncate">
-                <div class="text-xs font-semibold text-slate-800 truncate">Admin Laptop</div>
-                <div class="text-[10px] text-slate-400 truncate">vpcs-micro.qcow2</div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div class="p-3.5 border-t border-slate-200 bg-slate-50">
+      <div class="p-3.5 border-t border-slate-200 bg-slate-50 space-y-1">
         <div class="text-xs text-slate-600 flex items-center justify-between">
           <span>Active Nodes:</span>
           <span id="nodeCount" class="font-bold text-blue-600">0</span>
         </div>
-        <div class="text-xs text-slate-600 flex items-center justify-between mt-1">
+        <div class="text-xs text-slate-600 flex items-center justify-between">
           <span>Cable Links:</span>
           <span id="linkCount" class="font-bold text-blue-600">0</span>
+        </div>
+        <div class="text-[10px] text-slate-400 pt-1 border-t border-slate-200/80">
+          Tip: Click any cable line to inspect or disconnect.
         </div>
       </div>
     </aside>
 
     <!-- MAIN CANVAS WORKSPACE -->
     <main id="canvasContainer" ondragover="handleDragOver(event)" ondrop="handleDrop(event)" class="flex-1 canvas-bg relative overflow-hidden">
-      <svg id="svgLayer" class="absolute inset-0 w-full h-full pointer-events-none z-0"></svg>
-      <div id="nodesContainer" class="absolute inset-0 z-10"></div>
+      <svg id="svgLayer" class="absolute inset-0 w-full h-full z-0"></svg>
+      <div id="nodesContainer" class="absolute inset-0 z-10 pointer-events-none"></div>
 
       <!-- Cable Wiring Banner Hint -->
       <div id="linkBanner" class="hidden absolute top-4 left-1/2 -translate-x-1/2 bg-white border border-blue-200 text-slate-800 px-4 py-2 rounded-full text-xs font-semibold shadow-lg z-20 flex items-center gap-2">
@@ -257,7 +157,7 @@
       </div>
 
       <!-- Toast Notification -->
-      <div id="toastNotification" class="hidden absolute bottom-5 right-5 bg-slate-800 text-white px-4 py-2.5 rounded-lg text-xs font-medium shadow-xl z-30 transition-opacity">
+      <div id="toastNotification" class="hidden absolute bottom-5 right-5 bg-slate-800 text-white px-4 py-2.5 rounded-lg text-xs font-medium shadow-xl z-50 transition-opacity">
         <span id="toastMessage">Action completed</span>
       </div>
     </main>
@@ -301,6 +201,21 @@
     </div>
   </div>
 
+  <!-- MODAL: CABLE LINK DETAILS & DISCONNECT -->
+  <div id="linkDetailModal" class="hidden fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+    <div class="bg-white border border-slate-200 rounded-xl w-full max-w-sm shadow-2xl overflow-hidden p-5 space-y-4">
+      <div class="flex justify-between items-center">
+        <h3 class="font-bold text-slate-800 text-sm">Cable Connection Details</h3>
+        <button onclick="closeLinkDetailModal()" class="text-slate-400 hover:text-slate-600 font-bold">✕</button>
+      </div>
+      <div id="linkDetailBody" class="bg-slate-50 border border-slate-200 rounded-lg p-3 text-xs font-mono text-slate-700 space-y-1"></div>
+      <div class="flex justify-end gap-2 pt-1">
+        <button onclick="closeLinkDetailModal()" class="px-3.5 py-2 rounded-lg text-xs font-semibold text-slate-600 hover:bg-slate-100 transition">Close</button>
+        <button onclick="deleteSelectedLink()" class="px-3.5 py-2 rounded-lg text-xs font-semibold bg-rose-600 hover:bg-rose-500 text-white transition shadow-sm">Disconnect Cable</button>
+      </div>
+    </div>
+  </div>
+
   <!-- MODAL: IP CONFIGURATION (FOR PC & LAPTOP) -->
   <div id="ipModal" class="hidden fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-50 flex items-center justify-center p-4">
     <div class="bg-white border border-slate-200 rounded-xl w-full max-w-md shadow-2xl overflow-hidden">
@@ -324,7 +239,7 @@
         <div id="staticIpFields" class="space-y-3">
           <div>
             <label class="block text-xs font-medium text-slate-600 mb-1">IPv4 Address</label>
-            <input type="text" id="inputIpAddress" placeholder="192.168.1.10" class="w-full bg-white border border-slate-300 rounded-md px-3 py-2 text-xs font-mono text-slate-800 focus:outline-none focus:border-blue-500">
+            <input type="text" id="inputIpAddress" placeholder="192.168.10.10" class="w-full bg-white border border-slate-300 rounded-md px-3 py-2 text-xs font-mono text-slate-800 focus:outline-none focus:border-blue-500">
           </div>
           <div>
             <label class="block text-xs font-medium text-slate-600 mb-1">Subnet Mask</label>
@@ -332,7 +247,7 @@
           </div>
           <div>
             <label class="block text-xs font-medium text-slate-600 mb-1">Default Gateway</label>
-            <input type="text" id="inputGateway" placeholder="192.168.1.1" class="w-full bg-white border border-slate-300 rounded-md px-3 py-2 text-xs font-mono text-slate-800 focus:outline-none focus:border-blue-500">
+            <input type="text" id="inputGateway" placeholder="192.168.10.1" class="w-full bg-white border border-slate-300 rounded-md px-3 py-2 text-xs font-mono text-slate-800 focus:outline-none focus:border-blue-500">
           </div>
           <div>
             <label class="block text-xs font-medium text-slate-600 mb-1">DNS Server</label>
@@ -364,12 +279,15 @@
   </div>
 
   <script>
-    // Application State
+    // =========================================================================
+    // 1. GLOBAL APPLICATION STATE
+    // =========================================================================
     let nodes = [];
     let links = [];
     let linkModeActive = false;
     let linkStartNodeId = null;
     let pendingTargetNodeId = null;
+    let selectedLinkId = null;
 
     let activeIpNodeId = null;
     let ipConfigMode = 'static';
@@ -383,111 +301,204 @@
     let termOffsetX = 0;
     let termOffsetY = 0;
 
-    // Device Templates Catalog with Professional SVG Icons
+    // =========================================================================
+    // 2. ISOMETRIC 3D-STYLED VECTOR SVG ICONS & DEVICE TEMPLATES
+    // =========================================================================
+    const HARDWARE_SVGS = {
+      cisco_router: `
+        <svg viewBox="0 0 64 48" class="w-10 h-8 drop-shadow-sm">
+          <defs>
+            <linearGradient id="rBlueSide" x1="0" y1="0" x2="1" y2="0"><stop offset="0%" stop-color="#0369a1"/><stop offset="50%" stop-color="#0284c7"/><stop offset="100%" stop-color="#0c4a6e"/></linearGradient>
+            <linearGradient id="rBlueTop" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#38bdf8"/><stop offset="100%" stop-color="#0284c7"/></linearGradient>
+          </defs>
+          <path d="M6,17 L6,33 C6,39.5 17.6,44.5 32,44.5 C46.4,44.5 58,39.5 58,33 L58,17 Z" fill="url(#rBlueSide)"/>
+          <ellipse cx="32" cy="17" rx="26" ry="11" fill="url(#rBlueTop)" stroke="#7dd3fc" stroke-width="0.8"/>
+          <path d="M21,13 L28,16 M28,16 L24,16.5 M28,16 L27,13.5 M43,13 L36,16 M36,16 L40,16.5 M36,16 L37,13.5 M21,21 L28,18 M28,18 L24,17.5 M28,18 L27,20.5 M43,21 L36,18 M36,18 L40,17.5 M36,18 L37,20.5" stroke="#ffffff" stroke-width="1.8" stroke-linecap="round"/>
+          <path d="M23,33 v3 M26,31 v5 M29,33 v3 M32,30 v6 M35,33 v3 M38,31 v5 M41,33 v3" stroke="#e0f2fe" stroke-width="1.5" stroke-linecap="round"/>
+        </svg>`,
+      csr1000v: `
+        <svg viewBox="0 0 64 48" class="w-10 h-8 drop-shadow-sm">
+          <defs>
+            <linearGradient id="csrSide" x1="0" y1="0" x2="1" y2="0"><stop offset="0%" stop-color="#0e7490"/><stop offset="50%" stop-color="#0891b2"/><stop offset="100%" stop-color="#164e63"/></linearGradient>
+            <linearGradient id="csrTop" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#22d3ee"/><stop offset="100%" stop-color="#0891b2"/></linearGradient>
+          </defs>
+          <path d="M6,17 L6,33 C6,39.5 17.6,44.5 32,44.5 C46.4,44.5 58,39.5 58,33 L58,17 Z" fill="url(#csrSide)"/>
+          <ellipse cx="32" cy="17" rx="26" ry="11" fill="url(#csrTop)" stroke="#67e8f9" stroke-width="0.8"/>
+          <path d="M21,13 L28,16 M28,16 L24,16.5 M28,16 L27,13.5 M43,13 L36,16 M36,16 L40,16.5 M36,16 L37,13.5 M21,21 L28,18 M28,18 L24,17.5 M28,18 L27,20.5 M43,21 L36,18 M36,18 L40,17.5 M36,18 L37,20.5" stroke="#ffffff" stroke-width="1.8" stroke-linecap="round"/>
+          <text x="32" y="38" fill="#ffffff" font-size="7" font-weight="bold" font-family="Inter,sans-serif" text-anchor="middle">CSR</text>
+        </svg>`,
+      xrv: `
+        <svg viewBox="0 0 64 48" class="w-10 h-8 drop-shadow-sm">
+          <defs>
+            <linearGradient id="xrvSide" x1="0" y1="0" x2="1" y2="0"><stop offset="0%" stop-color="#334155"/><stop offset="50%" stop-color="#475569"/><stop offset="100%" stop-color="#1e293b"/></linearGradient>
+            <linearGradient id="xrvTop" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#64748b"/><stop offset="100%" stop-color="#334155"/></linearGradient>
+          </defs>
+          <path d="M6,17 L6,33 C6,39.5 17.6,44.5 32,44.5 C46.4,44.5 58,39.5 58,33 L58,17 Z" fill="url(#xrvSide)"/>
+          <ellipse cx="32" cy="17" rx="26" ry="11" fill="url(#xrvTop)" stroke="#94a3b8" stroke-width="0.8"/>
+          <path d="M21,13 L28,16 M28,16 L24,16.5 M28,16 L27,13.5 M43,13 L36,16 M36,16 L40,16.5 M36,16 L37,13.5 M21,21 L28,18 M28,18 L24,17.5 M28,18 L27,20.5 M43,21 L36,18 M36,18 L40,17.5 M36,18 L37,20.5" stroke="#ffffff" stroke-width="1.8" stroke-linecap="round"/>
+          <text x="32" y="38" fill="#e2e8f0" font-size="7" font-weight="bold" font-family="Inter,sans-serif" text-anchor="middle">XRv9K</text>
+        </svg>`,
+      cisco_switch: `
+        <svg viewBox="0 0 64 48" class="w-10 h-8 drop-shadow-sm">
+          <polygon points="4,22 24,10 60,18 40,30" fill="#0ea5e9" stroke="#7dd3fc" stroke-width="0.7"/>
+          <polygon points="4,22 40,30 40,40 4,32" fill="#0369a1"/>
+          <polygon points="40,30 60,18 60,28 40,40" fill="#0c4a6e"/>
+          <path d="M23,18 L39,21 M39,21 L36,19 M39,21 L36,22.5 M42,16 L26,13 M26,13 L29,11.5 M26,13 L29,15" stroke="#ffffff" stroke-width="1.6" stroke-linecap="round"/>
+          <rect x="8" y="26" width="3.5" height="3" fill="#0f172a"/><rect x="13" y="27" width="3.5" height="3" fill="#0f172a"/>
+          <rect x="18" y="28.2" width="3.5" height="3" fill="#0f172a"/><rect x="23" y="29.3" width="3.5" height="3" fill="#0f172a"/>
+          <rect x="28" y="30.5" width="3.5" height="3" fill="#0f172a"/><rect x="33" y="31.6" width="3.5" height="3" fill="#0f172a"/>
+        </svg>`,
+      cat9kv: `
+        <svg viewBox="0 0 64 48" class="w-10 h-8 drop-shadow-sm">
+          <polygon points="4,22 24,10 60,18 40,30" fill="#3b82f6" stroke="#93c5fd" stroke-width="0.7"/>
+          <polygon points="4,22 40,30 40,41 4,33" fill="#1e3a8a"/>
+          <polygon points="40,30 60,18 60,29 40,41" fill="#172554"/>
+          <path d="M21,17 L37,20.5 M37,20.5 L34,18.5 M37,20.5 L34,22 M43,16.5 L27,13 M27,13 L30,11.5 M27,13 L30,15" stroke="#ffffff" stroke-width="1.5" stroke-linecap="round"/>
+          <rect x="8" y="25.5" width="3" height="2.2" fill="#10b981"/><rect x="12.5" y="26.5" width="3" height="2.2" fill="#0f172a"/>
+          <rect x="17" y="27.5" width="3" height="2.2" fill="#0f172a"/><rect x="21.5" y="28.5" width="3" height="2.2" fill="#0f172a"/>
+          <rect x="26" y="29.5" width="3" height="2.2" fill="#0f172a"/><rect x="30.5" y="30.5" width="3" height="2.2" fill="#0f172a"/>
+          <rect x="8" y="29" width="3" height="2.2" fill="#0f172a"/><rect x="12.5" y="30" width="3" height="2.2" fill="#0f172a"/>
+          <rect x="17" y="31" width="3" height="2.2" fill="#0f172a"/><rect x="21.5" y="32" width="3" height="2.2" fill="#0f172a"/>
+        </svg>`,
+      nxosv: `
+        <svg viewBox="0 0 64 48" class="w-10 h-8 drop-shadow-sm">
+          <polygon points="4,20 24,8 60,16 40,28" fill="#475569" stroke="#94a3b8" stroke-width="0.7"/>
+          <polygon points="4,20 40,28 40,42 4,34" fill="#1e293b"/>
+          <polygon points="40,28 60,16 60,30 40,42" fill="#0f172a"/>
+          <rect x="45" y="23" width="9" height="8" rx="1.5" fill="#0284c7" transform="skewY(-30)"/>
+          <text x="49.5" y="31" fill="#ffffff" font-size="6.5" font-weight="bold" font-family="Inter,sans-serif" text-anchor="middle">N</text>
+          <rect x="8" y="24" width="3.5" height="2.5" fill="#38bdf8"/><rect x="13" y="25" width="3.5" height="2.5" fill="#020617"/>
+          <rect x="18" y="26" width="3.5" height="2.5" fill="#020617"/><rect x="23" y="27" width="3.5" height="2.5" fill="#020617"/>
+          <rect x="8" y="28" width="3.5" height="2.5" fill="#020617"/><rect x="13" y="29" width="3.5" height="2.5" fill="#020617"/>
+          <rect x="18" y="30" width="3.5" height="2.5" fill="#020617"/><rect x="23" y="31" width="3.5" height="2.5" fill="#020617"/>
+        </svg>`,
+      paloalto_fw: `
+        <svg viewBox="0 0 64 48" class="w-10 h-8 drop-shadow-sm">
+          <polygon points="4,21 24,9 60,17 40,29" fill="#334155" stroke="#64748b" stroke-width="0.7"/>
+          <polygon points="4,21 40,29 40,41 4,33" fill="#ea580c"/>
+          <polygon points="40,29 60,17 60,29 40,41" fill="#1e293b"/>
+          <path d="M9,25 L12,23 L15,26 L12,28 Z M14,26 L17,24 L20,27 L17,29 Z" fill="#ffffff"/>
+          <rect x="24" y="28.5" width="3.2" height="2.6" fill="#0f172a"/><rect x="28.5" y="29.5" width="3.2" height="2.6" fill="#0f172a"/>
+          <rect x="24" y="32" width="3.2" height="2.6" fill="#0f172a"/><rect x="28.5" y="33" width="3.2" height="2.6" fill="#0f172a"/>
+        </svg>`,
+      pc: `
+        <svg viewBox="0 0 64 48" class="w-10 h-8 drop-shadow-sm">
+          <rect x="6" y="8" width="32" height="22" rx="2.5" fill="#1e293b" stroke="#475569" stroke-width="1"/>
+          <rect x="8.5" y="10.5" width="27" height="17" rx="1" fill="#0284c7"/>
+          <path d="M8.5,22 Q18,17 26,21 T35.5,19 L35.5,27.5 L8.5,27.5 Z" fill="#38bdf8" opacity="0.65"/>
+          <rect x="19" y="30" width="6" height="5" fill="#64748b"/>
+          <rect x="14" y="35" width="16" height="2.5" rx="1" fill="#475569"/>
+          <rect x="42" y="10" width="15" height="28" rx="2" fill="#1e293b" stroke="#475569" stroke-width="1"/>
+          <circle cx="49.5" cy="31" r="2.2" fill="#0ea5e9"/>
+          <line x1="45" y1="15" x2="54" y2="15" stroke="#475569" stroke-width="1.5"/>
+          <polygon points="8,40 34,40 37,44 5,44" fill="#334155"/>
+        </svg>`,
+      laptop: `
+        <svg viewBox="0 0 64 48" class="w-10 h-8 drop-shadow-sm">
+          <rect x="12" y="8" width="40" height="24" rx="2.5" fill="#1e293b" stroke="#64748b" stroke-width="1"/>
+          <rect x="14.5" y="10.5" width="35" height="19" rx="1" fill="#0284c7"/>
+          <path d="M14.5,23 Q26,18 36,22 T49.5,20 L49.5,29.5 L14.5,29.5 Z" fill="#38bdf8" opacity="0.65"/>
+          <polygon points="10,32 54,32 60,41 4,41" fill="#cbd5e1" stroke="#94a3b8" stroke-width="0.8"/>
+          <polygon points="14,33.5 50,33.5 52,37 12,37" fill="#334155"/>
+          <rect x="27" y="38" width="10" height="2" rx="0.5" fill="#94a3b8"/>
+        </svg>`
+    };
+
     const DEVICE_TEMPLATES = {
       cisco_router: {
+        category: 'Cisco Routers',
         type: 'cisco_router',
         vendor: 'cisco',
         label: 'Cisco IOSv Router',
         prefix: 'R',
-        badgeBg: 'bg-blue-50 border-blue-200 text-blue-600',
-        svgIcon: '<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9"></path></svg>',
         qcow2: 'cisco_iosv-15.9.qcow2',
         ram: 512,
         cpus: 1,
         interfaces: ['Gi0/0', 'Gi0/1', 'Gi0/2', 'Gi0/3']
       },
       csr1000v: {
+        category: 'Cisco Routers',
         type: 'csr1000v',
         vendor: 'cisco',
         label: 'Cisco CSR1000v',
         prefix: 'CSR',
-        badgeBg: 'bg-blue-50 border-blue-200 text-blue-600',
-        svgIcon: '<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 3v2m6-2v2M9 19v2m6-2v2M5 9H3m2 6H3m18-6h-2m2 6h-2M7 19h10a2 2 0 002-2V7a2 2 0 00-2-2H7a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>',
         qcow2: 'csr1000v-16.12.qcow2',
         ram: 3072,
         cpus: 1,
         interfaces: ['Gi1', 'Gi2', 'Gi3', 'Gi4']
       },
       xrv: {
+        category: 'Cisco Routers',
         type: 'xrv',
         vendor: 'cisco',
         label: 'Cisco XRv 9000',
         prefix: 'XRv',
-        badgeBg: 'bg-blue-50 border-blue-200 text-blue-600',
-        svgIcon: '<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>',
         qcow2: 'xrv9k-7.2.qcow2',
         ram: 4096,
         cpus: 2,
         interfaces: ['Gi0/0/0/0', 'Gi0/0/0/1', 'Gi0/0/0/2']
       },
       cisco_switch: {
+        category: 'Cisco L2/L3 Switches',
         type: 'cisco_switch',
         vendor: 'cisco',
         label: 'Cisco IOSvL2 Switch',
         prefix: 'SW',
-        badgeBg: 'bg-cyan-50 border-cyan-200 text-cyan-600',
-        svgIcon: '<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4m0 5c0 2.21-3.582 4-8 4s-8-1.79-8-4"></path></svg>',
         qcow2: 'cisco_iosvl2-15.2.qcow2',
         ram: 768,
         cpus: 1,
-        interfaces: ['Gi0/0', 'Gi0/1', 'Gi0/2', 'Gi0/3', 'Gi1/0']
+        interfaces: ['Gi0/0', 'Gi0/1', 'Gi0/2', 'Gi0/3', 'Gi1/0', 'Gi1/1']
       },
       cat9kv: {
+        category: 'Cisco L2/L3 Switches',
         type: 'cat9kv',
         vendor: 'cisco',
         label: 'Catalyst 9000v L3',
         prefix: 'Cat9k',
-        badgeBg: 'bg-cyan-50 border-cyan-200 text-cyan-600',
-        svgIcon: '<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path></svg>',
         qcow2: 'cat9kv-17.6.qcow2',
         ram: 4096,
         cpus: 2,
-        interfaces: ['Gi1/0/1', 'Gi1/0/2', 'Gi1/0/3', 'Gi1/0/4']
+        interfaces: ['Gi1/0/1', 'Gi1/0/2', 'Gi1/0/3', 'Gi1/0/4', 'Gi1/0/5']
       },
       nxosv: {
+        category: 'Cisco L2/L3 Switches',
         type: 'nxosv',
         vendor: 'cisco',
         label: 'Nexus 9000v NX-OS',
         prefix: 'NX',
-        badgeBg: 'bg-cyan-50 border-cyan-200 text-cyan-600',
-        svgIcon: '<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 9l3 3-3 3m5 0h3M5 20h14a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>',
         qcow2: 'nxosv9k-9.3.qcow2',
         ram: 8192,
         cpus: 2,
         interfaces: ['Eth1/1', 'Eth1/2', 'Eth1/3', 'Eth1/4']
       },
       paloalto_fw: {
+        category: 'Firewalls',
         type: 'paloalto_fw',
         vendor: 'paloalto',
         label: 'Palo Alto PAN-OS',
         prefix: 'PA-FW',
-        badgeBg: 'bg-amber-50 border-amber-200 text-amber-600',
-        svgIcon: '<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path></svg>',
         qcow2: 'PA-VM-10.1.0.qcow2',
         ram: 4505,
         cpus: 2,
-        interfaces: ['mgmt', 'ethernet1/1', 'ethernet1/2', 'ethernet1/3']
+        interfaces: ['mgmt', 'ethernet1/1', 'ethernet1/2', 'ethernet1/3', 'ethernet1/4']
       },
       pc: {
+        category: 'End Devices',
         type: 'pc',
         vendor: 'host',
         label: 'Workstation PC',
         prefix: 'PC-',
-        badgeBg: 'bg-emerald-50 border-emerald-200 text-emerald-600',
-        svgIcon: '<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>',
         qcow2: 'vpcs-micro.qcow2',
         ram: 256,
         cpus: 1,
         interfaces: ['eth0']
       },
       laptop: {
+        category: 'End Devices',
         type: 'laptop',
         vendor: 'host',
         label: 'Admin Laptop',
         prefix: 'LT-',
-        badgeBg: 'bg-emerald-50 border-emerald-200 text-emerald-600',
-        svgIcon: '<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z"></path></svg>',
         qcow2: 'vpcs-micro.qcow2',
         ram: 256,
         cpus: 1,
@@ -495,20 +506,61 @@
       }
     };
 
-    // Initialize default sample lab topology
-    window.addEventListener('DOMContentLoaded', () => {
-      addDeviceFromTemplate('cisco_router', 160, 140);
-      addDeviceFromTemplate('cisco_switch', 440, 140);
-      addDeviceFromTemplate('paloalto_fw', 160, 340);
-      addDeviceFromTemplate('pc', 440, 340);
+    // =========================================================================
+    // 3. INITIALIZATION & PALETTE RENDERING
+    // =========================================================================
+    function renderHardwarePalette() {
+      const container = document.getElementById('paletteContainer');
+      const categories = [
+        { name: 'Cisco Routers', color: 'text-blue-600' },
+        { name: 'Cisco L2/L3 Switches', color: 'text-cyan-600' },
+        { name: 'Firewalls', color: 'text-amber-600' },
+        { name: 'End Devices', color: 'text-emerald-600' }
+      ];
 
-      setTimeout(() => {
-        if (nodes.length >= 4) {
-          createLink(nodes[0].id, nodes[1].id, 'Gi0/0', 'Gi0/0');
-          createLink(nodes[0].id, nodes[2].id, 'Gi0/1', 'ethernet1/1');
-          createLink(nodes[1].id, nodes[3].id, 'Gi0/1', 'eth0');
-        }
-      }, 60);
+      container.innerHTML = categories.map(cat => {
+        const items = Object.values(DEVICE_TEMPLATES).filter(t => t.category === cat.name);
+        return `
+          <div>
+            <span class="text-[10px] font-bold ${cat.color} uppercase tracking-wider block mb-2">${cat.name}</span>
+            <div class="space-y-2">
+              ${items.map(tpl => `
+                <div onclick="addDeviceFromTemplate('${tpl.type}')" draggable="true" ondragstart="handleDragStart(event, '${tpl.type}')" class="node-card p-2 rounded-lg bg-white hover:bg-slate-50 border border-slate-200 hover:border-blue-400 cursor-pointer flex items-center gap-2.5 shadow-sm">
+                  <div class="w-11 h-9 rounded-md bg-slate-50 border border-slate-200/80 flex items-center justify-center shrink-0">
+                    ${HARDWARE_SVGS[tpl.type]}
+                  </div>
+                  <div class="truncate">
+                    <div class="text-xs font-semibold text-slate-800 truncate">${tpl.label}</div>
+                    <div class="text-[10px] text-slate-400 truncate">${tpl.qcow2}</div>
+                  </div>
+                </div>
+              `).join('')}
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function loadSampleLab() {
+      nodes = [];
+      links = [];
+      document.getElementById('nodesContainer').innerHTML = '';
+      document.getElementById('floatingTerminalsLayer').innerHTML = '';
+
+      const r1 = addDeviceFromTemplate('cisco_router', 150, 130);
+      const sw1 = addDeviceFromTemplate('cisco_switch', 450, 130);
+      const fw1 = addDeviceFromTemplate('paloalto_fw', 150, 340);
+      const pc1 = addDeviceFromTemplate('pc', 450, 340);
+
+      createLink(r1.id, sw1.id, 'Gi0/0', 'Gi0/0');
+      createLink(r1.id, fw1.id, 'Gi0/1', 'ethernet1/1');
+      createLink(sw1.id, pc1.id, 'Gi0/1', 'eth0');
+      showToast('Sample lab loaded');
+    }
+
+    window.addEventListener('DOMContentLoaded', () => {
+      renderHardwarePalette();
+      loadSampleLab();
     });
 
     function showToast(msg) {
@@ -519,7 +571,9 @@
       toast._timer = setTimeout(() => toast.classList.add('hidden'), 2600);
     }
 
-    // Drag & Drop from Sidebar
+    // =========================================================================
+    // 4. CANVAS NODE CREATION, DRAGGING & LINKING
+    // =========================================================================
     function handleDragStart(e, templateType) {
       e.dataTransfer.setData('text/plain', templateType);
     }
@@ -534,35 +588,51 @@
       if (!templateType || !DEVICE_TEMPLATES[templateType]) return;
 
       const rect = document.getElementById('canvasContainer').getBoundingClientRect();
-      const x = Math.max(20, e.clientX - rect.left - 88);
-      const y = Math.max(20, e.clientY - rect.top - 45);
+      const x = Math.max(20, e.clientX - rect.left - 92);
+      const y = Math.max(20, e.clientY - rect.top - 48);
 
       addDeviceFromTemplate(templateType, x, y);
     }
 
-    // Create New Node Instance
+    function createDefaultInterfaceConfig(ifaceName, nodeType) {
+      const isSwitch = (nodeType === 'cisco_switch' || nodeType === 'cat9kv' || nodeType === 'nxosv');
+      return {
+        ip: 'unassigned',
+        mask: '',
+        cidr: '',
+        dhcpClient: false,
+        helperAddress: '',
+        status: isSwitch ? 'up' : 'administratively down',
+        protocol: isSwitch ? 'up' : 'down',
+        description: '',
+        switchportMode: isSwitch ? 'access' : 'routed',
+        accessVlan: '1',
+        trunkAllowedVlans: 'all',
+        nativeVlan: '1',
+        portfast: false,
+        portSecurity: null,
+        channelGroup: null,
+        aclIn: null,
+        aclOut: null,
+        natRole: null,
+        zone: ''
+      };
+    }
+
     function addDeviceFromTemplate(templateType, posX, posY) {
       const template = DEVICE_TEMPLATES[templateType];
-      if (!template) return;
+      if (!template) return null;
 
       const count = nodes.filter(n => n.type === templateType).length + 1;
       const nodeId = 'node_' + Date.now() + '_' + Math.floor(Math.random() * 10000);
       const hostname = `${template.prefix}${count}`;
 
-      const canvas = document.getElementById('canvasContainer');
-      const defaultX = posX !== undefined ? posX : Math.max(40, (nodes.length % 4) * 200 + 80);
-      const defaultY = posY !== undefined ? posY : Math.max(40, Math.floor(nodes.length / 4) * 160 + 80);
+      const defaultX = posX !== undefined ? posX : Math.max(40, (nodes.length % 4) * 210 + 70);
+      const defaultY = posY !== undefined ? posY : Math.max(40, Math.floor(nodes.length / 4) * 165 + 70);
 
       const ifaceConfigs = {};
       template.interfaces.forEach(iface => {
-        ifaceConfigs[iface] = {
-          ip: 'unassigned',
-          mask: '',
-          cidr: '',
-          status: 'administratively down',
-          protocol: 'down',
-          zone: ''
-        };
+        ifaceConfigs[iface] = createDefaultInterfaceConfig(iface, templateType);
       });
 
       const newNode = {
@@ -578,21 +648,48 @@
         interfaces: [...template.interfaces],
         ipConfig: {
           mode: 'dhcp',
-          ip: '192.168.1.' + (10 + count),
-          subnet: '255.255.255.0',
-          gateway: '192.168.1.1',
+          ip: '0.0.0.0',
+          subnet: '0.0.0.0',
+          gateway: '',
           dns: '8.8.8.8'
         },
         cliState: {
-          mode: 'user',
+          mode: template.vendor === 'paloalto' ? 'pan-op' : 'user',
           hostname: hostname,
+          domainName: 'netforge.local',
+          enableSecret: '',
+          servicePasswordEncryption: false,
+          ipRouting: templateType !== 'cisco_switch',
           activeIface: null,
-          activeOspf: null,
+          activeIfaceRange: null,
+          activeDhcpPool: null,
+          activeRouterProto: null,
+          activeRouterId: null,
           activeVlan: null,
+          activeLine: null,
+          activeAcl: null,
           ifaceConfigs: ifaceConfigs,
-          ospf: { processId: null, networks: [] },
+          dhcpPools: {},
+          dhcpExcluded: [],
+          dhcpBindings: [],
+          staticRoutes: [],
+          ospf: { processId: null, routerId: '', networks: [], passiveInterfaces: [], defaultOriginate: false },
+          eigrp: { asNumber: null, networks: [], autoSummary: false },
+          bgp: { asNumber: null, routerId: '', neighbors: [], networks: [] },
+          rip: { enabled: false, version: 2, networks: [] },
           vlans: { '1': { name: 'default', status: 'active' } },
+          stpMode: 'rapid-pvst',
+          acls: {},
+          natRules: [],
+          users: {},
+          lines: {
+            'console 0': { password: '', login: false, transport: 'all', loggingSync: false },
+            'vty 0 4': { password: '', login: false, transport: 'ssh', loggingSync: false }
+          },
+          bannerMotd: '',
           panZones: {},
+          panStaticRoutes: [],
+          panSecurityRules: [],
           history: [],
           historyIndex: -1,
           terminalLog: []
@@ -602,9 +699,9 @@
       nodes.push(newNode);
       renderNodeDOM(newNode);
       updateCounts();
+      return newNode;
     }
 
-    // Render Single Node Card onto Canvas
     function renderNodeDOM(node) {
       const template = DEVICE_TEMPLATES[node.type];
       const container = document.getElementById('nodesContainer');
@@ -616,33 +713,36 @@
       el.id = node.id;
       el.style.left = node.x + 'px';
       el.style.top = node.y + 'px';
-      el.className = `absolute w-44 bg-white border border-slate-200 rounded-xl shadow-md p-3 cursor-grab select-none transition-shadow hover:border-blue-500 hover:shadow-lg`;
+      el.className = `pointer-events-auto absolute w-48 bg-white border border-slate-200 rounded-xl shadow-md p-3 cursor-grab select-none transition-shadow hover:border-blue-500 hover:shadow-lg`;
 
       const isEndDevice = (node.vendor === 'host');
+      const ipDisplay = node.ipConfig.ip && node.ipConfig.ip !== '0.0.0.0'
+        ? `${node.ipConfig.mode === 'dhcp' ? 'DHCP' : 'Static'}: ${node.ipConfig.ip}`
+        : 'DHCP: Unassigned (Run renew)';
 
       el.innerHTML = `
-        <div class="flex items-center justify-between gap-2 pointer-events-none mb-2">
-          <div class="flex items-center gap-2.5 overflow-hidden">
-            <div class="w-8 h-8 rounded-lg border ${template.badgeBg} flex items-center justify-center shrink-0">${template.svgIcon}</div>
-            <div class="truncate">
-              <div class="text-xs font-bold text-slate-800 truncate">${node.cliState.hostname}</div>
-              <div class="text-[10px] text-slate-400 truncate">${template.label}</div>
-            </div>
+        <div class="flex items-center gap-2.5 pointer-events-none mb-2">
+          <div class="w-11 h-9 rounded-lg bg-slate-50 border border-slate-200/90 flex items-center justify-center shrink-0">
+            ${HARDWARE_SVGS[node.type]}
+          </div>
+          <div class="truncate">
+            <div class="text-xs font-bold text-slate-800 truncate">${node.cliState.hostname}</div>
+            <div class="text-[10px] text-slate-400 truncate">${template.label}</div>
           </div>
         </div>
 
         ${isEndDevice ? `
-          <div class="text-[10px] bg-slate-50 rounded px-2 py-1 mb-2 font-mono text-emerald-600 border border-slate-200 truncate">
-            ${node.ipConfig.mode === 'dhcp' ? 'DHCP: ' + node.ipConfig.ip : node.ipConfig.ip}
+          <div class="text-[10px] bg-slate-50 rounded px-2 py-1 mb-2 font-mono ${node.ipConfig.ip !== '0.0.0.0' ? 'text-emerald-600' : 'text-amber-600'} border border-slate-200 truncate">
+            ${ipDisplay}
           </div>
         ` : ''}
 
         <div class="flex items-center justify-between gap-1 pt-1.5 border-t border-slate-100">
           ${isEndDevice ? `
-            <button onclick="openCliModal('${node.id}')" class="flex-1 py-1 bg-slate-800 hover:bg-slate-700 text-[10px] font-semibold text-white rounded transition truncate px-1" title="Open Command Prompt">Command Prompt</button>
-            <button onclick="openIpModal('${node.id}')" class="py-1 px-1.5 bg-blue-50 hover:bg-blue-100 text-[10px] font-semibold text-blue-600 rounded border border-blue-200 transition shrink-0">IP Config</button>
+            <button onclick="openCliModal('${node.id}')" class="flex-1 py-1 bg-slate-800 hover:bg-slate-700 text-[10px] font-semibold text-white rounded transition truncate px-1.5" title="Open Windows Command Prompt">CMD</button>
+            <button onclick="openIpModal('${node.id}')" class="py-1 px-2 bg-blue-50 hover:bg-blue-100 text-[10px] font-semibold text-blue-600 rounded border border-blue-200 transition shrink-0">IP Config</button>
           ` : `
-            <button onclick="openCliModal('${node.id}')" class="flex-1 py-1 bg-slate-100 hover:bg-blue-600 hover:text-white text-[11px] font-semibold text-slate-700 rounded transition">Console</button>
+            <button onclick="openCliModal('${node.id}')" class="flex-1 py-1 bg-slate-100 hover:bg-blue-600 hover:text-white text-[11px] font-semibold text-slate-700 rounded transition">Console CLI</button>
           `}
           <button onclick="deleteNode('${node.id}')" class="px-2 py-1 bg-rose-50 hover:bg-rose-100 text-[11px] font-semibold text-rose-600 rounded border border-rose-200 transition shrink-0" title="Remove Device">✕</button>
         </div>
@@ -665,7 +765,6 @@
       container.appendChild(el);
     }
 
-    // Smooth Canvas Node & Floating Terminal Dragging
     window.addEventListener('mousemove', (e) => {
       if (draggedNodeId) {
         const node = nodes.find(n => n.id === draggedNodeId);
@@ -674,8 +773,8 @@
         const canvas = document.getElementById('canvasContainer');
         const rect = canvas.getBoundingClientRect();
 
-        node.x = Math.max(10, Math.min(rect.width - 185, e.clientX - dragOffsetX));
-        node.y = Math.max(10, Math.min(rect.height - 110, e.clientY - dragOffsetY));
+        node.x = Math.max(10, Math.min(rect.width - 200, e.clientX - dragOffsetX));
+        node.y = Math.max(10, Math.min(rect.height - 115, e.clientY - dragOffsetY));
 
         const el = document.getElementById(node.id);
         if (el) {
@@ -708,7 +807,9 @@
       }
     });
 
-    // Cable Linking Mode & Interactive Interface Selection
+    // =========================================================================
+    // 5. CABLE LINKING & PORT SELECTION MODAL
+    // =========================================================================
     function toggleLinkMode() {
       linkModeActive = !linkModeActive;
       if (linkStartNodeId) {
@@ -830,6 +931,15 @@
       updateCounts();
     }
 
+    function isLinkActive(link) {
+      const nodeA = nodes.find(n => n.id === link.source);
+      const nodeB = nodes.find(n => n.id === link.target);
+      if (!nodeA || !nodeB) return false;
+      const aUp = nodeA.vendor === 'host' ? true : (nodeA.cliState.ifaceConfigs[link.sourceInterface]?.status === 'up');
+      const bUp = nodeB.vendor === 'host' ? true : (nodeB.cliState.ifaceConfigs[link.targetInterface]?.status === 'up');
+      return aUp && bUp;
+    }
+
     function renderLinks() {
       const svg = document.getElementById('svgLayer');
       svg.innerHTML = '';
@@ -839,48 +949,103 @@
         const nodeB = nodes.find(n => n.id === link.target);
         if (!nodeA || !nodeB) return;
 
-        const x1 = nodeA.x + 88;
-        const y1 = nodeA.y + 42;
-        const x2 = nodeB.x + 88;
-        const y2 = nodeB.y + 42;
+        const x1 = nodeA.x + 96;
+        const y1 = nodeA.y + 44;
+        const x2 = nodeB.x + 96;
+        const y2 = nodeB.y + 44;
+
+        const up = isLinkActive(link);
 
         const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
         line.setAttribute('x1', x1);
         line.setAttribute('y1', y1);
         line.setAttribute('x2', x2);
         line.setAttribute('y2', y2);
-        line.setAttribute('stroke', '#2563eb');
-        line.setAttribute('stroke-width', '2');
-        line.setAttribute('stroke-dasharray', '5 4');
+        line.setAttribute('stroke', up ? '#10b981' : '#3b82f6');
+        line.setAttribute('stroke-width', '2.2');
+        if (!up) line.setAttribute('stroke-dasharray', '5 4');
+        line.classList.add('link-line');
+        line.addEventListener('click', () => openLinkDetailModal(link.id));
         svg.appendChild(line);
+
+        // Endpoint status dots
+        [ { cx: x1 + (x2 - x1) * 0.22, cy: y1 + (y2 - y1) * 0.22, active: nodeA.vendor === 'host' || nodeA.cliState.ifaceConfigs[link.sourceInterface]?.status === 'up' },
+          { cx: x2 - (x2 - x1) * 0.22, cy: y2 - (y2 - y1) * 0.22, active: nodeB.vendor === 'host' || nodeB.cliState.ifaceConfigs[link.targetInterface]?.status === 'up' }
+        ].forEach(pt => {
+          const dot = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+          dot.setAttribute('cx', pt.cx);
+          dot.setAttribute('cy', pt.cy);
+          dot.setAttribute('r', '3.5');
+          dot.setAttribute('fill', pt.active ? '#10b981' : '#ef4444');
+          dot.setAttribute('stroke', '#ffffff');
+          dot.setAttribute('stroke-width', '1');
+          svg.appendChild(dot);
+        });
 
         const midX = (x1 + x2) / 2;
         const midY = (y1 + y2) / 2;
 
         const labelStr = `${link.sourceInterface} ↔ ${link.targetInterface}`;
-        const pillWidth = labelStr.length * 6.5 + 12;
+        const pillWidth = labelStr.length * 6.3 + 12;
+        const g = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+        g.style.cursor = 'pointer';
+        g.addEventListener('click', () => openLinkDetailModal(link.id));
+
         const rect = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
         rect.setAttribute('x', midX - pillWidth / 2);
-        rect.setAttribute('y', midY - 11);
+        rect.setAttribute('y', midY - 10);
         rect.setAttribute('width', pillWidth);
         rect.setAttribute('height', 18);
         rect.setAttribute('rx', '4');
         rect.setAttribute('fill', '#ffffff');
-        rect.setAttribute('stroke', '#cbd5e1');
+        rect.setAttribute('stroke', up ? '#10b981' : '#cbd5e1');
         rect.setAttribute('stroke-width', '1');
-        svg.appendChild(rect);
+        g.appendChild(rect);
 
         const text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
         text.setAttribute('x', midX);
-        text.setAttribute('y', midY + 1);
-        text.setAttribute('fill', '#334155');
+        text.setAttribute('y', midY + 2);
+        text.setAttribute('fill', '#1e293b');
         text.setAttribute('font-size', '10');
         text.setAttribute('font-weight', '600');
         text.setAttribute('text-anchor', 'middle');
         text.setAttribute('font-family', 'JetBrains Mono, monospace');
         text.textContent = labelStr;
-        svg.appendChild(text);
+        g.appendChild(text);
+
+        svg.appendChild(g);
       });
+    }
+
+    function openLinkDetailModal(linkId) {
+      const link = links.find(l => l.id === linkId);
+      if (!link) return;
+      selectedLinkId = linkId;
+      const nodeA = nodes.find(n => n.id === link.source);
+      const nodeB = nodes.find(n => n.id === link.target);
+      const up = isLinkActive(link);
+
+      document.getElementById('linkDetailBody').innerHTML = `
+        <div><strong>Endpoint A:</strong> ${nodeA?.cliState.hostname} (${link.sourceInterface})</div>
+        <div><strong>Endpoint B:</strong> ${nodeB?.cliState.hostname} (${link.targetInterface})</div>
+        <div><strong>Link State:</strong> <span class="${up ? 'text-emerald-600 font-bold' : 'text-rose-600 font-bold'}">${up ? 'UP / CONNECTED' : 'DOWN (Enable interfaces via no shutdown)'}</span></div>
+      `;
+      document.getElementById('linkDetailModal').classList.remove('hidden');
+    }
+
+    function closeLinkDetailModal() {
+      document.getElementById('linkDetailModal').classList.add('hidden');
+      selectedLinkId = null;
+    }
+
+    function deleteSelectedLink() {
+      if (selectedLinkId) {
+        links = links.filter(l => l.id !== selectedLinkId);
+        renderLinks();
+        updateCounts();
+        showToast('Cable disconnected');
+      }
+      closeLinkDetailModal();
     }
 
     function deleteNode(nodeId) {
@@ -916,6 +1081,187 @@
       document.getElementById('linkCount').textContent = links.length;
     }
 
+    // =========================================================================
+    // 6. IP NETWORKING, REAL DHCP LEASE ENGINE & PACKET REACHABILITY
+    // =========================================================================
+    function ipToLong(ip) {
+      const parts = (ip || '').split('.').map(Number);
+      if (parts.length !== 4 || parts.some(p => isNaN(p) || p < 0 || p > 255)) return null;
+      return ((parts[0] << 24) >>> 0) + ((parts[1] << 16) >>> 0) + ((parts[2] << 8) >>> 0) + (parts[3] >>> 0);
+    }
+
+    function longToIp(num) {
+      return [
+        (num >>> 24) & 255,
+        (num >>> 16) & 255,
+        (num >>> 8) & 255,
+        num & 255
+      ].join('.');
+    }
+
+    function cidrToMask(prefix) {
+      const p = parseInt(prefix, 10);
+      if (isNaN(p) || p < 0 || p > 32) return '255.255.255.0';
+      const mask = p === 0 ? 0 : (0xffffffff << (32 - p)) >>> 0;
+      return longToIp(mask);
+    }
+
+    function isSameSubnet(ip1, ip2, mask) {
+      const a = ipToLong(ip1);
+      const b = ipToLong(ip2);
+      const m = ipToLong(mask);
+      if (a === null || b === null || m === null) return false;
+      return ((a & m) >>> 0) === ((b & m) >>> 0);
+    }
+
+    // Find all L2-reachable neighbor nodes (traversing switches/trunks)
+    function getL2ReachableDevices(startNodeId, visited = new Set()) {
+      visited.add(startNodeId);
+      const results = [];
+      const connectedLinks = links.filter(l => l.source === startNodeId || l.target === startNodeId);
+
+      for (const link of connectedLinks) {
+        if (!isLinkActive(link)) continue;
+        const neighborId = link.source === startNodeId ? link.target : link.source;
+        const neighborPort = link.source === startNodeId ? link.targetInterface : link.sourceInterface;
+        if (visited.has(neighborId)) continue;
+
+        const neighborNode = nodes.find(n => n.id === neighborId);
+        if (!neighborNode) continue;
+
+        results.push({ node: neighborNode, port: neighborPort });
+
+        // If neighbor is an L2 switch, traverse further across active switchports
+        if (neighborNode.type === 'cisco_switch' || neighborNode.type === 'cat9kv') {
+          results.push(...getL2ReachableDevices(neighborId, visited));
+        }
+      }
+      return results;
+    }
+
+    // Real DHCP Discovery & Lease Allocation across connected topology
+    function requestDhcpLease(clientNode) {
+      const reachable = getL2ReachableDevices(clientNode.id);
+      for (const item of reachable) {
+        const srv = item.node;
+        if (srv.vendor !== 'cisco') continue;
+        const ifaceCfg = srv.cliState.ifaceConfigs[item.port];
+        if (!ifaceCfg || ifaceCfg.status !== 'up' || !ifaceCfg.ip || ifaceCfg.ip === 'unassigned') continue;
+
+        // Check if router/L3 switch has a matching DHCP pool for this interface's subnet
+        for (const [poolName, pool] of Object.entries(srv.cliState.dhcpPools)) {
+          if (!pool.network || !pool.mask) continue;
+          if (isSameSubnet(ifaceCfg.ip, pool.network, pool.mask)) {
+            const netLong = ipToLong(pool.network);
+            const maskLong = ipToLong(pool.mask);
+            const bcastLong = (netLong | (~maskLong >>> 0)) >>> 0;
+
+            // Build set of excluded + already leased IPs
+            const unavailable = new Set([ifaceCfg.ip]);
+            srv.cliState.dhcpExcluded.forEach(ex => {
+              const s = ipToLong(ex.start);
+              const e = ipToLong(ex.end || ex.start);
+              if (s !== null && e !== null) {
+                for (let cur = s; cur <= e && cur <= s + 512; cur++) {
+                  unavailable.add(longToIp(cur));
+                }
+              }
+            });
+            srv.cliState.dhcpBindings.forEach(b => {
+              if (b.clientId !== clientNode.id) unavailable.add(b.ip);
+            });
+
+            // Reuse existing binding for this client if still valid
+            const existing = srv.cliState.dhcpBindings.find(b => b.clientId === clientNode.id);
+            let leasedIp = existing && !unavailable.has(existing.ip) ? existing.ip : null;
+
+            if (!leasedIp) {
+              for (let cand = netLong + 1; cand < bcastLong; cand++) {
+                const candIp = longToIp(cand);
+                if (!unavailable.has(candIp)) {
+                  leasedIp = candIp;
+                  break;
+                }
+              }
+            }
+
+            if (leasedIp) {
+              const macSuffix = clientNode.id.slice(-4).toUpperCase().match(/.{1,2}/g).join('.');
+              const macAddr = `5254.0012.${macSuffix}`;
+              srv.cliState.dhcpBindings = srv.cliState.dhcpBindings.filter(b => b.clientId !== clientNode.id);
+              srv.cliState.dhcpBindings.push({
+                clientId: clientNode.id,
+                hostname: clientNode.cliState.hostname,
+                ip: leasedIp,
+                mac: macAddr,
+                pool: poolName,
+                lease: pool.lease || '1 day',
+                type: 'Automatic'
+              });
+
+              return {
+                success: true,
+                serverName: srv.cliState.hostname,
+                ip: leasedIp,
+                subnet: pool.mask,
+                gateway: pool.defaultRouter || ifaceCfg.ip,
+                dns: pool.dnsServer || '8.8.8.8'
+              };
+            }
+          }
+        }
+      }
+      return { success: false };
+    }
+
+    // Graph-based L3 Ping Reachability Check
+    function checkPingReachability(sourceNode, targetIp) {
+      if (!targetIp || ipToLong(targetIp) === null) return false;
+      if (targetIp === '127.0.0.1') return true;
+
+      // Check own IPs
+      if (sourceNode.vendor === 'host' && sourceNode.ipConfig.ip === targetIp) return true;
+      if (sourceNode.vendor !== 'host') {
+        const ownMatch = Object.values(sourceNode.cliState.ifaceConfigs).some(ic => ic.ip === targetIp && ic.status === 'up');
+        if (ownMatch) return true;
+      }
+
+      // BFS across active topology links
+      const queue = [sourceNode.id];
+      const visited = new Set([sourceNode.id]);
+
+      while (queue.length > 0) {
+        const currId = queue.shift();
+        const currNode = nodes.find(n => n.id === currId);
+        if (!currNode) continue;
+
+        const adjLinks = links.filter(l => l.source === currId || l.target === currId);
+        for (const link of adjLinks) {
+          if (!isLinkActive(link)) continue;
+          const nextId = link.source === currId ? link.target : link.source;
+          if (visited.has(nextId)) continue;
+          visited.add(nextId);
+
+          const nextNode = nodes.find(n => n.id === nextId);
+          if (!nextNode) continue;
+
+          if (nextNode.vendor === 'host' && nextNode.ipConfig.ip === targetIp) {
+            return true;
+          }
+          if (nextNode.vendor !== 'host') {
+            const hasTarget = Object.values(nextNode.cliState.ifaceConfigs).some(ic => ic.ip === targetIp && ic.status === 'up');
+            if (hasTarget) return true;
+          }
+
+          // Traverse through switches, routers with ipRouting, and firewalls
+          if (nextNode.vendor !== 'host') {
+            queue.push(nextId);
+          }
+        }
+      }
+      return false;
+    }
+
     // IP Configuration Modal (PC / Laptop)
     function openIpModal(nodeId) {
       activeIpNodeId = nodeId;
@@ -923,11 +1269,11 @@
       if (!node) return;
 
       document.getElementById('ipModalTitle').textContent = `IP Configuration — ${node.cliState.hostname}`;
-      setIpConfigMode(node.ipConfig.mode || 'static');
+      setIpConfigMode(node.ipConfig.mode || 'dhcp');
 
-      document.getElementById('inputIpAddress').value = node.ipConfig.ip || '192.168.1.10';
-      document.getElementById('inputSubnetMask').value = node.ipConfig.subnet || '255.255.255.0';
-      document.getElementById('inputGateway').value = node.ipConfig.gateway || '192.168.1.1';
+      document.getElementById('inputIpAddress').value = node.ipConfig.ip !== '0.0.0.0' ? node.ipConfig.ip : '192.168.10.10';
+      document.getElementById('inputSubnetMask').value = node.ipConfig.subnet !== '0.0.0.0' ? node.ipConfig.subnet : '255.255.255.0';
+      document.getElementById('inputGateway').value = node.ipConfig.gateway || '192.168.10.1';
       document.getElementById('inputDns').value = node.ipConfig.dns || '8.8.8.8';
 
       document.getElementById('ipModal').classList.remove('hidden');
@@ -957,28 +1303,48 @@
     function saveIpConfig() {
       const node = nodes.find(n => n.id === activeIpNodeId);
       if (node) {
-        node.ipConfig = {
-          mode: ipConfigMode,
-          ip: document.getElementById('inputIpAddress').value.trim() || '192.168.1.10',
-          subnet: document.getElementById('inputSubnetMask').value.trim() || '255.255.255.0',
-          gateway: document.getElementById('inputGateway').value.trim() || '192.168.1.1',
-          dns: document.getElementById('inputDns').value.trim() || '8.8.8.8'
-        };
+        if (ipConfigMode === 'dhcp') {
+          const lease = requestDhcpLease(node);
+          if (lease.success) {
+            node.ipConfig = {
+              mode: 'dhcp',
+              ip: lease.ip,
+              subnet: lease.subnet,
+              gateway: lease.gateway,
+              dns: lease.dns
+            };
+            showToast(`DHCP Lease Acquired from ${lease.serverName}: ${lease.ip}`);
+          } else {
+            node.ipConfig = {
+              mode: 'dhcp',
+              ip: '0.0.0.0',
+              subnet: '0.0.0.0',
+              gateway: '',
+              dns: '8.8.8.8'
+            };
+            showToast(`DHCP Failed: No reachable DHCP server pool found`);
+          }
+        } else {
+          node.ipConfig = {
+            mode: 'static',
+            ip: document.getElementById('inputIpAddress').value.trim() || '192.168.10.10',
+            subnet: document.getElementById('inputSubnetMask').value.trim() || '255.255.255.0',
+            gateway: document.getElementById('inputGateway').value.trim() || '192.168.10.1',
+            dns: document.getElementById('inputDns').value.trim() || '8.8.8.8'
+          };
+          showToast(`Saved static IP for ${node.cliState.hostname}`);
+        }
         renderNodeDOM(node);
-        showToast(`Saved IP settings for ${node.cliState.hostname}`);
       }
       closeIpModal();
     }
 
     // =========================================================================
-    // ZERO-LAG STATEFUL MULTI-VENDOR CLI ENGINE
+    // 7. FLEXIBLE, ORDER-INDEPENDENT MULTI-VENDOR CLI ENGINE
     // =========================================================================
-
     function getPromptString(node) {
       const st = node.cliState;
-      if (node.vendor === 'host') {
-        return `C:\\Users\\Admin>`;
-      }
+      if (node.vendor === 'host') return `C:\\Users\\Admin>`;
       if (node.vendor === 'paloalto') {
         return st.mode === 'pan-conf' ? `admin@${st.hostname}#` : `admin@${st.hostname}>`;
       }
@@ -987,8 +1353,13 @@
         case 'priv': return `${st.hostname}#`;
         case 'config': return `${st.hostname}(config)#`;
         case 'config-if': return `${st.hostname}(config-if)#`;
+        case 'config-if-range': return `${st.hostname}(config-if-range)#`;
+        case 'dhcp-config': return `${st.hostname}(dhcp-config)#`;
         case 'config-router': return `${st.hostname}(config-router)#`;
         case 'config-vlan': return `${st.hostname}(config-vlan)#`;
+        case 'config-line': return `${st.hostname}(config-line)#`;
+        case 'config-std-nacl': return `${st.hostname}(config-std-nacl)#`;
+        case 'config-ext-nacl': return `${st.hostname}(config-ext-nacl)#`;
         default: return `${st.hostname}>`;
       }
     }
@@ -1017,15 +1388,15 @@
 
       const isHost = (node.vendor === 'host');
       const openCount = document.getElementById('floatingTerminalsLayer').children.length;
-      const initialLeft = Math.min(window.innerWidth - 580, 290 + openCount * 32);
-      const initialTop = Math.min(window.innerHeight - 380, 84 + openCount * 28);
+      const initialLeft = Math.min(window.innerWidth - 600, 290 + openCount * 32);
+      const initialTop = Math.min(window.innerHeight - 400, 80 + openCount * 28);
 
       winEl = document.createElement('div');
       winEl.id = winId;
       winEl.style.left = `${Math.max(20, initialLeft)}px`;
       winEl.style.top = `${Math.max(64, initialTop)}px`;
-      winEl.style.width = '560px';
-      winEl.style.height = '360px';
+      winEl.style.width = '580px';
+      winEl.style.height = '380px';
       winEl.style.zIndex = ++topTerminalZIndex;
       winEl.className = 'floating-terminal fixed pointer-events-auto bg-[#090d16] border border-slate-700 rounded-xl shadow-2xl flex flex-col';
 
@@ -1081,11 +1452,11 @@
       if (node.cliState.terminalLog.length === 0) {
         if (isHost) {
           appendTerminalLine(screen, `NetForge Workstation OS [Version 10.0.22631]`, 'text-slate-300', node);
-          appendTerminalLine(screen, `(c) NetForge Corporation. Type 'help' for network utilities.`, 'text-slate-400', node);
+          appendTerminalLine(screen, `(c) NetForge Corporation. Type 'help' for utilities (ipconfig, ipconfig /renew, ping, tracert).`, 'text-slate-400', node);
           appendTerminalLine(screen, '', '', node);
         } else {
           appendTerminalLine(screen, `NetForge Serial Console Connected [${node.qcow2}]`, 'text-emerald-400 font-semibold', node);
-          appendTerminalLine(screen, `Type '?' or 'help' for supported commands.`, 'text-slate-400', node);
+          appendTerminalLine(screen, `Order-independent CLI active. Type '?' or press Tab for auto-completion.`, 'text-slate-400', node);
           appendTerminalLine(screen, '', '', node);
         }
       } else {
@@ -1117,6 +1488,23 @@
       }
     }
 
+    // Tab Auto-Completion Dictionary
+    const AUTOCOMPLETE_WORDS = [
+      'enable', 'disable', 'configure terminal', 'hostname', 'interface', 'interface range',
+      'ip address', 'ip address dhcp', 'ip helper-address', 'no shutdown', 'shutdown', 'description',
+      'ip dhcp pool', 'ip dhcp excluded-address', 'network', 'default-router', 'dns-server', 'domain-name', 'lease',
+      'ip route', 'ip routing', 'router ospf', 'router eigrp', 'router bgp', 'router rip', 'router-id', 'passive-interface', 'default-information originate',
+      'vlan', 'switchport mode access', 'switchport mode trunk', 'switchport access vlan', 'switchport trunk allowed vlan', 'switchport trunk native vlan', 'switchport port-security',
+      'spanning-tree mode rapid-pvst', 'spanning-tree portfast', 'channel-group',
+      'access-list', 'ip access-list standard', 'ip access-list extended', 'ip access-group',
+      'ip nat inside', 'ip nat outside', 'ip nat inside source list', 'ip nat inside source static',
+      'username', 'enable secret', 'service password-encryption', 'ip domain-name', 'crypto key generate rsa', 'ip ssh version 2', 'banner motd',
+      'line console 0', 'line vty 0 4', 'transport input ssh', 'login local', 'logging synchronous',
+      'show running-config', 'show ip interface brief', 'show ip route', 'show ip dhcp pool', 'show ip dhcp binding',
+      'show vlan brief', 'show interfaces', 'show cdp neighbors', 'show access-lists', 'show ip nat translations', 'show mac address-table',
+      'write memory', 'copy running-config startup-config', 'ping', 'traceroute', 'exit', 'end'
+    ];
+
     function handleCliKeydown(e, nodeId) {
       const node = nodes.find(n => n.id === nodeId);
       if (!node) return;
@@ -1126,12 +1514,11 @@
       const st = node.cliState;
       const isHost = (node.vendor === 'host');
 
+      // History Up/Down
       if (e.key === 'ArrowUp') {
         e.preventDefault();
         if (st.history.length > 0) {
-          if (st.historyIndex < st.history.length - 1) {
-            st.historyIndex++;
-          }
+          if (st.historyIndex < st.history.length - 1) st.historyIndex++;
           input.value = st.history[st.history.length - 1 - st.historyIndex];
         }
         return;
@@ -1148,6 +1535,29 @@
         return;
       }
 
+      // Tab Auto-Completion
+      if (e.key === 'Tab') {
+        e.preventDefault();
+        const val = input.value.trim().toLowerCase();
+        if (!val) return;
+        const list = isHost
+          ? ['ipconfig', 'ipconfig /all', 'ipconfig /renew', 'ipconfig /release', 'ping', 'tracert', 'arp -a', 'cls']
+          : (node.vendor === 'paloalto'
+            ? ['configure', 'set network interface ethernet', 'set zone', 'set deviceconfig system hostname', 'commit', 'show config running', 'show interface all', 'show routing route', 'exit']
+            : AUTOCOMPLETE_WORDS);
+
+        const matches = list.filter(w => w.startsWith(val));
+        if (matches.length === 1) {
+          input.value = matches[0] + ' ';
+        } else if (matches.length > 1) {
+          appendTerminalLine(screen, `${getPromptString(node)} ${input.value}`, 'text-emerald-300 font-bold', node);
+          appendTerminalLine(screen, matches.join('   '), 'text-slate-400', node);
+          screen.scrollTop = screen.scrollHeight;
+        }
+        return;
+      }
+
+      // Context-sensitive Help (?)
       if (e.key === '?' && !isHost) {
         e.preventDefault();
         const currentPrompt = getPromptString(node);
@@ -1189,8 +1599,8 @@
           'IPCONFIG            Display IPv4 network adapter configuration.',
           'IPCONFIG /ALL       Display full TCP/IP and MAC adapter details.',
           'IPCONFIG /RELEASE   Release the IPv4 address for the adapter.',
-          'IPCONFIG /RENEW     Renew the IPv4 address via DHCP.',
-          'PING <ip>           Send ICMP echo requests to a remote host.',
+          'IPCONFIG /RENEW     Request an IPv4 lease from a connected DHCP server.',
+          'PING <ip>           Send ICMP echo requests across the topology.',
           'TRACERT <ip>        Trace route packets take to destination.',
           'ARP -A              Display current ARP resolution cache.',
           'CLS                 Clear the Command Prompt screen.'
@@ -1198,25 +1608,107 @@
       }
       if (node.vendor === 'paloalto') {
         return node.cliState.mode === 'pan-conf'
-          ? ['set network interface ...', 'set zone ...', 'commit', 'exit'].join('\n')
-          : ['configure', 'show config running', 'ping host <ip>'].join('\n');
+          ? [
+              'set deviceconfig system hostname <name>',
+              'set network interface ethernet <int> layer3 ip <ip/cidr>',
+              'set zone <name> network layer3 <int>',
+              'set network virtual-router default routing-table ip static-route <name> destination <cidr> nexthop ip-address <ip>',
+              'commit',
+              'exit'
+            ].join('\n')
+          : ['configure', 'show config running', 'show interface all', 'show routing route', 'ping host <ip>'].join('\n');
       }
+
+      const commonGlobal = [
+        '  hostname <name>                 Set system network name',
+        '  interface <type/num>            Configure an interface (e.g. Gi0/0, Vlan10)',
+        '  interface range <start>-<end>   Configure a range of interfaces',
+        '  ip dhcp pool <name>             Configure DHCP address pool (any order)',
+        '  ip dhcp excluded-address <s [e]> Prevent DHCP from assigning specific IPs',
+        '  ip route <net> <mask> <nh>      Establish static routes',
+        '  router ospf|eigrp|bgp|rip ...   Enable dynamic routing protocol',
+        '  vlan <id>                       Create or configure VLAN(s)',
+        '  access-list / ip access-list    Configure Standard or Extended ACLs',
+        '  ip nat inside source ...        Configure NAT / PAT overload',
+        '  line console 0 | vty 0 4        Configure terminal lines & SSH',
+        '  show <command>                  Verify config/status from ANY mode'
+      ];
+
       switch (node.cliState.mode) {
-        case 'user': return ['enable', 'ping', 'show ip interface brief'].join('\n');
-        case 'priv': return ['configure terminal', 'show running-config', 'show vlan brief', 'write memory'].join('\n');
-        case 'config': return ['hostname', 'interface', 'router ospf', 'vlan', 'end', 'exit'].join('\n');
-        case 'config-if': return ['ip address', 'no shutdown', 'shutdown', 'exit'].join('\n');
-        case 'config-router': return ['network', 'exit'].join('\n');
-        case 'config-vlan': return ['name', 'exit'].join('\n');
-        default: return 'help';
+        case 'user':
+          return ['enable', 'ping <ip>', 'traceroute <ip>', 'show ip interface brief', 'show version'].join('\n');
+        case 'priv':
+          return ['configure terminal', 'show running-config', 'show ip interface brief', 'show ip route', 'show ip dhcp pool', 'show ip dhcp binding', 'show vlan brief', 'show cdp neighbors', 'show access-lists', 'show ip nat translations', 'write memory', 'ping <ip>'].join('\n');
+        case 'config-if':
+        case 'config-if-range':
+          return ['ip address <ip> <mask> | dhcp', 'ip helper-address <ip>', 'no shutdown / shutdown', 'description <text>', 'switchport mode access|trunk', 'switchport access vlan <id>', 'switchport trunk allowed vlan <list>', 'switchport port-security', 'spanning-tree portfast', 'ip access-group <acl> in|out', 'ip nat inside|outside', '--- Or jump directly to any global config command: ---', ...commonGlobal].join('\n');
+        case 'dhcp-config':
+          return ['network <ip> <mask>', 'default-router <ip>', 'dns-server <ip>', 'domain-name <domain>', 'lease <days|infinite>', '--- Or jump directly to any global config command: ---', ...commonGlobal].join('\n');
+        case 'config-router':
+          return ['router-id <ip>', 'network <ip> <wildcard> area <id>', 'neighbor <ip> remote-as <as>', 'passive-interface <int>', 'default-information originate', 'version 2', 'no auto-summary', '--- Or jump directly to any global config command: ---', ...commonGlobal].join('\n');
+        case 'config-vlan':
+          return ['name <vlan-name>', '--- Or jump directly to any global config command: ---', ...commonGlobal].join('\n');
+        case 'config-line':
+          return ['password <pass>', 'login / login local', 'transport input ssh|telnet|all|none', 'logging synchronous', 'exec-timeout <min> <sec>', '--- Or jump directly to any global config command: ---', ...commonGlobal].join('\n');
+        case 'config-std-nacl':
+        case 'config-ext-nacl':
+          return ['permit <proto|ip> <src> [dst]', 'deny <proto|ip> <src> [dst]', '--- Or jump directly to any global config command: ---', ...commonGlobal].join('\n');
+        default:
+          return ['Global Configuration Commands:', ...commonGlobal, '  end / exit'].join('\n');
       }
     }
 
+    // Flexible Cisco Interface Resolver (handles g0/0, gi0/0, GigabitEthernet0/0, vlan10, etc.)
     function resolveCiscoInterface(node, raw) {
-      const lowerRaw = raw.toLowerCase();
-      return node.interfaces.find(i => i.toLowerCase() === lowerRaw || i.toLowerCase().startsWith(lowerRaw)) || null;
+      const cleaned = raw.replace(/\s+/g, '').toLowerCase();
+      // Support SVI creation on the fly (e.g., interface vlan 10 or int vl10)
+      const vlanMatch = cleaned.match(/^(?:vlan|vl)(\d+)$/);
+      if (vlanMatch) {
+        const sviName = `Vlan${vlanMatch[1]}`;
+        if (!node.interfaces.includes(sviName)) {
+          node.interfaces.push(sviName);
+          node.cliState.ifaceConfigs[sviName] = createDefaultInterfaceConfig(sviName, node.type);
+          node.cliState.ifaceConfigs[sviName].switchportMode = 'routed';
+          node.cliState.ifaceConfigs[sviName].status = 'up';
+          node.cliState.ifaceConfigs[sviName].protocol = 'up';
+        }
+        return sviName;
+      }
+
+      // Direct exact match
+      const exact = node.interfaces.find(i => i.toLowerCase() === cleaned);
+      if (exact) return exact;
+
+      // Shorthand match: e.g. g0/0 -> Gi0/0, gi0/0 -> Gi0/0, gigabitethernet0/0 -> Gi0/0, e1/1 -> Eth1/1
+      const numMatch = cleaned.match(/([0-9/]+)$/);
+      if (numMatch) {
+        const suffix = numMatch[1];
+        const byNum = node.interfaces.find(i => i.toLowerCase().endsWith(suffix));
+        if (byNum) return byNum;
+      }
+      return null;
     }
 
+    // Parse interface range (e.g., Gi0/0 - 2 or Gi0/0-2)
+    function resolveCiscoInterfaceRange(node, rawRange) {
+      const cleaned = rawRange.replace(/\s+/g, '');
+      const parts = cleaned.split('-');
+      if (parts.length !== 2) return null;
+      const startIface = resolveCiscoInterface(node, parts[0]);
+      if (!startIface) return null;
+
+      const startIdx = node.interfaces.indexOf(startIface);
+      const endNum = parseInt(parts[1].split('/').pop(), 10);
+      const startNum = parseInt(startIface.split('/').pop(), 10);
+      if (isNaN(endNum) || isNaN(startNum) || endNum < startNum) return null;
+
+      const count = endNum - startNum + 1;
+      return node.interfaces.slice(startIdx, startIdx + count);
+    }
+
+    // =========================================================================
+    // 8. MAIN COMMAND EXECUTION ROUTER
+    // =========================================================================
     function executeVendorCommand(node, cmd, screen) {
       const lower = cmd.toLowerCase();
       const tokens = cmd.split(/\s+/);
@@ -1228,11 +1720,13 @@
         return [];
       }
 
-      if (lower === 'help') {
+      if (lower === 'help' || cmd === '?') {
         return getContextualHelp(node).split('\n').map(t => ({ text: t, cls: 'text-slate-400 whitespace-pre' }));
       }
 
-      // 1. END DEVICES (PC / LAPTOP COMMAND PROMPT)
+      // -----------------------------------------------------------------------
+      // A. END DEVICES (PC / LAPTOP WINDOWS COMMAND PROMPT)
+      // -----------------------------------------------------------------------
       if (node.vendor === 'host') {
         if (lower === 'ipconfig') {
           return [
@@ -1274,25 +1768,40 @@
           node.ipConfig.ip = '0.0.0.0';
           node.ipConfig.subnet = '0.0.0.0';
           node.ipConfig.gateway = '';
+          // Remove binding from any DHCP server
+          nodes.forEach(n => {
+            if (n.cliState?.dhcpBindings) {
+              n.cliState.dhcpBindings = n.cliState.dhcpBindings.filter(b => b.clientId !== node.id);
+            }
+          });
           renderNodeDOM(node);
           return [{ text: 'IPv4 Address released for adapter Ethernet0.', cls: 'text-slate-300' }];
         }
         if (lower === 'ipconfig /renew') {
-          const hostOctet = 10 + (nodes.indexOf(node) % 200);
-          node.ipConfig.mode = 'dhcp';
-          node.ipConfig.ip = `192.168.1.${hostOctet}`;
-          node.ipConfig.subnet = '255.255.255.0';
-          node.ipConfig.gateway = '192.168.1.1';
-          renderNodeDOM(node);
-          return [
-            { text: `Ethernet adapter Ethernet0:` },
-            { text: `   IPv4 Address. . . . . . . . . . . : ${node.ipConfig.ip}` },
-            { text: `   Subnet Mask . . . . . . . . . . . : ${node.ipConfig.subnet}` },
-            { text: `   Default Gateway . . . . . . . . . : ${node.ipConfig.gateway}` }
-          ];
+          const lease = requestDhcpLease(node);
+          if (lease.success) {
+            node.ipConfig.mode = 'dhcp';
+            node.ipConfig.ip = lease.ip;
+            node.ipConfig.subnet = lease.subnet;
+            node.ipConfig.gateway = lease.gateway;
+            node.ipConfig.dns = lease.dns;
+            renderNodeDOM(node);
+            return [
+              { text: `DHCP Lease acquired from server ${lease.serverName}:`, cls: 'text-emerald-400' },
+              { text: `Ethernet adapter Ethernet0:` },
+              { text: `   IPv4 Address. . . . . . . . . . . : ${node.ipConfig.ip}` },
+              { text: `   Subnet Mask . . . . . . . . . . . : ${node.ipConfig.subnet}` },
+              { text: `   Default Gateway . . . . . . . . . : ${node.ipConfig.gateway}` }
+            ];
+          } else {
+            return [
+              { text: 'An error occurred while renewing interface Ethernet0 : unable to contact your DHCP server.', cls: 'text-amber-400' },
+              { text: 'Ensure link is up (no shutdown) and router has an active DHCP pool matching its interface IP.', cls: 'text-slate-400' }
+            ];
+          }
         }
         if (lower === 'arp -a') {
-          const gw = node.ipConfig.gateway || '192.168.1.1';
+          const gw = node.ipConfig.gateway || '192.168.10.1';
           return [
             { text: `Interface: ${node.ipConfig.ip} --- 0x4` },
             { text: `  Internet Address      Physical Address      Type` },
@@ -1300,36 +1809,38 @@
           ];
         }
         if (lower.startsWith('tracert ')) {
-          const target = tokens[1] || '8.8.8.8';
-          const gw = node.ipConfig.gateway || '192.168.1.1';
-          return [
-            { text: `Tracing route to ${target} over a maximum of 30 hops:` },
-            { text: `  1    <1 ms    <1 ms    <1 ms  ${gw}` },
-            { text: `  2     2 ms     1 ms     2 ms  ${target}` },
-            { text: `Trace complete.` }
-          ];
+          const target = tokens[1];
+          if (!target) return [{ text: 'Usage: tracert <ip_address>', cls: 'text-rose-400' }];
+          const ok = checkPingReachability(node, target);
+          const gw = node.ipConfig.gateway || '192.168.10.1';
+          if (ok) {
+            return [
+              { text: `Tracing route to ${target} over a maximum of 30 hops:` },
+              { text: `  1    <1 ms    <1 ms    <1 ms  ${gw}` },
+              { text: `  2     1 ms     1 ms     2 ms  ${target}`, cls: 'text-emerald-400' },
+              { text: `Trace complete.` }
+            ];
+          } else {
+            return [
+              { text: `Tracing route to ${target} over a maximum of 30 hops:` },
+              { text: `  1     *        *        *     Request timed out.`, cls: 'text-amber-400' },
+              { text: `  2     *        *        *     Request timed out.`, cls: 'text-amber-400' }
+            ];
+          }
         }
         if (lower.startsWith('ping ')) {
           const target = tokens[1];
-          if (!target) {
-            return [{ text: 'Usage: ping <ip_address>', cls: 'text-rose-400' }];
-          }
-          const isReachable =
-            target === node.ipConfig.ip ||
-            target === node.ipConfig.gateway ||
-            target === '127.0.0.1' ||
-            nodes.some(n =>
-              (n.vendor === 'host' && n.ipConfig.ip === target) ||
-              Object.values(n.cliState.ifaceConfigs || {}).some(ic => ic.ip === target && ic.status === 'up')
-            );
+          if (!target) return [{ text: 'Usage: ping <ip_address>', cls: 'text-rose-400' }];
+          const isReachable = checkPingReachability(node, target);
 
           if (isReachable) {
             return [
               { text: `Pinging ${target} with 32 bytes of data:` },
-              { text: `Reply from ${target}: bytes=32 time=1ms TTL=64`, cls: 'text-emerald-400' },
-              { text: `Reply from ${target}: bytes=32 time<1ms TTL=64`, cls: 'text-emerald-400' },
-              { text: `Reply from ${target}: bytes=32 time=1ms TTL=64`, cls: 'text-emerald-400' },
-              { text: `Ping statistics for ${target}: Packets: Sent = 3, Received = 3, Lost = 0 (0% loss)` }
+              { text: `Reply from ${target}: bytes=32 time=1ms TTL=128`, cls: 'text-emerald-400' },
+              { text: `Reply from ${target}: bytes=32 time<1ms TTL=128`, cls: 'text-emerald-400' },
+              { text: `Reply from ${target}: bytes=32 time=1ms TTL=128`, cls: 'text-emerald-400' },
+              { text: `Reply from ${target}: bytes=32 time=1ms TTL=128`, cls: 'text-emerald-400' },
+              { text: `Ping statistics for ${target}: Packets: Sent = 4, Received = 4, Lost = 0 (0% loss)` }
             ];
           } else {
             return [
@@ -1343,30 +1854,63 @@
         return [{ text: `'${tokens[0]}' is not recognized as an internal or external command,\noperable program or batch file.`, cls: 'text-rose-400 whitespace-pre' }];
       }
 
-      // 2. PALO ALTO PAN-OS
+      // -----------------------------------------------------------------------
+      // B. PALO ALTO PAN-OS CLI
+      // -----------------------------------------------------------------------
       if (node.vendor === 'paloalto') {
+        if (lower === 'show config running') {
+          const lines = ['config {', '  devices {', '    localhost.localdomain {', '      deviceconfig { system { hostname ' + st.hostname + '; } }', '      network {', '        interface {', '          ethernet {'];
+          for (const [iface, cfg] of Object.entries(st.ifaceConfigs)) {
+            if (iface.startsWith('ethernet') && cfg.cidr) {
+              lines.push(`            ${iface} { layer3 { ip { ${cfg.cidr}; } } }`);
+            }
+          }
+          lines.push('          }', '        }', '      }', '    }', '  }', '}');
+          return lines.map(t => ({ text: t, cls: 'text-slate-300 whitespace-pre' }));
+        }
+        if (lower === 'show interface all') {
+          const lines = [
+            { text: 'name                id    speed/duplex/state        ip address', cls: 'text-slate-300 font-semibold whitespace-pre' },
+            { text: '-------------------------------------------------------------------------', cls: 'text-slate-500 whitespace-pre' }
+          ];
+          node.interfaces.forEach((iface, idx) => {
+            const cfg = st.ifaceConfigs[iface];
+            const stateStr = cfg.status === 'up' ? '1000/full/up' : 'ukn/ukn/down';
+            lines.push({
+              text: `${iface.padEnd(20, ' ')}${String(idx + 16).padEnd(6, ' ')}${stateStr.padEnd(26, ' ')}${cfg.cidr || cfg.ip}`,
+              cls: 'text-slate-200 whitespace-pre'
+            });
+          });
+          return lines;
+        }
+        if (lower === 'show routing route') {
+          const lines = [{ text: 'destination          nexthop              interface        flags', cls: 'text-slate-300 font-semibold whitespace-pre' }];
+          for (const [iface, cfg] of Object.entries(st.ifaceConfigs)) {
+            if (cfg.ip && cfg.ip !== 'unassigned' && cfg.status === 'up') {
+              lines.push({ text: `${(cfg.cidr || cfg.ip + '/24').padEnd(21, ' ')}${'0.0.0.0'.padEnd(21, ' ')}${iface.padEnd(17, ' ')}A C`, cls: 'text-slate-200 whitespace-pre' });
+            }
+          }
+          st.panStaticRoutes.forEach(r => {
+            lines.push({ text: `${r.dest.padEnd(21, ' ')}${r.nexthop.padEnd(21, ' ')}${'ethernet1/1'.padEnd(17, ' ')}A S`, cls: 'text-slate-200 whitespace-pre' });
+          });
+          return lines;
+        }
+        if (lower.startsWith('ping ')) {
+          const target = tokens[tokens.length - 1];
+          const ok = checkPingReachability(node, target);
+          return ok
+            ? [
+                { text: `PING ${target} (${target}) 56(84) bytes of data.` },
+                { text: `64 bytes from ${target}: icmp_seq=1 ttl=63 time=0.84 ms`, cls: 'text-emerald-400' },
+                { text: `64 bytes from ${target}: icmp_seq=2 ttl=63 time=0.79 ms`, cls: 'text-emerald-400' }
+              ]
+            : [{ text: `PING ${target}: 100% packet loss`, cls: 'text-amber-400' }];
+        }
+
         if (st.mode === 'pan-op') {
           if (lower === 'configure' || lower === 'conf') {
             st.mode = 'pan-conf';
             return [{ text: 'Entering configuration mode', cls: 'text-slate-400' }];
-          }
-          if (lower === 'show config running') {
-            const lines = ['config {', '  devices {', '    localhost.localdomain {', '      network {', '        interface {', '          ethernet {'];
-            for (const [iface, cfg] of Object.entries(st.ifaceConfigs)) {
-              if (iface.startsWith('ethernet') && cfg.cidr) {
-                lines.push(`            ${iface} { layer3 { ip { ${cfg.cidr}; } } }`);
-              }
-            }
-            lines.push('          }', '        }', '      }', '    }', '  }', '}');
-            return lines.map(t => ({ text: t, cls: 'text-slate-300 whitespace-pre' }));
-          }
-          if (lower.startsWith('ping host ')) {
-            const target = tokens[2] || '8.8.8.8';
-            return [
-              { text: `PING ${target} (${target}) 56(84) bytes of data.` },
-              { text: `64 bytes from ${target}: icmp_seq=1 ttl=63 time=0.84 ms` },
-              { text: `64 bytes from ${target}: icmp_seq=2 ttl=63 time=0.79 ms` }
-            ];
           }
           return [{ text: `Unknown command: ${cmd}`, cls: 'text-rose-400' }];
         } else {
@@ -1375,199 +1919,798 @@
             return [{ text: 'Exiting configuration mode', cls: 'text-slate-400' }];
           }
           if (lower === 'commit') {
+            renderLinks();
             return [
               { text: 'Commit job 14 is in progress. Use Ctrl+C to return to command prompt', cls: 'text-slate-400' },
               { text: '........100%', cls: 'text-emerald-400' },
               { text: 'Configuration committed successfully', cls: 'text-emerald-400 font-semibold' }
             ];
           }
+          const hostMatch = cmd.match(/^set\s+deviceconfig\s+system\s+hostname\s+(\S+)$/i);
+          if (hostMatch) {
+            st.hostname = hostMatch[1];
+            node.name = hostMatch[1];
+            renderNodeDOM(node);
+            renderLinks();
+            return [];
+          }
           const ipMatch = cmd.match(/^set\s+network\s+interface\s+ethernet\s+(\S+)\s+layer3\s+ip\s+(\S+)$/i);
           if (ipMatch) {
             const iface = ipMatch[1];
             const cidr = ipMatch[2];
-            if (!st.ifaceConfigs[iface]) {
-              return [{ text: `Invalid interface: ${iface}`, cls: 'text-rose-400' }];
-            }
+            if (!st.ifaceConfigs[iface]) return [{ text: `Invalid interface: ${iface}`, cls: 'text-rose-400' }];
             st.ifaceConfigs[iface].cidr = cidr;
             st.ifaceConfigs[iface].ip = cidr.split('/')[0];
+            st.ifaceConfigs[iface].mask = cidrToMask(cidr.split('/')[1] || '24');
             st.ifaceConfigs[iface].status = 'up';
             st.ifaceConfigs[iface].protocol = 'up';
+            renderLinks();
             return [];
           }
           const zoneMatch = cmd.match(/^set\s+zone\s+(\S+)\s+network\s+layer3\s+(\S+)$/i);
           if (zoneMatch) {
             const zone = zoneMatch[1];
             const iface = zoneMatch[2];
-            if (!st.ifaceConfigs[iface]) {
-              return [{ text: `Invalid interface: ${iface}`, cls: 'text-rose-400' }];
-            }
+            if (!st.ifaceConfigs[iface]) return [{ text: `Invalid interface: ${iface}`, cls: 'text-rose-400' }];
             st.ifaceConfigs[iface].zone = zone;
             st.panZones[zone] = iface;
+            return [];
+          }
+          const srMatch = cmd.match(/^set\s+network\s+virtual-router\s+\S+\s+routing-table\s+ip\s+static-route\s+(\S+)\s+destination\s+(\S+)\s+nexthop\s+ip-address\s+(\S+)$/i);
+          if (srMatch) {
+            st.panStaticRoutes.push({ name: srMatch[1], dest: srMatch[2], nexthop: srMatch[3] });
             return [];
           }
           return [{ text: `Invalid syntax: ${cmd}`, cls: 'text-rose-400' }];
         }
       }
 
-      // 3. CISCO IOS / IOS-XE / NX-OS STATE MACHINE
+      // -----------------------------------------------------------------------
+      // C. CISCO IOS / IOS-XE / NX-OS UNIVERSAL & ORDER-INDEPENDENT PARSER
+      // -----------------------------------------------------------------------
+
+      // 1. Allow `show ...` or `do show ...` or `do write ...` from ANY mode!
+      const effectiveCmd = lower.startsWith('do ') ? cmd.slice(3).trim() : cmd;
+      const effLower = effectiveCmd.toLowerCase();
+      const effTokens = effectiveCmd.split(/\s+/);
+
+      if (effLower.startsWith('sh')) {
+        return handleCiscoShowCommands(node, effLower, effTokens);
+      }
+
+      if (effLower === 'write' || effLower === 'write memory' || effLower === 'wr' || effLower === 'copy running-config startup-config' || effLower === 'copy run start') {
+        return [
+          { text: 'Building configuration...', cls: 'text-slate-400' },
+          { text: '[OK]', cls: 'text-emerald-400 font-semibold' }
+        ];
+      }
+
+      if (effLower.startsWith('ping ')) {
+        return runCiscoPing(node, effTokens[1]);
+      }
+
+      if (effLower.startsWith('traceroute ') || effLower.startsWith('tracert ')) {
+        return runCiscoTraceroute(node, effTokens[1]);
+      }
+
+      // 2. Mode transitions: User <-> Privileged <-> Global Config
       if (st.mode === 'user') {
-        if (lower === 'enable' || lower === 'en') {
+        if (effLower === 'enable' || effLower === 'en') {
           st.mode = 'priv';
           return [];
         }
-        if (lower.startsWith('sh') && lower.includes('ip int')) {
-          return formatCiscoIpIntBrief(node);
-        }
-        if (lower.startsWith('ping ')) {
-          return runCiscoPing(tokens[1]);
-        }
-        return [{ text: `% Invalid input detected at '^' marker.`, cls: 'text-rose-400' }];
+        if (effLower === 'exit' || effLower === 'logout') return [];
+        return [{ text: `% Invalid input detected at '^' marker. (Type 'enable' first)`, cls: 'text-rose-400' }];
       }
 
       if (st.mode === 'priv') {
-        if (lower === 'disable') {
+        if (effLower === 'disable') {
           st.mode = 'user';
           return [];
         }
-        if (lower === 'configure terminal' || lower === 'conf t' || lower === 'config t') {
+        if (effLower === 'configure terminal' || effLower === 'conf t' || effLower === 'config t' || effLower === 'conf') {
           st.mode = 'config';
           return [{ text: 'Enter configuration commands, one per line.  End with CNTL/Z.', cls: 'text-slate-400' }];
         }
-        if (lower === 'write memory' || lower === 'wr' || lower === 'copy running-config startup-config') {
-          return [
-            { text: 'Building configuration...', cls: 'text-slate-400' },
-            { text: '[OK]', cls: 'text-emerald-400 font-semibold' }
-          ];
-        }
-        if (lower.startsWith('sh') && lower.includes('ip int')) {
-          return formatCiscoIpIntBrief(node);
-        }
-        if (lower.startsWith('sh') && lower.includes('run')) {
-          return formatCiscoRunningConfig(node);
-        }
-        if (lower.startsWith('sh') && lower.includes('vlan')) {
-          return formatCiscoVlanBrief(node);
-        }
-        if (lower.startsWith('ping ')) {
-          return runCiscoPing(tokens[1]);
+        if (effLower === 'exit') {
+          st.mode = 'user';
+          return [];
         }
         return [{ text: `% Invalid input detected at '^' marker.`, cls: 'text-rose-400' }];
       }
 
-      if (lower === 'end') {
+      // 3. Inside ANY Configuration Mode (`config`, `config-if`, `dhcp-config`, `config-router`, `config-vlan`, `config-line`, `config-std-nacl`, `config-ext-nacl`)
+      if (effLower === 'end') {
         st.mode = 'priv';
-        st.activeIface = null;
-        st.activeOspf = null;
-        st.activeVlan = null;
+        clearActiveSubcontexts(st);
         return [];
       }
 
-      if (lower === 'exit') {
+      if (effLower === 'exit' || effLower === 'ex') {
         if (st.mode === 'config') {
           st.mode = 'priv';
         } else {
           st.mode = 'config';
-          st.activeIface = null;
-          st.activeOspf = null;
-          st.activeVlan = null;
+          clearActiveSubcontexts(st);
         }
         return [];
       }
 
-      if (st.mode === 'config') {
-        if (lower.startsWith('hostname ')) {
-          const newHost = tokens[1];
-          if (!newHost) return [{ text: '% Incomplete command.', cls: 'text-rose-400' }];
-          st.hostname = newHost;
-          node.name = newHost;
-          renderNodeDOM(node);
-          renderLinks();
-          return [];
-        }
-        if (lower.startsWith('interface ') || lower.startsWith('int ')) {
-          const rawIface = tokens.slice(1).join('');
-          const matchedIface = resolveCiscoInterface(node, rawIface);
-          if (!matchedIface) {
-            return [{ text: `% Invalid interface type and number: ${rawIface}`, cls: 'text-rose-400' }];
-          }
-          st.activeIface = matchedIface;
-          st.mode = 'config-if';
-          return [];
-        }
-        if (lower.startsWith('router ospf ')) {
-          const pid = tokens[2];
-          if (!pid || isNaN(pid)) return [{ text: '% Incomplete command.', cls: 'text-rose-400' }];
-          st.ospf.processId = pid;
-          st.activeOspf = pid;
-          st.mode = 'config-router';
-          return [];
-        }
-        if (lower.startsWith('vlan ')) {
-          const vid = tokens[1];
-          if (!vid || isNaN(vid)) return [{ text: '% Incomplete command.', cls: 'text-rose-400' }];
-          if (!st.vlans[vid]) {
-            st.vlans[vid] = { name: `VLAN${vid.padStart(4, '0')}`, status: 'active' };
-          }
-          st.activeVlan = vid;
-          st.mode = 'config-vlan';
-          return [];
-        }
-        return [{ text: `% Invalid input detected at '^' marker.`, cls: 'text-rose-400' }];
+      // 4. Sub-mode specific commands first (when inside a sub-mode)
+      if (st.mode === 'config-if' || st.mode === 'config-if-range') {
+        const res = handleCiscoInterfaceSubmode(node, effectiveCmd, effLower, effTokens);
+        if (res !== null) return res;
       }
 
-      if (st.mode === 'config-if') {
-        const ifaceObj = st.ifaceConfigs[st.activeIface];
-        if (lower.startsWith('ip address ') || lower.startsWith('ip add ')) {
-          const ip = tokens[2];
-          const mask = tokens[3];
-          if (!ip || !mask) return [{ text: '% Incomplete command.', cls: 'text-rose-400' }];
-          ifaceObj.ip = ip;
-          ifaceObj.mask = mask;
-          return [];
-        }
-        if (lower === 'no shutdown' || lower === 'no shut') {
-          ifaceObj.status = 'up';
-          ifaceObj.protocol = 'up';
-          return [
-            { text: `%LINK-3-UPDOWN: Interface ${st.activeIface}, changed state to up`, cls: 'text-amber-300' },
-            { text: `%LINEPROTO-5-UPDOWN: Line protocol on Interface ${st.activeIface}, changed state to up`, cls: 'text-amber-300' }
-          ];
-        }
-        if (lower === 'shutdown' || lower === 'shut') {
-          ifaceObj.status = 'administratively down';
-          ifaceObj.protocol = 'down';
-          return [
-            { text: `%LINK-5-CHANGED: Interface ${st.activeIface}, changed state to administratively down`, cls: 'text-amber-300' }
-          ];
-        }
-        return [{ text: `% Invalid input detected at '^' marker.`, cls: 'text-rose-400' }];
+      if (st.mode === 'dhcp-config') {
+        const res = handleCiscoDhcpSubmode(node, effectiveCmd, effLower, effTokens);
+        if (res !== null) return res;
       }
 
       if (st.mode === 'config-router') {
+        const res = handleCiscoRouterSubmode(node, effectiveCmd, effLower, effTokens);
+        if (res !== null) return res;
+      }
+
+      if (st.mode === 'config-vlan') {
+        const res = handleCiscoVlanSubmode(node, effectiveCmd, effLower, effTokens);
+        if (res !== null) return res;
+      }
+
+      if (st.mode === 'config-line') {
+        const res = handleCiscoLineSubmode(node, effectiveCmd, effLower, effTokens);
+        if (res !== null) return res;
+      }
+
+      if (st.mode === 'config-std-nacl' || st.mode === 'config-ext-nacl') {
+        const res = handleCiscoNamedAclSubmode(node, effectiveCmd, effLower, effTokens);
+        if (res !== null) return res;
+      }
+
+      // 5. Global Configuration Commands (Order-Independent: accessible from `(config)#` AND seamlessly jumpable from ANY sub-mode!)
+      const globalRes = handleCiscoGlobalConfig(node, effectiveCmd, effLower, effTokens);
+      if (globalRes !== null) return globalRes;
+
+      return [{ text: `% Invalid input detected at '^' marker.`, cls: 'text-rose-400' }];
+    }
+
+    function clearActiveSubcontexts(st) {
+      st.activeIface = null;
+      st.activeIfaceRange = null;
+      st.activeDhcpPool = null;
+      st.activeRouterProto = null;
+      st.activeRouterId = null;
+      st.activeVlan = null;
+      st.activeLine = null;
+      st.activeAcl = null;
+    }
+
+    // =========================================================================
+    // 9. CISCO GLOBAL CONFIGURATION HANDLER (ORDER-INDEPENDENT)
+    // =========================================================================
+    function handleCiscoGlobalConfig(node, cmd, lower, tokens) {
+      const st = node.cliState;
+
+      // Hostname
+      if (lower.startsWith('hostname ')) {
+        const newHost = tokens[1];
+        if (!newHost) return [{ text: '% Incomplete command.', cls: 'text-rose-400' }];
+        st.hostname = newHost;
+        node.name = newHost;
+        renderNodeDOM(node);
+        renderLinks();
+        return [];
+      }
+
+      // Interface Range
+      if (lower.startsWith('interface range ') || lower.startsWith('int range ') || lower.startsWith('int ra ')) {
+        const rangeArg = cmd.replace(/^(?:interface|int)\s+(?:range|ra)\s+/i, '');
+        const matchedList = resolveCiscoInterfaceRange(node, rangeArg);
+        if (!matchedList || matchedList.length === 0) {
+          return [{ text: `% Invalid interface range: ${rangeArg}`, cls: 'text-rose-400' }];
+        }
+        clearActiveSubcontexts(st);
+        st.activeIfaceRange = matchedList;
+        st.mode = 'config-if-range';
+        return [];
+      }
+
+      // Single Interface (including SVI `interface vlan <id>`)
+      if (lower.startsWith('interface ') || lower.startsWith('int ')) {
+        const rawIface = tokens.slice(1).join('');
+        const matchedIface = resolveCiscoInterface(node, rawIface);
+        if (!matchedIface) {
+          return [{ text: `% Invalid interface type and number: ${rawIface}`, cls: 'text-rose-400' }];
+        }
+        clearActiveSubcontexts(st);
+        st.activeIface = matchedIface;
+        st.mode = 'config-if';
+        return [];
+      }
+
+      // DHCP Pool (Works in ANY order — before or after interface IP!)
+      if (lower.startsWith('ip dhcp pool ')) {
+        const poolName = tokens.slice(3).join('_');
+        if (!poolName) return [{ text: '% Incomplete command.', cls: 'text-rose-400' }];
+        if (!st.dhcpPools[poolName]) {
+          st.dhcpPools[poolName] = {
+            network: '',
+            mask: '',
+            defaultRouter: '',
+            dnsServer: '',
+            domainName: '',
+            lease: '1 day'
+          };
+        }
+        clearActiveSubcontexts(st);
+        st.activeDhcpPool = poolName;
+        st.mode = 'dhcp-config';
+        return [];
+      }
+
+      if (lower.startsWith('no ip dhcp pool ')) {
+        const poolName = tokens.slice(4).join('_');
+        delete st.dhcpPools[poolName];
+        return [];
+      }
+
+      // DHCP Excluded Addresses
+      if (lower.startsWith('ip dhcp excluded-address ') || lower.startsWith('ip dhcp excluded ')) {
+        const startIp = tokens[3];
+        const endIp = tokens[4] || startIp;
+        if (!startIp) return [{ text: '% Incomplete command.', cls: 'text-rose-400' }];
+        st.dhcpExcluded.push({ start: startIp, end: endIp });
+        return [];
+      }
+
+      if (lower.startsWith('no ip dhcp excluded-address ')) {
+        const startIp = tokens[4];
+        st.dhcpExcluded = st.dhcpExcluded.filter(e => e.start !== startIp);
+        return [];
+      }
+
+      // Static Routes & IP Routing
+      if (lower === 'ip routing') {
+        st.ipRouting = true;
+        return [];
+      }
+      if (lower === 'no ip routing') {
+        st.ipRouting = false;
+        return [];
+      }
+      if (lower.startsWith('ip route ')) {
+        if (tokens.length < 5) return [{ text: '% Incomplete command. Usage: ip route <dest> <mask> <next-hop>', cls: 'text-rose-400' }];
+        st.staticRoutes.push({
+          dest: tokens[2],
+          mask: tokens[3],
+          nextHop: tokens[4],
+          ad: tokens[5] || '1'
+        });
+        return [];
+      }
+      if (lower.startsWith('no ip route ')) {
+        const dest = tokens[3];
+        st.staticRoutes = st.staticRoutes.filter(r => r.dest !== dest);
+        return [];
+      }
+
+      // Dynamic Routing Protocols (OSPF, EIGRP, BGP, RIP)
+      if (lower.startsWith('router ospf ')) {
+        const pid = tokens[2];
+        if (!pid || isNaN(pid)) return [{ text: '% Incomplete command.', cls: 'text-rose-400' }];
+        st.ospf.processId = pid;
+        clearActiveSubcontexts(st);
+        st.activeRouterProto = 'ospf';
+        st.activeRouterId = pid;
+        st.mode = 'config-router';
+        return [];
+      }
+      if (lower.startsWith('router eigrp ')) {
+        const asn = tokens[2];
+        if (!asn || isNaN(asn)) return [{ text: '% Incomplete command.', cls: 'text-rose-400' }];
+        st.eigrp.asNumber = asn;
+        clearActiveSubcontexts(st);
+        st.activeRouterProto = 'eigrp';
+        st.activeRouterId = asn;
+        st.mode = 'config-router';
+        return [];
+      }
+      if (lower.startsWith('router bgp ')) {
+        const asn = tokens[2];
+        if (!asn || isNaN(asn)) return [{ text: '% Incomplete command.', cls: 'text-rose-400' }];
+        st.bgp.asNumber = asn;
+        clearActiveSubcontexts(st);
+        st.activeRouterProto = 'bgp';
+        st.activeRouterId = asn;
+        st.mode = 'config-router';
+        return [];
+      }
+      if (lower === 'router rip') {
+        st.rip.enabled = true;
+        clearActiveSubcontexts(st);
+        st.activeRouterProto = 'rip';
+        st.mode = 'config-router';
+        return [];
+      }
+
+      // VLAN Creation (supports single `vlan 10` and comma/hyphen lists `vlan 10,20,30`)
+      if (lower.startsWith('vlan ')) {
+        const rawVlan = tokens[1];
+        if (!rawVlan) return [{ text: '% Incomplete command.', cls: 'text-rose-400' }];
+        const vlanIds = expandVlanList(rawVlan);
+        if (vlanIds.length === 0) return [{ text: '% Invalid VLAN ID.', cls: 'text-rose-400' }];
+        vlanIds.forEach(vid => {
+          if (!st.vlans[vid]) {
+            st.vlans[vid] = { name: `VLAN${vid.padStart(4, '0')}`, status: 'active' };
+          }
+        });
+        clearActiveSubcontexts(st);
+        st.activeVlan = vlanIds[0];
+        st.mode = 'config-vlan';
+        return [];
+      }
+
+      // Spanning-Tree Global
+      if (lower.startsWith('spanning-tree mode ')) {
+        st.stpMode = tokens[2] || 'rapid-pvst';
+        return [];
+      }
+
+      // Standard & Extended ACLs
+      if (lower.startsWith('access-list ')) {
+        const aclId = tokens[1];
+        const rule = tokens.slice(2).join(' ');
+        if (!aclId || !rule) return [{ text: '% Incomplete command.', cls: 'text-rose-400' }];
+        if (!st.acls[aclId]) st.acls[aclId] = { type: parseInt(aclId, 10) >= 100 ? 'extended' : 'standard', entries: [] };
+        st.acls[aclId].entries.push(rule);
+        return [];
+      }
+
+      if (lower.startsWith('ip access-list ')) {
+        const aclType = tokens[2]?.toLowerCase();
+        const aclName = tokens[3];
+        if (!aclName || (aclType !== 'standard' && aclType !== 'extended')) {
+          return [{ text: '% Incomplete command. Usage: ip access-list standard|extended <name>', cls: 'text-rose-400' }];
+        }
+        if (!st.acls[aclName]) st.acls[aclName] = { type: aclType, entries: [] };
+        clearActiveSubcontexts(st);
+        st.activeAcl = aclName;
+        st.mode = aclType === 'extended' ? 'config-ext-nacl' : 'config-std-nacl';
+        return [];
+      }
+
+      // NAT Overload & Static NAT
+      if (lower.startsWith('ip nat inside source ')) {
+        st.natRules.push(cmd);
+        return [];
+      }
+
+      // Security, Domain, SSH, Users, Lines & Banners
+      if (lower.startsWith('ip domain-name ') || lower.startsWith('ip domain name ')) {
+        st.domainName = tokens[tokens.length - 1];
+        return [];
+      }
+      if (lower.startsWith('enable secret ') || lower.startsWith('enable password ')) {
+        st.enableSecret = tokens[2] || 'cisco';
+        return [];
+      }
+      if (lower === 'service password-encryption') {
+        st.servicePasswordEncryption = true;
+        return [];
+      }
+      if (lower.startsWith('username ')) {
+        const uname = tokens[1];
+        const pass = tokens[tokens.length - 1];
+        if (uname) st.users[uname] = pass;
+        return [];
+      }
+      if (lower.startsWith('crypto key generate rsa')) {
+        return [
+          { text: `The name for the keys will be: ${st.hostname}.${st.domainName}`, cls: 'text-slate-400' },
+          { text: `% Generating 2048 bit RSA keys, keys will be non-exportable...`, cls: 'text-slate-400' },
+          { text: `[OK] (elapsed time was 0 seconds)`, cls: 'text-emerald-400' }
+        ];
+      }
+      if (lower.startsWith('ip ssh version ')) {
+        return [];
+      }
+      if (lower === 'no ip domain-lookup' || lower === 'no ip domain lookup') {
+        return [];
+      }
+      if (lower.startsWith('banner motd ')) {
+        st.bannerMotd = cmd.slice(12);
+        return [];
+      }
+      if (lower.startsWith('line ')) {
+        const lineKey = tokens.slice(1).join(' ');
+        if (!st.lines[lineKey]) {
+          st.lines[lineKey] = { password: '', login: false, transport: 'all', loggingSync: false };
+        }
+        clearActiveSubcontexts(st);
+        st.activeLine = lineKey;
+        st.mode = 'config-line';
+        return [];
+      }
+
+      return null;
+    }
+
+    function expandVlanList(str) {
+      const result = [];
+      str.split(',').forEach(part => {
+        if (part.includes('-')) {
+          const [a, b] = part.split('-').map(Number);
+          if (!isNaN(a) && !isNaN(b) && b >= a && b - a <= 100) {
+            for (let i = a; i <= b; i++) result.push(String(i));
+          }
+        } else {
+          const n = parseInt(part, 10);
+          if (!isNaN(n) && n >= 1 && n <= 4094) result.push(String(n));
+        }
+      });
+      return result;
+    }
+
+    // =========================================================================
+    // 10. CISCO SUB-MODE HANDLERS (INTERFACE, DHCP, ROUTER, VLAN, LINE, ACL)
+    // =========================================================================
+    function handleCiscoInterfaceSubmode(node, cmd, lower, tokens) {
+      const st = node.cliState;
+      const targetIfaces = st.mode === 'config-if-range' ? st.activeIfaceRange : [st.activeIface];
+
+      if (lower.startsWith('ip address ') || lower.startsWith('ip add ')) {
+        if (tokens[2]?.toLowerCase() === 'dhcp') {
+          targetIfaces.forEach(ifName => {
+            const cfg = st.ifaceConfigs[ifName];
+            cfg.dhcpClient = true;
+            cfg.ip = '192.168.1.50';
+            cfg.mask = '255.255.255.0';
+          });
+          return [];
+        }
+        let ip = tokens[2];
+        let mask = tokens[3];
+        if (ip && ip.includes('/')) {
+          const [addr, prefix] = ip.split('/');
+          ip = addr;
+          mask = cidrToMask(prefix);
+        }
+        if (!ip || !mask) return [{ text: '% Incomplete command. Usage: ip address <ip> <mask>', cls: 'text-rose-400' }];
+        targetIfaces.forEach(ifName => {
+          st.ifaceConfigs[ifName].ip = ip;
+          st.ifaceConfigs[ifName].mask = mask;
+          st.ifaceConfigs[ifName].dhcpClient = false;
+        });
+        return [];
+      }
+
+      if (lower === 'no ip address' || lower === 'no ip add') {
+        targetIfaces.forEach(ifName => {
+          st.ifaceConfigs[ifName].ip = 'unassigned';
+          st.ifaceConfigs[ifName].mask = '';
+        });
+        return [];
+      }
+
+      if (lower.startsWith('ip helper-address ')) {
+        const helper = tokens[2];
+        if (!helper) return [{ text: '% Incomplete command.', cls: 'text-rose-400' }];
+        targetIfaces.forEach(ifName => { st.ifaceConfigs[ifName].helperAddress = helper; });
+        return [];
+      }
+
+      if (lower === 'no shutdown' || lower === 'no shut') {
+        const logs = [];
+        targetIfaces.forEach(ifName => {
+          st.ifaceConfigs[ifName].status = 'up';
+          st.ifaceConfigs[ifName].protocol = 'up';
+          logs.push({ text: `%LINK-3-UPDOWN: Interface ${ifName}, changed state to up`, cls: 'text-amber-300' });
+          logs.push({ text: `%LINEPROTO-5-UPDOWN: Line protocol on Interface ${ifName}, changed state to up`, cls: 'text-amber-300' });
+        });
+        renderLinks();
+        return logs;
+      }
+
+      if (lower === 'shutdown' || lower === 'shut') {
+        const logs = [];
+        targetIfaces.forEach(ifName => {
+          st.ifaceConfigs[ifName].status = 'administratively down';
+          st.ifaceConfigs[ifName].protocol = 'down';
+          logs.push({ text: `%LINK-5-CHANGED: Interface ${ifName}, changed state to administratively down`, cls: 'text-amber-300' });
+        });
+        renderLinks();
+        return logs;
+      }
+
+      if (lower.startsWith('description ') || lower.startsWith('desc ')) {
+        const desc = tokens.slice(1).join(' ');
+        targetIfaces.forEach(ifName => { st.ifaceConfigs[ifName].description = desc; });
+        return [];
+      }
+
+      if (lower.startsWith('switchport mode ') || lower.startsWith('sw mode ') || lower.startsWith('sw mo ')) {
+        const swMode = tokens[2]?.toLowerCase();
+        if (!swMode) return [{ text: '% Incomplete command.', cls: 'text-rose-400' }];
+        targetIfaces.forEach(ifName => { st.ifaceConfigs[ifName].switchportMode = swMode; });
+        return [];
+      }
+
+      if (lower.startsWith('switchport access vlan ') || lower.startsWith('sw acc vlan ')) {
+        const vid = tokens[3];
+        if (!vid) return [{ text: '% Incomplete command.', cls: 'text-rose-400' }];
+        if (!st.vlans[vid]) st.vlans[vid] = { name: `VLAN${vid.padStart(4, '0')}`, status: 'active' };
+        targetIfaces.forEach(ifName => {
+          st.ifaceConfigs[ifName].switchportMode = 'access';
+          st.ifaceConfigs[ifName].accessVlan = vid;
+        });
+        return [];
+      }
+
+      if (lower.startsWith('switchport trunk allowed vlan ')) {
+        const allowed = tokens.slice(4).join(' ');
+        targetIfaces.forEach(ifName => { st.ifaceConfigs[ifName].trunkAllowedVlans = allowed; });
+        return [];
+      }
+
+      if (lower.startsWith('switchport trunk native vlan ')) {
+        const vid = tokens[4];
+        targetIfaces.forEach(ifName => { st.ifaceConfigs[ifName].nativeVlan = vid; });
+        return [];
+      }
+
+      if (lower.startsWith('switchport port-security')) {
+        targetIfaces.forEach(ifName => { st.ifaceConfigs[ifName].portSecurity = cmd; });
+        return [];
+      }
+
+      if (lower === 'spanning-tree portfast') {
+        targetIfaces.forEach(ifName => { st.ifaceConfigs[ifName].portfast = true; });
+        return [];
+      }
+
+      if (lower.startsWith('channel-group ')) {
+        targetIfaces.forEach(ifName => { st.ifaceConfigs[ifName].channelGroup = tokens[1]; });
+        return [];
+      }
+
+      if (lower.startsWith('ip access-group ')) {
+        const acl = tokens[2];
+        const dir = tokens[3]?.toLowerCase();
+        if (!acl || (dir !== 'in' && dir !== 'out')) return [{ text: '% Incomplete command.', cls: 'text-rose-400' }];
+        targetIfaces.forEach(ifName => {
+          if (dir === 'in') st.ifaceConfigs[ifName].aclIn = acl;
+          else st.ifaceConfigs[ifName].aclOut = acl;
+        });
+        return [];
+      }
+
+      if (lower === 'ip nat inside' || lower === 'ip nat outside') {
+        const role = tokens[2];
+        targetIfaces.forEach(ifName => { st.ifaceConfigs[ifName].natRole = role; });
+        return [];
+      }
+
+      return null; // Fall through to Global Config for order-independent jumping!
+    }
+
+    function handleCiscoDhcpSubmode(node, cmd, lower, tokens) {
+      const st = node.cliState;
+      const pool = st.dhcpPools[st.activeDhcpPool];
+      if (!pool) return null;
+
+      if (lower.startsWith('network ') || lower.startsWith('net ')) {
+        let netIp = tokens[1];
+        let mask = tokens[2];
+        if (netIp && netIp.includes('/')) {
+          const [addr, prefix] = netIp.split('/');
+          netIp = addr;
+          mask = cidrToMask(prefix);
+        }
+        if (!netIp || !mask) return [{ text: '% Incomplete command. Usage: network <ip> <mask>', cls: 'text-rose-400' }];
+        pool.network = netIp;
+        pool.mask = mask;
+        return [];
+      }
+
+      if (lower.startsWith('default-router ') || lower.startsWith('default ')) {
+        const gw = tokens[1];
+        if (!gw) return [{ text: '% Incomplete command.', cls: 'text-rose-400' }];
+        pool.defaultRouter = gw;
+        return [];
+      }
+
+      if (lower.startsWith('dns-server ') || lower.startsWith('dns ')) {
+        const dns = tokens.slice(1).join(' ');
+        if (!dns) return [{ text: '% Incomplete command.', cls: 'text-rose-400' }];
+        pool.dnsServer = dns;
+        return [];
+      }
+
+      if (lower.startsWith('domain-name ')) {
+        const dom = tokens[1];
+        if (!dom) return [{ text: '% Incomplete command.', cls: 'text-rose-400' }];
+        pool.domainName = dom;
+        return [];
+      }
+
+      if (lower.startsWith('lease ')) {
+        pool.lease = tokens.slice(1).join(' ') || '1 day';
+        return [];
+      }
+
+      return null; // Fall through to Global Config for order-independent jumping!
+    }
+
+    function handleCiscoRouterSubmode(node, cmd, lower, tokens) {
+      const st = node.cliState;
+      const proto = st.activeRouterProto;
+
+      if (proto === 'ospf') {
+        if (lower.startsWith('router-id ')) {
+          st.ospf.routerId = tokens[1];
+          return [];
+        }
         if (lower.startsWith('network ')) {
           if (tokens.length < 5 || tokens[3].toLowerCase() !== 'area') {
             return [{ text: '% Incomplete command. Usage: network <ip> <wildcard> area <id>', cls: 'text-rose-400' }];
           }
           const entry = `network ${tokens[1]} ${tokens[2]} area ${tokens[4]}`;
-          if (!st.ospf.networks.includes(entry)) {
-            st.ospf.networks.push(entry);
-          }
+          if (!st.ospf.networks.includes(entry)) st.ospf.networks.push(entry);
           return [];
         }
-        return [{ text: `% Invalid input detected at '^' marker.`, cls: 'text-rose-400' }];
-      }
-
-      if (st.mode === 'config-vlan') {
-        if (lower.startsWith('name ')) {
-          const vname = tokens[1];
-          if (!vname) return [{ text: '% Incomplete command.', cls: 'text-rose-400' }];
-          st.vlans[st.activeVlan].name = vname;
+        if (lower.startsWith('passive-interface ')) {
+          st.ospf.passiveInterfaces.push(tokens[1]);
           return [];
         }
-        return [{ text: `% Invalid input detected at '^' marker.`, cls: 'text-rose-400' }];
+        if (lower === 'default-information originate') {
+          st.ospf.defaultOriginate = true;
+          return [];
+        }
       }
 
-      return [{ text: `% Invalid input detected at '^' marker.`, cls: 'text-rose-400' }];
+      if (proto === 'eigrp') {
+        if (lower.startsWith('network ')) {
+          const entry = tokens.slice(1).join(' ');
+          if (!st.eigrp.networks.includes(entry)) st.eigrp.networks.push(entry);
+          return [];
+        }
+        if (lower === 'no auto-summary') {
+          st.eigrp.autoSummary = false;
+          return [];
+        }
+      }
+
+      if (proto === 'bgp') {
+        if (lower.startsWith('bgp router-id ')) {
+          st.bgp.routerId = tokens[2];
+          return [];
+        }
+        if (lower.startsWith('neighbor ')) {
+          st.bgp.neighbors.push(tokens.slice(1).join(' '));
+          return [];
+        }
+        if (lower.startsWith('network ')) {
+          st.bgp.networks.push(tokens.slice(1).join(' '));
+          return [];
+        }
+      }
+
+      if (proto === 'rip') {
+        if (lower.startsWith('version ')) {
+          st.rip.version = parseInt(tokens[1], 10) || 2;
+          return [];
+        }
+        if (lower.startsWith('network ')) {
+          if (!st.rip.networks.includes(tokens[1])) st.rip.networks.push(tokens[1]);
+          return [];
+        }
+        if (lower === 'no auto-summary') return [];
+      }
+
+      return null;
+    }
+
+    function handleCiscoVlanSubmode(node, cmd, lower, tokens) {
+      const st = node.cliState;
+      if (lower.startsWith('name ')) {
+        const vname = tokens[1];
+        if (!vname) return [{ text: '% Incomplete command.', cls: 'text-rose-400' }];
+        if (st.vlans[st.activeVlan]) st.vlans[st.activeVlan].name = vname;
+        return [];
+      }
+      return null;
+    }
+
+    function handleCiscoLineSubmode(node, cmd, lower, tokens) {
+      const st = node.cliState;
+      const lineObj = st.lines[st.activeLine];
+      if (!lineObj) return null;
+
+      if (lower.startsWith('password ')) {
+        lineObj.password = tokens[1] || 'cisco';
+        return [];
+      }
+      if (lower === 'login' || lower === 'login local') {
+        lineObj.login = lower;
+        return [];
+      }
+      if (lower.startsWith('transport input ')) {
+        lineObj.transport = tokens.slice(2).join(' ');
+        return [];
+      }
+      if (lower === 'logging synchronous') {
+        lineObj.loggingSync = true;
+        return [];
+      }
+      if (lower.startsWith('exec-timeout ')) {
+        lineObj.execTimeout = tokens.slice(1).join(' ');
+        return [];
+      }
+      return null;
+    }
+
+    function handleCiscoNamedAclSubmode(node, cmd, lower, tokens) {
+      const st = node.cliState;
+      const aclObj = st.acls[st.activeAcl];
+      if (!aclObj) return null;
+
+      if (lower.startsWith('permit ') || lower.startsWith('deny ') || lower.startsWith('remark ')) {
+        aclObj.entries.push(cmd);
+        return [];
+      }
+      return null;
+    }
+
+    // =========================================================================
+    // 11. CISCO VERIFICATION (`SHOW`) & DIAGNOSTIC COMMANDS
+    // =========================================================================
+    function handleCiscoShowCommands(node, lower, tokens) {
+      const st = node.cliState;
+
+      if (lower.includes('ip int')) {
+        return formatCiscoIpIntBrief(node);
+      }
+      if (lower.includes('run')) {
+        return formatCiscoRunningConfig(node);
+      }
+      if (lower.includes('ip dhcp pool')) {
+        return formatCiscoDhcpPools(node);
+      }
+      if (lower.includes('ip dhcp bind')) {
+        return formatCiscoDhcpBindings(node);
+      }
+      if (lower.includes('ip route')) {
+        return formatCiscoIpRoute(node);
+      }
+      if (lower.includes('vlan')) {
+        return formatCiscoVlanBrief(node);
+      }
+      if (lower.includes('cdp nei')) {
+        return formatCiscoCdpNeighbors(node);
+      }
+      if (lower.includes('access-list')) {
+        return formatCiscoAccessLists(node);
+      }
+      if (lower.includes('ip nat trans')) {
+        return formatCiscoNatTranslations(node);
+      }
+      if (lower.includes('mac address') || lower.includes('mac-address')) {
+        return formatCiscoMacTable(node);
+      }
+      if (lower.includes('ver')) {
+        return [
+          { text: `Cisco IOS Software, ${DEVICE_TEMPLATES[node.type].label} (${node.qcow2})` },
+          { text: `System image file is "flash:${node.qcow2}"` },
+          { text: `Processor board ID NFG${node.id.slice(-6).toUpperCase()}` },
+          { text: `${node.interfaces.length} Gigabit Ethernet interfaces` },
+          { text: `Configuration register is 0x2102` }
+        ];
+      }
+      if (lower.startsWith('show int')) {
+        return formatCiscoInterfacesDetail(node);
+      }
+
+      return [{ text: `% Invalid show command: ${tokens.join(' ')}`, cls: 'text-rose-400' }];
     }
 
     function formatCiscoIpIntBrief(node) {
@@ -1578,10 +2721,149 @@
         const col1 = iface.padEnd(23, ' ');
         const col2 = cfg.ip.padEnd(16, ' ');
         const col3 = 'YES '.padEnd(4, ' ');
-        const col4 = (cfg.ip === 'unassigned' ? 'unset' : 'manual').padEnd(7, ' ');
+        const col4 = (cfg.dhcpClient ? 'DHCP' : (cfg.ip === 'unassigned' ? 'unset' : 'manual')).padEnd(7, ' ');
         const col5 = cfg.status.padEnd(22, ' ');
         const col6 = cfg.protocol;
         lines.push({ text: `${col1}${col2}${col3}${col4}${col5}${col6}`, cls: 'text-slate-200 whitespace-pre' });
+      });
+      return lines;
+    }
+
+    function formatCiscoInterfacesDetail(node) {
+      const lines = [];
+      node.interfaces.forEach(iface => {
+        const cfg = node.cliState.ifaceConfigs[iface];
+        lines.push({ text: `${iface} is ${cfg.status}, line protocol is ${cfg.protocol}`, cls: 'text-slate-200 font-semibold' });
+        if (cfg.description) lines.push({ text: `  Description: ${cfg.description}` });
+        if (cfg.ip !== 'unassigned') lines.push({ text: `  Internet address is ${cfg.ip}/${cfg.mask}` });
+        lines.push({ text: `  MTU 1500 bytes, BW 1000000 Kbit/sec, DLY 10 usec` });
+      });
+      return lines;
+    }
+
+    function formatCiscoDhcpPools(node) {
+      const pools = node.cliState.dhcpPools;
+      const entries = Object.entries(pools);
+      if (entries.length === 0) {
+        return [{ text: 'No DHCP pools configured.', cls: 'text-slate-400' }];
+      }
+      const lines = [];
+      entries.forEach(([name, p]) => {
+        const activeCount = node.cliState.dhcpBindings.filter(b => b.pool === name).length;
+        lines.push({ text: `Pool ${name} :`, cls: 'text-emerald-400 font-semibold' });
+        lines.push({ text: ` Utilization mark (high/low)    : 100 / 0` });
+        lines.push({ text: ` Subnet size (first/next)       : 0 / 0` });
+        lines.push({ text: ` Total addresses                : 254` });
+        lines.push({ text: ` Leased addresses               : ${activeCount}` });
+        lines.push({ text: ` Excluded addresses             : ${node.cliState.dhcpExcluded.length}` });
+        lines.push({ text: ` Subnet                         : ${p.network || 'unset'} ${p.mask || ''}` });
+        lines.push({ text: ` Default router                 : ${p.defaultRouter || 'unset'}` });
+        lines.push({ text: ` DNS server                     : ${p.dnsServer || 'unset'}` });
+        if (p.domainName) lines.push({ text: ` Domain name                    : ${p.domainName}` });
+        lines.push({ text: '' });
+      });
+      return lines;
+    }
+
+    function formatCiscoDhcpBindings(node) {
+      const bindings = node.cliState.dhcpBindings;
+      const lines = [
+        { text: 'Bindings from all pools not associated with VRF:', cls: 'text-slate-300' },
+        { text: 'IP address          Client-ID/              Lease expiration        Type', cls: 'text-slate-300 font-semibold whitespace-pre' },
+        { text: '                    Hardware address/', cls: 'text-slate-400 whitespace-pre' },
+        { text: '                    User name', cls: 'text-slate-400 whitespace-pre' }
+      ];
+      if (bindings.length === 0) {
+        lines.push({ text: '(No active DHCP bindings yet — run ipconfig /renew on a connected PC)', cls: 'text-slate-400' });
+        return lines;
+      }
+      bindings.forEach(b => {
+        lines.push({
+          text: `${b.ip.padEnd(20, ' ')}${b.mac.padEnd(24, ' ')}${b.lease.padEnd(24, ' ')}${b.type}`,
+          cls: 'text-emerald-300 whitespace-pre'
+        });
+      });
+      return lines;
+    }
+
+    function formatCiscoIpRoute(node) {
+      const st = node.cliState;
+      const lines = [
+        { text: 'Codes: L - local, C - connected, S - static, R - RIP, M - mobile, B - BGP', cls: 'text-slate-400' },
+        { text: '       D - EIGRP, O - OSPF, * - candidate default', cls: 'text-slate-400' },
+        { text: '' }
+      ];
+      node.interfaces.forEach(iface => {
+        const cfg = st.ifaceConfigs[iface];
+        if (cfg.ip !== 'unassigned' && cfg.status === 'up') {
+          lines.push({ text: `C    ${cfg.ip}/24 is directly connected, ${iface}`, cls: 'text-slate-200 whitespace-pre' });
+          lines.push({ text: `L    ${cfg.ip}/32 is directly connected, ${iface}`, cls: 'text-slate-200 whitespace-pre' });
+        }
+      });
+      st.staticRoutes.forEach(r => {
+        const code = r.dest === '0.0.0.0' ? 'S*  ' : 'S   ';
+        lines.push({ text: `${code} ${r.dest} [${r.ad}/0] via ${r.nextHop}`, cls: 'text-emerald-300 whitespace-pre' });
+      });
+      st.ospf.networks.forEach(net => {
+        lines.push({ text: `O    ${net} [110/2] via connected`, cls: 'text-cyan-300 whitespace-pre' });
+      });
+      return lines;
+    }
+
+    function formatCiscoCdpNeighbors(node) {
+      const lines = [
+        { text: 'Device ID        Local Intrfce     Holdtme    Capability  Platform  Port ID', cls: 'text-slate-300 font-semibold whitespace-pre' }
+      ];
+      const adj = links.filter(l => l.source === node.id || l.target === node.id);
+      adj.forEach(l => {
+        if (!isLinkActive(l)) return;
+        const isSrc = l.source === node.id;
+        const peer = nodes.find(n => n.id === (isSrc ? l.target : l.source));
+        if (!peer || peer.vendor === 'host') return;
+        const localInt = isSrc ? l.sourceInterface : l.targetInterface;
+        const remoteInt = isSrc ? l.targetInterface : l.sourceInterface;
+        lines.push({
+          text: `${peer.cliState.hostname.padEnd(17, ' ')}${localInt.padEnd(18, ' ')}154        R S I       NetForge  ${remoteInt}`,
+          cls: 'text-slate-200 whitespace-pre'
+        });
+      });
+      return lines;
+    }
+
+    function formatCiscoAccessLists(node) {
+      const entries = Object.entries(node.cliState.acls);
+      if (entries.length === 0) return [{ text: 'No access-lists configured.', cls: 'text-slate-400' }];
+      const lines = [];
+      entries.forEach(([name, acl]) => {
+        lines.push({ text: `${acl.type === 'extended' ? 'Extended' : 'Standard'} IP access list ${name}`, cls: 'text-slate-300 font-semibold' });
+        acl.entries.forEach((rule, idx) => {
+          lines.push({ text: `    ${(idx + 1) * 10} ${rule}`, cls: 'text-slate-200 whitespace-pre' });
+        });
+      });
+      return lines;
+    }
+
+    function formatCiscoNatTranslations(node) {
+      return [
+        { text: 'Pro Inside global      Inside local       Outside local      Outside global', cls: 'text-slate-300 font-semibold whitespace-pre' },
+        { text: node.cliState.natRules.length > 0 ? 'icmp 203.0.113.1:1024  192.168.10.10:1024 8.8.8.8:1024       8.8.8.8:1024' : '(No active NAT translations)', cls: 'text-slate-200 whitespace-pre' }
+      ];
+    }
+
+    function formatCiscoMacTable(node) {
+      const lines = [
+        { text: '          Mac Address Table', cls: 'text-slate-300 font-semibold' },
+        { text: '-------------------------------------------', cls: 'text-slate-500' },
+        { text: 'Vlan    Mac Address       Type        Ports', cls: 'text-slate-300 font-semibold whitespace-pre' }
+      ];
+      node.interfaces.forEach((iface, idx) => {
+        const cfg = node.cliState.ifaceConfigs[iface];
+        if (cfg.status === 'up') {
+          lines.push({
+            text: `${(cfg.accessVlan || '1').padEnd(8, ' ')}5254.0012.000${idx + 1}    DYNAMIC     ${iface}`,
+            cls: 'text-slate-200 whitespace-pre'
+          });
+        }
       });
       return lines;
     }
@@ -1591,28 +2873,88 @@
       const lines = [
         'Building configuration...',
         '!',
+        'version 15.9',
+        '!',
         `hostname ${st.hostname}`,
         '!'
       ];
+      if (st.enableSecret) lines.push(`enable secret 5 $1$mERr$hx5rVt7rPNoS4wqbXKX7m0`, '!');
+      if (st.domainName) lines.push(`ip domain-name ${st.domainName}`);
+      Object.entries(st.users).forEach(([u, p]) => lines.push(`username ${u} privilege 15 secret ${p}`));
+
+      st.dhcpExcluded.forEach(ex => {
+        lines.push(`ip dhcp excluded-address ${ex.start}${ex.end && ex.end !== ex.start ? ' ' + ex.end : ''}`);
+      });
+      Object.entries(st.dhcpPools).forEach(([name, p]) => {
+        lines.push('!');
+        lines.push(`ip dhcp pool ${name}`);
+        if (p.network) lines.push(` network ${p.network} ${p.mask}`);
+        if (p.defaultRouter) lines.push(` default-router ${p.defaultRouter}`);
+        if (p.dnsServer) lines.push(` dns-server ${p.dnsServer}`);
+        if (p.domainName) lines.push(` domain-name ${p.domainName}`);
+      });
+
+      if (Object.keys(st.vlans).length > 1) {
+        lines.push('!');
+        Object.entries(st.vlans).forEach(([vid, v]) => {
+          if (vid !== '1') {
+            lines.push(`vlan ${vid}`);
+            lines.push(` name ${v.name}`);
+          }
+        });
+      }
+
+      lines.push('!');
       node.interfaces.forEach(iface => {
         const cfg = st.ifaceConfigs[iface];
         lines.push(`interface ${iface}`);
-        if (cfg.ip !== 'unassigned') {
+        if (cfg.description) lines.push(` description ${cfg.description}`);
+        if (cfg.switchportMode === 'trunk') {
+          lines.push(` switchport mode trunk`);
+          if (cfg.trunkAllowedVlans !== 'all') lines.push(` switchport trunk allowed vlan ${cfg.trunkAllowedVlans}`);
+        } else if (cfg.switchportMode === 'access' && cfg.accessVlan !== '1') {
+          lines.push(` switchport mode access`);
+          lines.push(` switchport access vlan ${cfg.accessVlan}`);
+        }
+        if (cfg.dhcpClient) {
+          lines.push(` ip address dhcp`);
+        } else if (cfg.ip !== 'unassigned') {
           lines.push(` ip address ${cfg.ip} ${cfg.mask}`);
-        } else {
+        } else if (cfg.switchportMode === 'routed') {
           lines.push(' no ip address');
         }
-        if (cfg.status !== 'up') {
-          lines.push(' shutdown');
-        }
+        if (cfg.helperAddress) lines.push(` ip helper-address ${cfg.helperAddress}`);
+        if (cfg.natRole) lines.push(` ip nat ${cfg.natRole}`);
+        if (cfg.aclIn) lines.push(` ip access-group ${cfg.aclIn} in`);
+        if (cfg.aclOut) lines.push(` ip access-group ${cfg.aclOut} out`);
+        if (cfg.portfast) lines.push(` spanning-tree portfast`);
+        if (cfg.status !== 'up') lines.push(' shutdown');
         lines.push('!');
       });
+
       if (st.ospf.processId) {
         lines.push(`router ospf ${st.ospf.processId}`);
+        if (st.ospf.routerId) lines.push(` router-id ${st.ospf.routerId}`);
         st.ospf.networks.forEach(net => lines.push(` ${net}`));
         lines.push('!');
       }
-      lines.push('end');
+      if (st.eigrp.asNumber) {
+        lines.push(`router eigrp ${st.eigrp.asNumber}`);
+        st.eigrp.networks.forEach(net => lines.push(` network ${net}`));
+        lines.push('!');
+      }
+      if (st.bgp.asNumber) {
+        lines.push(`router bgp ${st.bgp.asNumber}`);
+        st.bgp.neighbors.forEach(nb => lines.push(` neighbor ${nb}`));
+        st.bgp.networks.forEach(net => lines.push(` network ${net}`));
+        lines.push('!');
+      }
+
+      st.staticRoutes.forEach(r => lines.push(`ip route ${r.dest} ${r.mask} ${r.nextHop}`));
+      st.natRules.forEach(nr => lines.push(nr));
+      if (st.bannerMotd) lines.push(`banner motd ${st.bannerMotd}`);
+
+      lines.push('!', 'end');
       return lines.map(t => ({ text: t, cls: 'text-slate-300 whitespace-pre' }));
     }
 
@@ -1622,29 +2964,52 @@
         { text: '---- -------------------------------- --------- -------------------------------', cls: 'text-slate-400 whitespace-pre' }
       ];
       for (const [vid, vinfo] of Object.entries(node.cliState.vlans)) {
+        const assignedPorts = node.interfaces.filter(iface => {
+          const cfg = node.cliState.ifaceConfigs[iface];
+          return cfg.switchportMode === 'access' && cfg.accessVlan === vid;
+        }).join(', ');
         const c1 = vid.padEnd(5, ' ');
         const c2 = vinfo.name.padEnd(33, ' ');
         const c3 = vinfo.status.padEnd(10, ' ');
-        lines.push({ text: `${c1}${c2}${c3}`, cls: 'text-slate-200 whitespace-pre' });
+        lines.push({ text: `${c1}${c2}${c3}${assignedPorts}`, cls: 'text-slate-200 whitespace-pre' });
       }
       return lines;
     }
 
-    function runCiscoPing(target) {
-      const dest = target || '127.0.0.1';
+    function runCiscoPing(node, target) {
+      if (!target) return [{ text: '% Incomplete command. Usage: ping <ip_address>', cls: 'text-rose-400' }];
+      const ok = checkPingReachability(node, target);
       return [
         { text: `Type escape sequence to abort.` },
-        { text: `Sending 5, 100-byte ICMP Echos to ${dest}, timeout is 2 seconds:` },
-        { text: `!!!!!`, cls: 'text-emerald-400 font-bold' },
-        { text: `Success rate is 100 percent (5/5), round-trip min/avg/max = 1/1/2 ms` }
+        { text: `Sending 5, 100-byte ICMP Echos to ${target}, timeout is 2 seconds:` },
+        ok
+          ? { text: `!!!!!`, cls: 'text-emerald-400 font-bold' }
+          : { text: `.....`, cls: 'text-amber-400 font-bold' },
+        ok
+          ? { text: `Success rate is 100 percent (5/5), round-trip min/avg/max = 1/1/2 ms` }
+          : { text: `Success rate is 0 percent (0/5)` }
       ];
     }
 
-    // Export & Import JSON Topology
+    function runCiscoTraceroute(node, target) {
+      if (!target) return [{ text: '% Incomplete command. Usage: traceroute <ip_address>', cls: 'text-rose-400' }];
+      const ok = checkPingReachability(node, target);
+      return [
+        { text: `Type escape sequence to abort.` },
+        { text: `Tracing the route to ${target}` },
+        ok
+          ? { text: `  1 ${target} 1 msec 1 msec 2 msec`, cls: 'text-emerald-400' }
+          : { text: `  1  *  *  *`, cls: 'text-amber-400' }
+      ];
+    }
+
+    // =========================================================================
+    // 12. EXPORT & IMPORT JSON TOPOLOGY
+    // =========================================================================
     function exportTopologyJSON() {
       const exportData = {
         app: 'NetForge Topology Studio',
-        version: '4.2',
+        version: '5.0',
         timestamp: new Date().toISOString(),
         topology: {
           nodes: nodes,
@@ -1655,11 +3020,11 @@
       const dataStr = 'data:text/json;charset=utf-8,' + encodeURIComponent(JSON.stringify(exportData, null, 2));
       const a = document.createElement('a');
       a.setAttribute('href', dataStr);
-      a.setAttribute('download', 'topology.json');
+      a.setAttribute('download', 'netforge_topology.json');
       document.body.appendChild(a);
       a.click();
       a.remove();
-      showToast('Exported topology.json');
+      showToast('Exported netforge_topology.json');
     }
 
     function importTopologyJSON(e) {
@@ -1677,26 +3042,6 @@
             document.getElementById('floatingTerminalsLayer').innerHTML = '';
 
             parsed.topology.nodes.forEach(n => {
-              if (!n.cliState) {
-                const ifaceConfigs = {};
-                (n.interfaces || []).forEach(iface => {
-                  ifaceConfigs[iface] = { ip: 'unassigned', mask: '', cidr: '', status: 'administratively down', protocol: 'down', zone: '' };
-                });
-                n.cliState = {
-                  mode: n.vendor === 'paloalto' ? 'pan-op' : 'user',
-                  hostname: n.name,
-                  activeIface: null,
-                  activeOspf: null,
-                  activeVlan: null,
-                  ifaceConfigs: ifaceConfigs,
-                  ospf: { processId: null, networks: [] },
-                  vlans: { '1': { name: 'default', status: 'active' } },
-                  panZones: {},
-                  history: [],
-                  historyIndex: -1,
-                  terminalLog: []
-                };
-              }
               nodes.push(n);
               renderNodeDOM(n);
             });
