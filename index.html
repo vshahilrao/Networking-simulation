@@ -39,7 +39,7 @@
           <h1 class="font-bold text-slate-900 text-sm leading-tight">NetForge</h1>
           <span class="px-2 py-0.5 text-[10px] font-bold bg-sky-50 text-sky-700 border border-sky-200 rounded-full">Enterprise Studio</span>
         </div>
-        <p class="text-[11px] text-slate-500 hidden sm:block">Multi-Vendor CLI & PAN-OS WebUI Emulator</p>
+        <p class="text-[11px] text-slate-500 hidden sm:block">Multi-Vendor CLI, Telnet/SSH & PAN-OS WebUI Emulator</p>
       </div>
     </div>
 
@@ -279,6 +279,38 @@
           <path d="M9,25 L12,23 L15,26 L12,28 Z M14,26 L17,24 L20,27 L17,29 Z" fill="#ffffff"/>
           <rect x="24" y="28.5" width="3.2" height="2.6" fill="#10b981"/><rect x="28.5" y="29.5" width="3.2" height="2.6" fill="#10b981"/>
         </svg>`,
+      rack_server: `
+        <svg viewBox="0 0 64 48" class="w-11 h-8 drop-shadow-md">
+          <rect x="6" y="6" width="52" height="36" rx="3" fill="#0f172a" stroke="#475569" stroke-width="1.5"/>
+          <rect x="10" y="10" width="44" height="7" rx="1.2" fill="#1e293b" stroke="#334155" stroke-width="0.8"/>
+          <circle cx="14" cy="13.5" r="1.6" fill="#10b981"/><circle cx="18.5" cy="13.5" r="1.6" fill="#38bdf8"/>
+          <rect x="24" y="12.2" width="26" height="2.6" rx="0.8" fill="#475569"/>
+          <rect x="10" y="20.5" width="44" height="7" rx="1.2" fill="#1e293b" stroke="#334155" stroke-width="0.8"/>
+          <circle cx="14" cy="24" r="1.6" fill="#10b981"/><circle cx="18.5" cy="24" r="1.6" fill="#10b981"/>
+          <rect x="24" y="22.7" width="26" height="2.6" rx="0.8" fill="#475569"/>
+          <rect x="10" y="31" width="44" height="7" rx="1.2" fill="#1e293b" stroke="#334155" stroke-width="0.8"/>
+          <circle cx="14" cy="34.5" r="1.6" fill="#f59e0b"/><circle cx="18.5" cy="34.5" r="1.6" fill="#10b981"/>
+          <rect x="24" y="33.2" width="26" height="2.6" rx="0.8" fill="#475569"/>
+        </svg>`,
+      blade_server: `
+        <svg viewBox="0 0 64 48" class="w-11 h-8 drop-shadow-md">
+          <rect x="12" y="4" width="40" height="40" rx="3" fill="#1e293b" stroke="#64748b" stroke-width="1.5"/>
+          <rect x="16" y="8" width="7" height="32" rx="1" fill="#0f172a" stroke="#38bdf8" stroke-width="0.8"/>
+          <circle cx="19.5" cy="12" r="1.4" fill="#10b981"/>
+          <rect x="25" y="8" width="7" height="32" rx="1" fill="#0f172a" stroke="#38bdf8" stroke-width="0.8"/>
+          <circle cx="28.5" cy="12" r="1.4" fill="#10b981"/>
+          <rect x="34" y="8" width="7" height="32" rx="1" fill="#0f172a" stroke="#38bdf8" stroke-width="0.8"/>
+          <circle cx="37.5" cy="12" r="1.4" fill="#10b981"/>
+          <rect x="43" y="8" width="5" height="32" rx="1" fill="#334155"/>
+        </svg>`,
+      vm_server: `
+        <svg viewBox="0 0 64 48" class="w-11 h-8 drop-shadow-md">
+          <rect x="8" y="8" width="48" height="32" rx="3.5" fill="#0f172a" stroke="#6366f1" stroke-width="1.6"/>
+          <rect x="13" y="13" width="17" height="22" rx="1.8" fill="#312e81" stroke="#818cf8" stroke-width="1"/>
+          <text x="21.5" y="26.5" fill="#e0e7ff" font-size="7.5" font-weight="bold" font-family="Inter,sans-serif" text-anchor="middle">VM1</text>
+          <rect x="34" y="13" width="17" height="22" rx="1.8" fill="#1e1b4b" stroke="#818cf8" stroke-width="1"/>
+          <text x="42.5" y="26.5" fill="#e0e7ff" font-size="7.5" font-weight="bold" font-family="Inter,sans-serif" text-anchor="middle">VM2</text>
+        </svg>`,
       pc: `
         <svg viewBox="0 0 64 48" class="w-11 h-8 drop-shadow-md">
           <rect x="6" y="8" width="32" height="22" rx="2.5" fill="#1e293b" stroke="#475569" stroke-width="1.2"/>
@@ -370,6 +402,36 @@
         qcow2: 'PA-VM-10.2.3.qcow2',
         interfaces: ['mgmt', 'ethernet1/1', 'ethernet1/2', 'ethernet1/3', 'ethernet1/4']
       },
+      rack_server: {
+        category: 'Enterprise Servers',
+        type: 'rack_server',
+        vendor: 'server',
+        label: 'Rack Server (Ubuntu 24.04)',
+        short: 'RackSrv',
+        prefix: 'SRV-',
+        qcow2: 'ubuntu-24.04-server.qcow2',
+        interfaces: ['eth0', 'eth1']
+      },
+      blade_server: {
+        category: 'Enterprise Servers',
+        type: 'blade_server',
+        vendor: 'server',
+        label: 'Blade Chassis (RHEL 9)',
+        short: 'Blade',
+        prefix: 'BLD-',
+        qcow2: 'rhel-9.3-x86_64.qcow2',
+        interfaces: ['eth0', 'eth1']
+      },
+      vm_server: {
+        category: 'Enterprise Servers',
+        type: 'vm_server',
+        vendor: 'server',
+        label: 'VMware ESXi / Linux VM',
+        short: 'VM',
+        prefix: 'VM-',
+        qcow2: 'esxi-8.0-vm.qcow2',
+        interfaces: ['eth0', 'eth1']
+      },
       pc: {
         category: 'End Devices',
         type: 'pc',
@@ -406,6 +468,7 @@
         { name: 'Cisco Routers', color: 'text-blue-600' },
         { name: 'Cisco Switches', color: 'text-sky-600' },
         { name: 'Security & Firewalls', color: 'text-orange-600' },
+        { name: 'Enterprise Servers', color: 'text-indigo-600' },
         { name: 'End Devices', color: 'text-emerald-600' }
       ];
 
@@ -438,21 +501,38 @@
       document.getElementById('nodesContainer').innerHTML = '';
       document.getElementById('floatingTerminalsLayer').innerHTML = '';
 
-      const pc1 = addDeviceFromTemplate('pc', 400, 300);
-      const sw1 = addDeviceFromTemplate('cisco_switch', 650, 300);
-      const r1 = addDeviceFromTemplate('cisco_router', 900, 200);
-      const fw1 = addDeviceFromTemplate('paloalto_fw', 1150, 300);
-      const lt1 = addDeviceFromTemplate('laptop', 1400, 300);
+      const pc1 = addDeviceFromTemplate('pc', 320, 280);
+      const sw1 = addDeviceFromTemplate('cisco_switch', 560, 280);
+      const r1 = addDeviceFromTemplate('cisco_router', 800, 180);
+      const fw1 = addDeviceFromTemplate('paloalto_fw', 1050, 280);
+      const srv1 = addDeviceFromTemplate('rack_server', 1300, 180);
+      const lt1 = addDeviceFromTemplate('laptop', 1300, 360);
 
+      // R1 Interfaces & Pre-configured Telnet/SSH + DHCP
       r1.cliState.ifaceConfigs['Gi0/0'].ip = '192.168.10.1';
       r1.cliState.ifaceConfigs['Gi0/0'].mask = '255.255.255.0';
       r1.cliState.ifaceConfigs['Gi0/0'].status = 'up';
       r1.cliState.ifaceConfigs['Gi0/0'].protocol = 'up';
+      r1.cliState.ifaceConfigs['Gi0/0'].description = 'LAN-GATEWAY';
 
       r1.cliState.ifaceConfigs['Gi0/1'].ip = '10.0.12.1';
       r1.cliState.ifaceConfigs['Gi0/1'].mask = '255.255.255.0';
       r1.cliState.ifaceConfigs['Gi0/1'].status = 'up';
       r1.cliState.ifaceConfigs['Gi0/1'].protocol = 'up';
+      r1.cliState.ifaceConfigs['Gi0/1'].description = 'UPLINK-TO-PANOS';
+
+      r1.cliState.enableSecret = 'cisco';
+      r1.cliState.users['admin'] = { privilege: 15, password: 'cisco', encrypted: false };
+      r1.cliState.domainName = 'netforge.local';
+      r1.cliState.sshKeyGenerated = true;
+      r1.cliState.lines['vty 0 4'] = {
+        password: 'cisco',
+        loginMode: 'local',
+        transportInput: ['telnet', 'ssh'],
+        transportOutput: ['all'],
+        execTimeout: '10 0',
+        loggingSync: true
+      };
 
       r1.cliState.dhcpExcluded.push({ start: '192.168.10.1', end: '192.168.10.10' });
       r1.cliState.dhcpPools['LAN_USERS'] = {
@@ -463,6 +543,7 @@
         domainName: 'corp.netforge.local',
         lease: '1 day'
       };
+      r1.cliState.startupConfig = generateCiscoRunningConfig(r1).join('\n');
 
       const applyPanSeed = (cfg) => {
         cfg.mgmtIp = '192.168.1.254';
@@ -514,6 +595,7 @@
       createLink(sw1.id, r1.id, 'Gi0/0', 'Gi0/0');
       createLink(r1.id, fw1.id, 'Gi0/1', 'ethernet1/1');
       createLink(fw1.id, lt1.id, 'ethernet1/2', 'eth0');
+      createLink(fw1.id, srv1.id, 'ethernet1/3', 'eth0');
 
       const lease = requestDhcpLease(pc1);
       if (lease.success) {
@@ -523,9 +605,12 @@
       lt1.ipConfig = { mode: 'static', ip: '172.16.50.10', subnet: '255.255.255.0', gateway: '172.16.50.1', dns: '8.8.8.8' };
       renderNodeDOM(lt1);
 
+      srv1.ipConfig = { mode: 'static', ip: '10.0.99.10', subnet: '255.255.255.0', gateway: '10.0.99.1', dns: '8.8.8.8' };
+      renderNodeDOM(srv1);
+
       renderLinks();
       resetWorkspaceView();
-      showToast('Prebuilt Enterprise Lab Loaded');
+      showToast('Prebuilt Enterprise Lab Loaded (Telnet/SSH Ready on R1)');
     }
 
     window.addEventListener('DOMContentLoaded', () => {
@@ -584,8 +669,8 @@
 
     function resetWorkspaceView() {
       workspaceZoom = 1.0;
-      workspacePanX = 50;
-      workspacePanY = 50;
+      workspacePanX = 40;
+      workspacePanY = 40;
       updateWorkspaceTransform();
     }
 
@@ -596,10 +681,17 @@
         ip: isMgmt ? '192.168.1.254' : 'unassigned',
         mask: isMgmt ? '255.255.255.0' : '',
         cidr: isMgmt ? '192.168.1.254/24' : '',
+        description: '',
         mode: isMgmt ? 'layer3' : 'tap',
         status: (isSwitch || isMgmt) ? 'up' : 'administratively down',
         protocol: (isSwitch || isMgmt) ? 'up' : 'down',
-        zone: ''
+        zone: '',
+        switchportMode: isSwitch ? 'access' : null,
+        accessVlan: isSwitch ? 1 : null,
+        trunkAllowedVlans: isSwitch ? '1-4094' : null,
+        natDirection: null,
+        aclIn: null,
+        aclOut: null
       };
     }
 
@@ -658,16 +750,39 @@
         cliState: {
           mode: template.vendor === 'paloalto' ? 'pan-op' : 'user',
           hostname: hostname,
+          domainName: '',
+          enableSecret: '',
+          enablePassword: '',
+          servicePasswordEncryption: false,
+          sshKeyGenerated: false,
+          sshKeyBits: 1024,
+          bannerMotd: '',
+          ipRouting: true,
+          users: {},
           ifaceConfigs: ifaceConfigs,
           dhcpPools: {},
           dhcpExcluded: [],
           dhcpBindings: [],
           staticRoutes: [],
-          ospf: { networks: [] },
-          eigrp: { networks: [] },
-          bgp: { neighbors: [] },
+          ospf: { pid: null, routerId: '', networks: [], passiveInterfaces: [], defaultOriginate: false },
+          eigrp: { asn: null, networks: [], autoSummary: true, passiveInterfaces: [] },
+          bgp: { asn: null, routerId: '', neighbors: [], networks: [] },
+          acls: {},
+          nat: { overload: null, statics: [] },
           vlans: { '1': { name: 'default', status: 'active' } },
-          lines: { 'console 0': {}, 'vty 0 4': {} },
+          lines: {
+            'console 0': { password: '', loginMode: 'none', transportOutput: ['all'], execTimeout: '10 0', loggingSync: false },
+            'vty 0 4': { password: '', loginMode: 'login', transportInput: ['telnet', 'ssh'], transportOutput: ['all'], execTimeout: '10 0', loggingSync: false }
+          },
+          activeLine: 'vty 0 4',
+          activeOspfPid: null,
+          activeEigrpAsn: null,
+          activeBgpAsn: null,
+          activeRouterProto: null,
+          activeVlanId: null,
+          startupConfig: '',
+          remoteSession: null,
+          pendingAuth: null,
           panOutputFormat: 'set',
           panUncommitted: false,
           panRunning: panInitial ? cloneObj(panInitial) : null,
@@ -697,7 +812,7 @@
       el.style.top = node.y + 'px';
       el.className = 'pointer-events-auto absolute w-48 bg-white border border-slate-200 rounded-xl shadow-md p-3 cursor-grab select-none transition-shadow hover:border-blue-500 hover:shadow-lg';
 
-      const isEndDevice = (node.vendor === 'host');
+      const isEndOrServer = (node.vendor === 'host' || node.vendor === 'server');
       const isPaloAlto = (node.vendor === 'paloalto');
       const displayHost = isPaloAlto ? node.cliState.panRunning.hostname : node.cliState.hostname;
 
@@ -716,7 +831,7 @@
           </div>
         </div>
 
-        ${isEndDevice ? `
+        ${isEndOrServer ? `
           <div class="text-[10px] bg-slate-50 rounded px-2 py-1 mb-2 font-mono ${node.ipConfig.ip !== '0.0.0.0' ? 'text-emerald-600' : 'text-amber-600'} border border-slate-200 truncate">
             ${ipDisplay}
           </div>
@@ -728,8 +843,8 @@
         ` : ''}
 
         <div class="flex items-center justify-between gap-1 pt-1.5 border-t border-slate-100">
-          ${isEndDevice ? `
-            <button onclick="openDeviceWindow('${node.id}', 'cmd')" class="py-1 px-2 bg-slate-900 hover:bg-slate-800 text-[10px] font-semibold text-white rounded transition">CMD</button>
+          ${isEndOrServer ? `
+            <button onclick="openDeviceWindow('${node.id}', 'cmd')" class="py-1 px-2 bg-slate-900 hover:bg-slate-800 text-[10px] font-semibold text-white rounded transition">${node.vendor === 'server' ? 'Bash' : 'CMD'}</button>
             <button onclick="openDeviceWindow('${node.id}', 'ip')" class="py-1 px-1.5 bg-slate-100 hover:bg-slate-200 text-[10px] font-semibold text-slate-700 rounded border border-slate-200 transition">IP</button>
             <button onclick="openDeviceWindow('${node.id}', 'browser')" class="flex-1 py-1 px-1.5 bg-blue-600 hover:bg-blue-500 text-[10px] font-semibold text-white rounded transition truncate">Browser</button>
           ` : `
@@ -902,8 +1017,8 @@
       const nodeA = nodes.find(n => n.id === link.source);
       const nodeB = nodes.find(n => n.id === link.target);
       if (!nodeA || !nodeB) return false;
-      const aUp = nodeA.vendor === 'host' ? true : (getNodeIfaceConfig(nodeA, link.sourceInterface)?.status === 'up');
-      const bUp = nodeB.vendor === 'host' ? true : (getNodeIfaceConfig(nodeB, link.targetInterface)?.status === 'up');
+      const aUp = (nodeA.vendor === 'host' || nodeA.vendor === 'server') ? true : (getNodeIfaceConfig(nodeA, link.sourceInterface)?.status === 'up');
+      const bUp = (nodeB.vendor === 'host' || nodeB.vendor === 'server') ? true : (getNodeIfaceConfig(nodeB, link.targetInterface)?.status === 'up');
       return aUp && bUp;
     }
 
@@ -1028,6 +1143,18 @@
       return longToIp(p === 0 ? 0 : (0xffffffff << (32 - p)) >>> 0);
     }
 
+    function maskToCidr(mask) {
+      const m = ipToLong(mask);
+      if (m === null) return 24;
+      return m.toString(2).split('1').length - 1;
+    }
+
+    function getNetworkAddress(ip, mask) {
+      const a = ipToLong(ip), m = ipToLong(mask);
+      if (a === null || m === null) return ip;
+      return longToIp((a & m) >>> 0);
+    }
+
     function isSameSubnet(ip1, ip2, mask) {
       const a = ipToLong(ip1), b = ipToLong(ip2), m = ipToLong(mask || '255.255.255.0');
       if (a === null || b === null || m === null) return false;
@@ -1086,7 +1213,7 @@
             if (leasedIp) {
               const macSuffix = clientNode.id.slice(-4).toUpperCase().match(/.{1,2}/g).join('.');
               srv.cliState.dhcpBindings = srv.cliState.dhcpBindings.filter(b => b.clientId !== clientNode.id);
-              srv.cliState.dhcpBindings.push({ clientId: clientNode.id, hostname: clientNode.name, ip: leasedIp, mac: `5254.0012.${macSuffix}`, pool: poolName, lease: '1 day', type: 'Automatic' });
+              srv.cliState.dhcpBindings.push({ clientId: clientNode.id, hostname: clientNode.name, ip: leasedIp, mac: `5254.0012.${macSuffix}`, pool: poolName, lease: pool.lease || '1 day', type: 'Automatic' });
               return { success: true, serverName: srv.cliState.hostname, ip: leasedIp, subnet: pool.mask, gateway: pool.defaultRouter || ifaceCfg.ip, dns: pool.dnsServer || '8.8.8.8' };
             }
           }
@@ -1109,32 +1236,38 @@
     }
 
     function traceReachabilityPath(sourceNode, targetIp) {
-      if (!targetIp || ipToLong(targetIp) === null) return { reachable: false, hops: [], reason: 'Invalid target IPv4 address format.' };
-      if (targetIp === '127.0.0.1') return { reachable: true, hops: ['127.0.0.1'], reason: 'Loopback' };
+      if (!targetIp || ipToLong(targetIp) === null) return { reachable: false, hops: [], targetNode: null, reason: 'Invalid target IPv4 address format.' };
+      if (targetIp === '127.0.0.1') return { reachable: true, hops: ['127.0.0.1'], targetNode: sourceNode, reason: 'Loopback' };
 
-      if (sourceNode.vendor === 'host') {
+      const isSourceEndpoint = (sourceNode.vendor === 'host' || sourceNode.vendor === 'server');
+
+      if (isSourceEndpoint) {
         if (!sourceNode.ipConfig.ip || sourceNode.ipConfig.ip === '0.0.0.0') {
-          return { reachable: false, hops: [], reason: 'Workstation IPv4 address is Unassigned (0.0.0.0). Configure IP or renew DHCP.' };
+          return { reachable: false, hops: [], targetNode: null, reason: 'Endpoint IPv4 address is Unassigned (0.0.0.0). Configure IP or renew DHCP.' };
         }
-        if (sourceNode.ipConfig.ip === targetIp) return { reachable: true, hops: [targetIp], reason: 'Local host' };
+        if (sourceNode.ipConfig.ip === targetIp) return { reachable: true, hops: [targetIp], targetNode: sourceNode, reason: 'Local host' };
         const hasAnyLink = links.some(l => (l.source === sourceNode.id || l.target === sourceNode.id) && isLinkActive(l));
         if (!hasAnyLink) {
-          return { reachable: false, hops: [], reason: 'Network cable unplugged (No active physical link on eth0).' };
+          return { reachable: false, hops: [], targetNode: null, reason: 'Network cable unplugged (No active physical link on eth0).' };
         }
       }
 
-      if (sourceNode.vendor === 'cisco' && Object.values(sourceNode.cliState.ifaceConfigs).some(ic => ic.ip === targetIp && ic.status === 'up')) return { reachable: true, hops: [targetIp] };
+      if (sourceNode.vendor === 'cisco' && Object.values(sourceNode.cliState.ifaceConfigs).some(ic => ic.ip === targetIp && ic.status === 'up')) {
+        return { reachable: true, hops: [targetIp], targetNode: sourceNode };
+      }
       if (sourceNode.vendor === 'paloalto') {
         const pan = sourceNode.cliState.panRunning;
-        if (pan.mgmtIp === targetIp || Object.values(pan.ifaceConfigs).some(ic => ic.ip === targetIp && ic.status === 'up')) return { reachable: true, hops: [targetIp] };
+        if (pan.mgmtIp === targetIp || Object.values(pan.ifaceConfigs).some(ic => ic.ip === targetIp && ic.status === 'up')) {
+          return { reachable: true, hops: [targetIp], targetNode: sourceNode };
+        }
       }
 
       const queue = [{
         nodeId: sourceNode.id,
         ingressPort: null,
         hops: [],
-        expectedSubnetIp: sourceNode.vendor === 'host' ? sourceNode.ipConfig.ip : null,
-        expectedMask: sourceNode.vendor === 'host' ? (sourceNode.ipConfig.subnet || '255.255.255.0') : null,
+        expectedSubnetIp: isSourceEndpoint ? sourceNode.ipConfig.ip : null,
+        expectedMask: isSourceEndpoint ? (sourceNode.ipConfig.subnet || '255.255.255.0') : null,
         viaGateway: false
       }];
       const visited = new Set([sourceNode.id]);
@@ -1175,10 +1308,9 @@
             continue;
           }
 
-          // Check L3 subnet compatibility on the receiving interface
           let recvIp = null;
           let recvMask = '255.255.255.0';
-          if (nextNode.vendor === 'host') {
+          if (nextNode.vendor === 'host' || nextNode.vendor === 'server') {
             recvIp = nextNode.ipConfig.ip;
             recvMask = nextNode.ipConfig.subnet || '255.255.255.0';
           } else if (nextNode.vendor === 'cisco') {
@@ -1201,15 +1333,14 @@
             }
           }
 
-          // Check if target IP lives on nextNode
-          if (nextNode.vendor === 'host' && nextNode.ipConfig.ip === targetIp) {
+          if ((nextNode.vendor === 'host' || nextNode.vendor === 'server') && nextNode.ipConfig.ip === targetIp) {
             sawTargetDevice = true;
             if (expectedSubnetIp && !isSameSubnet(expectedSubnetIp, targetIp, expectedMask)) {
               diagnosticReason = `Subnet mismatch: ${expectedSubnetIp}/${expectedMask} cannot reach ${targetIp} directly without a valid gateway route.`;
               continue;
             }
             visited.add(nextId);
-            return { reachable: true, hops: [...hops, targetIp] };
+            return { reachable: true, hops: [...hops, targetIp], targetNode: nextNode };
           }
 
           if (nextNode.vendor === 'cisco') {
@@ -1222,7 +1353,7 @@
               }
               visited.add(nextId);
               const nextHops = recvIp ? [...hops, recvIp] : [...hops];
-              return { reachable: true, hops: nextHops.includes(targetIp) ? nextHops : [...nextHops, targetIp] };
+              return { reachable: true, hops: nextHops.includes(targetIp) ? nextHops : [...nextHops, targetIp], targetNode: nextNode };
             }
           }
 
@@ -1243,20 +1374,19 @@
               }
               visited.add(nextId);
               const nextHops = recvIp ? [...hops, recvIp] : [...hops];
-              return { reachable: true, hops: nextHops.includes(targetIp) ? nextHops : [...nextHops, targetIp] };
+              return { reachable: true, hops: nextHops.includes(targetIp) ? nextHops : [...nextHops, targetIp], targetNode: nextNode };
             }
           }
 
-          // Forwarding through intermediate L3 router/firewall requires matching link subnet & default gateway on host
-          if (nextNode.vendor !== 'host') {
+          if (nextNode.vendor !== 'host' && nextNode.vendor !== 'server') {
             if (expectedSubnetIp) {
               if (!recvIp || !isSameSubnet(expectedSubnetIp, recvIp, expectedMask)) {
                 diagnosticReason = `No route to host: Source (${expectedSubnetIp}) is not in the same subnet as gateway interface (${recvIp || 'unassigned'}).`;
                 continue;
               }
-              if (sourceNode.vendor === 'host' && !isSameSubnet(sourceNode.ipConfig.ip, targetIp, sourceNode.ipConfig.subnet || '255.255.255.0')) {
+              if (isSourceEndpoint && !isSameSubnet(sourceNode.ipConfig.ip, targetIp, sourceNode.ipConfig.subnet || '255.255.255.0')) {
                 if (!sourceNode.ipConfig.gateway || sourceNode.ipConfig.gateway !== recvIp) {
-                  diagnosticReason = `No route to host: Workstation Default Gateway (${sourceNode.ipConfig.gateway || 'none'}) does not match router interface (${recvIp}).`;
+                  diagnosticReason = `No route to host: Endpoint Default Gateway (${sourceNode.ipConfig.gateway || 'none'}) does not match router interface (${recvIp}).`;
                   continue;
                 }
               }
@@ -1268,7 +1398,7 @@
         }
       }
 
-      return { reachable: false, hops: [], reason: sawTargetDevice ? diagnosticReason : 'No physical link path or route to target IP.' };
+      return { reachable: false, hops: [], targetNode: null, reason: sawTargetDevice ? diagnosticReason : 'No physical link path or route to target IP.' };
     }
 
     function findReachablePaloAltoByIp(sourceNode, targetIp) {
@@ -1289,7 +1419,21 @@
 
     function getPromptString(node) {
       const st = node.cliState;
+
+      // Check if terminal is awaiting Telnet/SSH/Enable authentication
+      if (st.pendingAuth) {
+        if (st.pendingAuth.stage === 'username') return 'Username:';
+        if (st.pendingAuth.stage === 'password' || st.pendingAuth.stage === 'enable_pass') return 'Password:';
+      }
+
+      // If connected to a remote target via Telnet/SSH, reflect remote device prompt
+      if (st.remoteSession) {
+        const remoteNode = nodes.find(n => n.id === st.remoteSession.targetNodeId);
+        if (remoteNode) return getPromptString(remoteNode);
+      }
+
       if (node.vendor === 'host') return 'C:\\Users\\Admin>';
+      if (node.vendor === 'server') return `root@${st.hostname}:~#`;
       if (node.vendor === 'paloalto') {
         const h = st.mode === 'pan-conf' ? st.panCandidate.hostname : st.panRunning.hostname;
         return st.mode === 'pan-conf' ? `admin@${h}#` : `admin@${h}>`;
@@ -1316,7 +1460,7 @@
 
       if (winEl) {
         bringWindowToFront(winEl);
-        if (node.vendor === 'host') switchHostTab(nodeId, initialTab);
+        if (node.vendor === 'host' || node.vendor === 'server') switchHostTab(nodeId, initialTab);
         else winEl.querySelector('input')?.focus();
         return;
       }
@@ -1325,18 +1469,18 @@
       const initialLeft = Math.min(window.innerWidth - 660, 280 + openCount * 30);
       const initialTop = Math.min(window.innerHeight - 460, 76 + openCount * 26);
 
-      const isHost = (node.vendor === 'host');
+      const isEndpoint = (node.vendor === 'host' || node.vendor === 'server');
       winEl = document.createElement('div');
       winEl.id = winId;
       winEl.style.left = `${Math.max(20, initialLeft)}px`;
       winEl.style.top = `${Math.max(62, initialTop)}px`;
-      winEl.style.width = isHost ? '720px' : '600px';
-      winEl.style.height = isHost ? '470px' : '400px';
+      winEl.style.width = isEndpoint ? '720px' : '640px';
+      winEl.style.height = isEndpoint ? '470px' : '430px';
       winEl.style.zIndex = ++topWindowZIndex;
       winEl.className = 'floating-window fixed pointer-events-auto bg-white border border-slate-300 rounded-xl shadow-2xl flex flex-col';
       winEl.addEventListener('mousedown', () => bringWindowToFront(winEl));
 
-      if (!isHost) {
+      if (!isEndpoint) {
         const displayHost = node.vendor === 'paloalto' ? node.cliState.panRunning.hostname : node.cliState.hostname;
         winEl.innerHTML = `
           <div id="win_hdr_${nodeId}" class="px-3.5 py-2.5 border-b border-slate-800 flex justify-between items-center bg-slate-900 cursor-move shrink-0 select-none">
@@ -1356,14 +1500,15 @@
         attachWindowDrag(`win_hdr_${nodeId}`, winEl);
         initTerminalEvents(node);
       } else {
+        const isServer = (node.vendor === 'server');
         winEl.innerHTML = `
           <div id="win_hdr_${nodeId}" class="px-3.5 py-2 border-b border-slate-200 flex justify-between items-center bg-slate-100 cursor-move shrink-0 select-none">
             <div class="flex items-center gap-2 overflow-hidden">
-              <span class="w-2.5 h-2.5 rounded-full bg-blue-600 shrink-0"></span>
-              <h3 class="font-bold text-slate-900 text-xs truncate">${node.name} — Workstation</h3>
+              <span class="w-2.5 h-2.5 rounded-full ${isServer ? 'bg-indigo-600' : 'bg-blue-600'} shrink-0"></span>
+              <h3 class="font-bold text-slate-900 text-xs truncate">${node.name} — ${isServer ? 'Enterprise Server' : 'Workstation'}</h3>
             </div>
             <div class="flex items-center gap-1 bg-slate-200/80 p-0.5 rounded-lg border border-slate-300">
-              <button id="tab_btn_cmd_${nodeId}" onclick="switchHostTab('${nodeId}', 'cmd')" class="px-2.5 py-1 rounded-md text-[11px] font-semibold transition">CMD</button>
+              <button id="tab_btn_cmd_${nodeId}" onclick="switchHostTab('${nodeId}', 'cmd')" class="px-2.5 py-1 rounded-md text-[11px] font-semibold transition">${isServer ? 'Bash Shell' : 'CMD'}</button>
               <button id="tab_btn_ip_${nodeId}" onclick="switchHostTab('${nodeId}', 'ip')" class="px-2.5 py-1 rounded-md text-[11px] font-semibold transition">IP Config</button>
               <button id="tab_btn_browser_${nodeId}" onclick="switchHostTab('${nodeId}', 'browser')" class="px-2.5 py-1 rounded-md text-[11px] font-semibold transition">Web Browser</button>
             </div>
@@ -1373,7 +1518,7 @@
           <div id="tab_panel_cmd_${nodeId}" class="flex-1 flex flex-col overflow-hidden bg-[#090d16]">
             <div id="term_scr_${nodeId}" class="flex-1 p-3.5 font-mono text-xs text-slate-200 overflow-y-auto space-y-1 terminal-scroll cursor-text select-text"></div>
             <div class="px-3.5 py-2 border-t border-slate-800 bg-slate-950 flex items-center gap-2 shrink-0">
-              <span id="term_prm_${nodeId}" class="text-xs font-mono text-slate-200 font-bold shrink-0">C:\\Users\\Admin></span>
+              <span id="term_prm_${nodeId}" class="text-xs font-mono ${isServer ? 'text-indigo-400' : 'text-slate-200'} font-bold shrink-0">${getPromptString(node)}</span>
               <input type="text" id="term_inp_${nodeId}" autocomplete="off" spellcheck="false" class="flex-1 bg-transparent text-xs font-mono text-white focus:outline-none">
             </div>
           </div>
@@ -1381,7 +1526,7 @@
           <div id="tab_panel_ip_${nodeId}" class="hidden flex-1 overflow-y-auto p-5 bg-white space-y-4">
             <div class="max-w-md mx-auto space-y-4">
               <div>
-                <h4 class="text-sm font-bold text-slate-900">Ethernet0 IPv4 Properties</h4>
+                <h4 class="text-sm font-bold text-slate-900">eth0 IPv4 Properties</h4>
                 <p class="text-xs text-slate-500">Obtain an IP lease dynamically from a router DHCP pool or configure static IPv4.</p>
               </div>
               <div class="grid grid-cols-2 gap-2 bg-slate-100 p-1 rounded-lg border border-slate-200">
@@ -1389,9 +1534,9 @@
                 <button id="ip_mode_static_${nodeId}" onclick="toggleHostIpFormMode('${nodeId}', 'static')" class="py-1.5 text-xs font-semibold rounded-md transition">Static IPv4</button>
               </div>
               <div id="ip_fields_${nodeId}" class="space-y-3">
-                <div><label class="block text-xs font-semibold text-slate-700 mb-1">IPv4 Address</label><input type="text" id="inp_ip_${nodeId}" value="${node.ipConfig.ip !== '0.0.0.0' ? node.ipConfig.ip : ''}" placeholder="e.g. 192.168.1.10" class="w-full border border-slate-300 rounded-md px-3 py-2 text-xs font-mono"></div>
+                <div><label class="block text-xs font-semibold text-slate-700 mb-1">IPv4 Address</label><input type="text" id="inp_ip_${nodeId}" value="${node.ipConfig.ip !== '0.0.0.0' ? node.ipConfig.ip : ''}" placeholder="e.g. 192.168.10.20" class="w-full border border-slate-300 rounded-md px-3 py-2 text-xs font-mono"></div>
                 <div><label class="block text-xs font-semibold text-slate-700 mb-1">Subnet Mask</label><input type="text" id="inp_mask_${nodeId}" value="${node.ipConfig.subnet !== '0.0.0.0' ? node.ipConfig.subnet : '255.255.255.0'}" class="w-full border border-slate-300 rounded-md px-3 py-2 text-xs font-mono"></div>
-                <div><label class="block text-xs font-semibold text-slate-700 mb-1">Default Gateway</label><input type="text" id="inp_gw_${nodeId}" value="${node.ipConfig.gateway || ''}" placeholder="e.g. 192.168.1.1" class="w-full border border-slate-300 rounded-md px-3 py-2 text-xs font-mono"></div>
+                <div><label class="block text-xs font-semibold text-slate-700 mb-1">Default Gateway</label><input type="text" id="inp_gw_${nodeId}" value="${node.ipConfig.gateway || ''}" placeholder="e.g. 192.168.10.1" class="w-full border border-slate-300 rounded-md px-3 py-2 text-xs font-mono"></div>
                 <div><label class="block text-xs font-semibold text-slate-700 mb-1">DNS Server</label><input type="text" id="inp_dns_${nodeId}" value="${node.ipConfig.dns || '8.8.8.8'}" class="w-full border border-slate-300 rounded-md px-3 py-2 text-xs font-mono"></div>
               </div>
               <div class="pt-2 flex items-center justify-between">
@@ -1474,11 +1619,12 @@
           <h4 class="font-bold text-slate-900 text-sm">NetForge Enterprise Browser — Ready to Connect</h4>
           <p class="text-xs text-slate-500 max-w-sm mt-1">Enter a reachable firewall management IP address in the URL bar above (e.g., <span class="font-mono text-slate-700">https://192.168.1.254</span>) and click <strong>Go</strong>.</p>
           <div class="mt-4 px-3 py-2 rounded-lg bg-white border border-slate-200 text-[11px] font-mono text-slate-600 shadow-sm">
-            Workstation IPv4: <span class="${ipConfigured ? 'text-emerald-600 font-bold' : 'text-amber-600 font-bold'}">${ipConfigured ? `${hostNode.ipConfig.ip} (${hostNode.ipConfig.subnet})` : 'Unassigned'}</span>
+            Endpoint IPv4: <span class="${ipConfigured ? 'text-emerald-600 font-bold' : 'text-amber-600 font-bold'}">${ipConfigured ? `${hostNode.ipConfig.ip} (${hostNode.ipConfig.subnet})` : 'Unassigned'}</span>
           </div>
         </div>
       `;
     }
+
     function navigateBrowser(hostNodeId) {
       const hostNode = nodes.find(n => n.id === hostNodeId);
       const urlInput = document.getElementById(`browser_url_${hostNodeId}`);
@@ -1506,7 +1652,7 @@
               <div class="font-semibold text-slate-800">Network Diagnostic:</div>
               <div class="text-rose-600 font-mono text-[11px]">${lookup.reason}</div>
               <div class="text-slate-500 text-[11px] pt-1 border-t border-slate-200">
-                Verify physical cable patching, workstation IPv4 configuration, and subnet/gateway routing.
+                Verify physical cable patching, IPv4 configuration, and subnet/gateway routing.
               </div>
             </div>
             <div class="text-[11px] font-mono text-slate-400">ERR_CONNECTION_TIMED_OUT</div>
@@ -1741,23 +1887,366 @@
       showToast(`Commit successful (Job ID: ${jobId})`);
     }
 
+    // =========================================================================
+    // CISCO IOS RUNNING-CONFIG GENERATOR
+    // =========================================================================
+    function encryptCiscoSecret(str) {
+      if (!str) return '';
+      let hash = 0;
+      for (let i = 0; i < str.length; i++) {
+        hash = ((hash << 5) - hash) + str.charCodeAt(i);
+        hash |= 0;
+      }
+      return `$1$mERr$${Math.abs(hash).toString(36).padEnd(16, 'x')}`;
+    }
+
+    function encryptCiscoType7(str) {
+      if (!str) return '';
+      return '0822455D0A16' + Buffer.from ? str.split('').map(c => c.charCodeAt(0).toString(16)).join('').toUpperCase() : '4A1B';
+    }
+
+    function generateCiscoRunningConfig(node) {
+      const st = node.cliState;
+      const lines = [
+        'Building configuration...',
+        '',
+        'Current configuration : 1842 bytes',
+        '!',
+        'version 15.9',
+        'service timestamps debug datetime msec',
+        'service timestamps log datetime msec',
+        st.servicePasswordEncryption ? 'service password-encryption' : 'no service password-encryption',
+        '!',
+        `hostname ${st.hostname}`,
+        '!',
+        'boot-start-marker',
+        'boot-end-marker',
+        '!'
+      ];
+
+      if (st.enableSecret) {
+        lines.push(`enable secret 5 ${encryptCiscoSecret(st.enableSecret)}`);
+      }
+      if (st.enablePassword) {
+        lines.push(`enable password ${st.servicePasswordEncryption ? '7 ' + encryptCiscoType7(st.enablePassword) : st.enablePassword}`);
+      }
+      if (st.enableSecret || st.enablePassword) lines.push('!');
+
+      if (st.domainName) {
+        lines.push(`ip domain-name ${st.domainName}`);
+      }
+      lines.push(st.ipRouting ? 'ip routing' : 'no ip routing');
+      lines.push('!');
+
+      // Usernames
+      Object.entries(st.users || {}).forEach(([uName, uObj]) => {
+        const privStr = uObj.privilege && uObj.privilege !== 1 ? ` privilege ${uObj.privilege}` : '';
+        if (uObj.secret) {
+          lines.push(`username ${uName}${privStr} secret 5 ${encryptCiscoSecret(uObj.secret)}`);
+        } else {
+          const passOut = st.servicePasswordEncryption ? `7 ${encryptCiscoType7(uObj.password)}` : `0 ${uObj.password}`;
+          lines.push(`username ${uName}${privStr} password ${passOut}`);
+        }
+      });
+      if (Object.keys(st.users || {}).length > 0) lines.push('!');
+
+      // DHCP Excluded & Pools
+      (st.dhcpExcluded || []).forEach(ex => {
+        lines.push(`ip dhcp excluded-address ${ex.start}${ex.end && ex.end !== ex.start ? ' ' + ex.end : ''}`);
+      });
+      Object.entries(st.dhcpPools || {}).forEach(([pName, pool]) => {
+        lines.push(`ip dhcp pool ${pName}`);
+        if (pool.network) lines.push(` network ${pool.network} ${pool.mask || '255.255.255.0'}`);
+        if (pool.defaultRouter) lines.push(` default-router ${pool.defaultRouter}`);
+        if (pool.dnsServer) lines.push(` dns-server ${pool.dnsServer}`);
+        if (pool.domainName) lines.push(` domain-name ${pool.domainName}`);
+      });
+      if ((st.dhcpExcluded || []).length > 0 || Object.keys(st.dhcpPools || {}).length > 0) lines.push('!');
+
+      // VLANs (for Switches)
+      Object.entries(st.vlans || {}).forEach(([vId, vObj]) => {
+        if (vId === '1') return;
+        lines.push(`vlan ${vId}`);
+        lines.push(` name ${vObj.name}`);
+      });
+
+      // Interfaces
+      Object.entries(st.ifaceConfigs || {}).forEach(([ifName, cfg]) => {
+        lines.push(`interface ${ifName}`);
+        if (cfg.description) lines.push(` description ${cfg.description}`);
+        if (cfg.switchportMode) {
+          lines.push(` switchport mode ${cfg.switchportMode}`);
+          if (cfg.switchportMode === 'access' && cfg.accessVlan && cfg.accessVlan !== 1) {
+            lines.push(` switchport access vlan ${cfg.accessVlan}`);
+          }
+          if (cfg.switchportMode === 'trunk' && cfg.trunkAllowedVlans && cfg.trunkAllowedVlans !== '1-4094') {
+            lines.push(` switchport trunk allowed vlan ${cfg.trunkAllowedVlans}`);
+          }
+        }
+        if (cfg.ip && cfg.ip !== 'unassigned') {
+          lines.push(` ip address ${cfg.ip} ${cfg.mask || '255.255.255.0'}`);
+        } else if (!cfg.switchportMode) {
+          lines.push(' no ip address');
+        }
+        if (cfg.natDirection) lines.push(` ip nat ${cfg.natDirection}`);
+        if (cfg.aclIn) lines.push(` ip access-group ${cfg.aclIn} in`);
+        if (cfg.aclOut) lines.push(` ip access-group ${cfg.aclOut} out`);
+        if (cfg.status === 'administratively down') {
+          lines.push(' shutdown');
+        }
+        lines.push('!');
+      });
+
+      // Routing Protocols
+      if (st.ospf && st.ospf.pid) {
+        lines.push(`router ospf ${st.ospf.pid}`);
+        if (st.ospf.routerId) lines.push(` router-id ${st.ospf.routerId}`);
+        (st.ospf.passiveInterfaces || []).forEach(pi => lines.push(` passive-interface ${pi}`));
+        (st.ospf.networks || []).forEach(n => lines.push(` network ${n.net} ${n.wildcard} area ${n.area}`));
+        if (st.ospf.defaultOriginate) lines.push(' default-information originate');
+        lines.push('!');
+      }
+      if (st.eigrp && st.eigrp.asn) {
+        lines.push(`router eigrp ${st.eigrp.asn}`);
+        (st.eigrp.networks || []).forEach(n => lines.push(` network ${n.net}${n.wildcard ? ' ' + n.wildcard : ''}`));
+        if (!st.eigrp.autoSummary) lines.push(' no auto-summary');
+        lines.push('!');
+      }
+      if (st.bgp && st.bgp.asn) {
+        lines.push(`router bgp ${st.bgp.asn}`);
+        if (st.bgp.routerId) lines.push(` bgp router-id ${st.bgp.routerId}`);
+        (st.bgp.neighbors || []).forEach(nb => lines.push(` neighbor ${nb.ip} remote-as ${nb.remoteAs}`));
+        (st.bgp.networks || []).forEach(nw => lines.push(` network ${nw.net} mask ${nw.mask}`));
+        lines.push('!');
+      }
+
+      // Static Routes
+      (st.staticRoutes || []).forEach(sr => {
+        lines.push(`ip route ${sr.dest} ${sr.mask} ${sr.nexthop}`);
+      });
+
+      // NAT Rules
+      if (st.nat) {
+        if (st.nat.overload) {
+          lines.push(`ip nat inside source list ${st.nat.overload.acl} interface ${st.nat.overload.iface} overload`);
+        }
+        (st.nat.statics || []).forEach(s => {
+          lines.push(`ip nat inside source static ${s.local} ${s.global}`);
+        });
+      }
+
+      // ACLs
+      Object.entries(st.acls || {}).forEach(([aclId, entries]) => {
+        entries.forEach(entry => lines.push(`access-list ${aclId} ${entry}`));
+      });
+
+      if (st.bannerMotd) {
+        lines.push(`banner motd ^C${st.bannerMotd}^C`);
+        lines.push('!');
+      }
+
+      // Lines (Console & VTY)
+      const con = st.lines['console 0'] || {};
+      lines.push('line con 0');
+      if (con.execTimeout && con.execTimeout !== '10 0') lines.push(` exec-timeout ${con.execTimeout}`);
+      if (con.password) {
+        lines.push(` password ${st.servicePasswordEncryption ? '7 ' + encryptCiscoType7(con.password) : con.password}`);
+      }
+      if (con.loggingSync) lines.push(' logging synchronous');
+      if (con.loginMode === 'local') lines.push(' login local');
+      else if (con.loginMode === 'login') lines.push(' login');
+      lines.push('!');
+
+      const vty = st.lines['vty 0 4'] || {};
+      lines.push('line vty 0 4');
+      if (vty.execTimeout && vty.execTimeout !== '10 0') lines.push(` exec-timeout ${vty.execTimeout}`);
+      if (vty.password) {
+        lines.push(` password ${st.servicePasswordEncryption ? '7 ' + encryptCiscoType7(vty.password) : vty.password}`);
+      }
+      if (vty.loggingSync) lines.push(' logging synchronous');
+      if (vty.loginMode === 'local') lines.push(' login local');
+      else if (vty.loginMode === 'login') lines.push(' login');
+      else if (vty.loginMode === 'none') lines.push(' no login');
+      if (vty.transportInput && vty.transportInput.length > 0) {
+        lines.push(` transport input ${vty.transportInput.join(' ')}`);
+      }
+      if (vty.transportOutput && vty.transportOutput.length > 0 && !(vty.transportOutput.length === 1 && vty.transportOutput[0] === 'all')) {
+        lines.push(` transport output ${vty.transportOutput.join(' ')}`);
+      }
+      lines.push('!');
+      lines.push('end');
+
+      return lines;
+    }
+
+    // =========================================================================
+    // INTERACTIVE TELNET & SSH CONNECTION INITIATOR
+    // =========================================================================
+    function initiateRemoteSession(sourceNode, protocol, targetIp, suppliedUser = null) {
+      const isHost = (sourceNode.vendor === 'host');
+      const trace = traceReachabilityPath(sourceNode, targetIp);
+
+      if (!trace.reachable || !trace.targetNode) {
+        if (isHost) {
+          return [
+            { text: `Connecting To ${targetIp}...Could not open connection to the host, on port ${protocol === 'ssh' ? '22' : '23'}: Connect failed`, cls: 'text-rose-400' }
+          ];
+        }
+        return [
+          { text: `Trying ${targetIp} ...` },
+          { text: `% Destination unreachable; gateway or host down (${trace.reason || 'No route'})`, cls: 'text-rose-400' }
+        ];
+      }
+
+      const targetNode = trace.targetNode;
+
+      // Check if target is a Cisco IOS device
+      if (targetNode.vendor === 'cisco') {
+        const vty = targetNode.cliState.lines['vty 0 4'] || { loginMode: 'login', transportInput: ['telnet', 'ssh'], password: '' };
+        const allowedTransports = vty.transportInput || [];
+
+        if (allowedTransports.includes('none') || !allowedTransports.includes(protocol)) {
+          return [
+            { text: `Trying ${targetIp} ...` },
+            { text: `% Connection refused by remote host (${protocol.toUpperCase()} disabled on VTY lines)`, cls: 'text-rose-400' }
+          ];
+        }
+
+        if (protocol === 'ssh' && !targetNode.cliState.sshKeyGenerated) {
+          return [
+            { text: `% Connection refused by remote host (SSH RSA crypto keys not generated on target)`, cls: 'text-rose-400' }
+          ];
+        }
+
+        // Check VTY login requirements
+        if (vty.loginMode === 'login' && !vty.password) {
+          return [
+            { text: `Trying ${targetIp} ... Open` },
+            { text: `Password required, but none set`, cls: 'text-amber-400' },
+            { text: `[Connection to ${targetIp} closed by foreign host]`, cls: 'text-slate-400' }
+          ];
+        }
+
+        const bannerOut = targetNode.cliState.bannerMotd
+          ? [{ text: targetNode.cliState.bannerMotd, cls: 'text-amber-300' }]
+          : [];
+
+        // If no login is required on VTY (e.g., `no login`)
+        if (vty.loginMode === 'none' && protocol === 'telnet') {
+          targetNode.cliState.mode = 'user';
+          sourceNode.cliState.remoteSession = {
+            targetNodeId: targetNode.id,
+            targetIp: targetIp,
+            protocol: protocol,
+            username: 'console'
+          };
+          return [
+            { text: `Trying ${targetIp} ... Open`, cls: 'text-emerald-400' },
+            ...bannerOut
+          ];
+        }
+
+        // Requires Username (if login local or SSH) or Password (if login with vty password)
+        if (vty.loginMode === 'local' || protocol === 'ssh') {
+          if (suppliedUser) {
+            sourceNode.cliState.pendingAuth = {
+              type: 'remote',
+              protocol: protocol,
+              targetNodeId: targetNode.id,
+              targetIp: targetIp,
+              stage: 'password',
+              username: suppliedUser,
+              attempts: 0
+            };
+            return [
+              { text: `Trying ${targetIp} ... Open`, cls: 'text-emerald-400' },
+              ...bannerOut,
+              { text: `User Access Verification`, cls: 'text-slate-300' }
+            ];
+          } else {
+            sourceNode.cliState.pendingAuth = {
+              type: 'remote',
+              protocol: protocol,
+              targetNodeId: targetNode.id,
+              targetIp: targetIp,
+              stage: 'username',
+              username: '',
+              attempts: 0
+            };
+            return [
+              { text: `Trying ${targetIp} ... Open`, cls: 'text-emerald-400' },
+              ...bannerOut,
+              { text: `User Access Verification`, cls: 'text-slate-300' }
+            ];
+          }
+        } else {
+          // Standard `login` with VTY password only
+          sourceNode.cliState.pendingAuth = {
+            type: 'remote',
+            protocol: protocol,
+            targetNodeId: targetNode.id,
+            targetIp: targetIp,
+            stage: 'password',
+            username: '',
+            attempts: 0
+          };
+          return [
+            { text: `Trying ${targetIp} ... Open`, cls: 'text-emerald-400' },
+            ...bannerOut,
+            { text: `User Access Verification`, cls: 'text-slate-300' }
+          ];
+        }
+      }
+
+      // Target is a Linux Server or Palo Alto Firewall (SSH supported)
+      if (targetNode.vendor === 'server' || targetNode.vendor === 'paloalto') {
+        if (protocol === 'telnet') {
+          return [
+            { text: `Trying ${targetIp} ...` },
+            { text: `% Connection refused by remote host (Telnet daemon not listening; use SSH)`, cls: 'text-rose-400' }
+          ];
+        }
+        sourceNode.cliState.remoteSession = {
+          targetNodeId: targetNode.id,
+          targetIp: targetIp,
+          protocol: 'ssh',
+          username: suppliedUser || 'admin'
+        };
+        return [
+          { text: `Connected to ${targetIp} via SSHv2 (${targetNode.name}). Type 'exit' to disconnect.`, cls: 'text-emerald-400' }
+        ];
+      }
+
+      return [
+        { text: `% Connection refused by remote host`, cls: 'text-rose-400' }
+      ];
+    }
+
+    // =========================================================================
+    // TERMINAL INITIALIZATION & KEYDOWN HANDLER
+    // =========================================================================
     function initTerminalEvents(node) {
       const screen = document.getElementById(`term_scr_${node.id}`);
       const input = document.getElementById(`term_inp_${node.id}`);
       const isHost = (node.vendor === 'host');
+      const isServer = (node.vendor === 'server');
 
       screen.addEventListener('click', () => { if (window.getSelection().toString() === '') input.focus(); });
       input.addEventListener('keydown', (e) => handleCliKeydown(e, node.id));
 
       if (node.cliState.terminalLog.length === 0) {
         if (isHost) {
-          appendTerminalLine(screen, 'NetForge Workstation CLI', 'text-slate-300', node);
-          appendTerminalLine(screen, "Type 'ipconfig', 'ipconfig /renew', or 'ping <ip>'.", 'text-slate-400', node);
+          appendTerminalLine(screen, 'NetForge Workstation CLI (Windows 11 Pro)', 'text-slate-300', node);
+          appendTerminalLine(screen, "Commands: 'ipconfig', 'ipconfig /renew', 'ping <ip>', 'telnet <ip>', 'ssh <user>@<ip>'", 'text-slate-400', node);
+        } else if (isServer) {
+          appendTerminalLine(screen, `Ubuntu 24.04.1 LTS (${node.cliState.hostname} ttyS0)`, 'text-indigo-400 font-semibold', node);
+          appendTerminalLine(screen, "Commands: 'ip addr', 'ping <ip>', 'telnet <ip>', 'ssh <user>@<ip>', 'netstat -tulnp', 'systemctl status'", 'text-slate-400', node);
         } else if (node.vendor === 'paloalto') {
           appendTerminalLine(screen, `PA-VM PAN-OS Console [${node.cliState.panRunning.hostname}]`, 'text-orange-400 font-semibold', node);
           appendTerminalLine(screen, "Type 'configure' to enter configuration mode.", 'text-slate-400', node);
         } else {
-          appendTerminalLine(screen, `Cisco IOSv Console Ready`, 'text-emerald-400 font-semibold', node);
+          appendTerminalLine(screen, `Cisco IOS Software, IOSv Software (VIOS-ADVENTERPRISEK9-M), Version 15.9(3)M2`, 'text-emerald-400 font-semibold', node);
+          appendTerminalLine(screen, "Type 'enable', 'configure terminal', 'show running-config', or 'telnet <ip>'.", 'text-slate-400', node);
         }
       } else {
         node.cliState.terminalLog.forEach(entry => {
@@ -1789,7 +2278,7 @@
 
       if (e.key === 'ArrowUp') {
         e.preventDefault();
-        if (st.history.length > 0) {
+        if (st.history.length > 0 && !st.pendingAuth) {
           if (st.historyIndex < st.history.length - 1) st.historyIndex++;
           input.value = st.history[st.history.length - 1 - st.historyIndex];
         }
@@ -1797,8 +2286,13 @@
       }
       if (e.key === 'ArrowDown') {
         e.preventDefault();
-        if (st.historyIndex > 0) { st.historyIndex--; input.value = st.history[st.history.length - 1 - st.historyIndex]; }
-        else { st.historyIndex = -1; input.value = ''; }
+        if (st.historyIndex > 0 && !st.pendingAuth) {
+          st.historyIndex--;
+          input.value = st.history[st.history.length - 1 - st.historyIndex];
+        } else {
+          st.historyIndex = -1;
+          input.value = '';
+        }
         return;
       }
 
@@ -1810,11 +2304,119 @@
       st.historyIndex = -1;
 
       const promptBefore = getPromptString(node);
-      appendTerminalLine(screen, `${promptBefore} ${rawCmd}`, isHost ? 'text-white font-semibold' : 'text-emerald-300 font-bold', node);
+      const isPasswordPrompt = st.pendingAuth && (st.pendingAuth.stage === 'password' || st.pendingAuth.stage === 'enable_pass');
+
+      // Mask password input in terminal history
+      const displayEcho = isPasswordPrompt ? '*'.repeat(rawCmd.length) : rawCmd;
+      appendTerminalLine(screen, `${promptBefore} ${displayEcho}`, isHost ? 'text-white font-semibold' : 'text-emerald-300 font-bold', node);
+
+      // Handle interactive authentication stages (Username / Password / Enable Secret)
+      if (st.pendingAuth) {
+        const auth = st.pendingAuth;
+        if (auth.type === 'enable') {
+          const targetCisco = auth.targetNodeId ? nodes.find(n => n.id === auth.targetNodeId) : node;
+          const expectedSecret = targetCisco.cliState.enableSecret || targetCisco.cliState.enablePassword;
+          if (rawCmd === expectedSecret) {
+            targetCisco.cliState.mode = 'priv';
+            st.pendingAuth = null;
+          } else {
+            auth.attempts++;
+            if (auth.attempts >= 3) {
+              st.pendingAuth = null;
+              appendTerminalLine(screen, '% Bad secrets', 'text-rose-400', node);
+            }
+          }
+          document.getElementById(`term_prm_${nodeId}`).textContent = getPromptString(node);
+          screen.scrollTop = screen.scrollHeight;
+          return;
+        }
+
+        if (auth.type === 'remote') {
+          const targetCisco = nodes.find(n => n.id === auth.targetNodeId);
+          if (!targetCisco) {
+            st.pendingAuth = null;
+            appendTerminalLine(screen, '[Connection closed: target device removed]', 'text-rose-400', node);
+            document.getElementById(`term_prm_${nodeId}`).textContent = getPromptString(node);
+            return;
+          }
+          const vty = targetCisco.cliState.lines['vty 0 4'] || {};
+
+          if (auth.stage === 'username') {
+            auth.username = cmd;
+            auth.stage = 'password';
+            document.getElementById(`term_prm_${nodeId}`).textContent = getPromptString(node);
+            screen.scrollTop = screen.scrollHeight;
+            return;
+          }
+
+          if (auth.stage === 'password') {
+            let valid = false;
+            if (vty.loginMode === 'local' || auth.protocol === 'ssh') {
+              const userRec = targetCisco.cliState.users[auth.username];
+              if (userRec && (userRec.secret === rawCmd || userRec.password === rawCmd)) {
+                valid = true;
+              }
+            } else if (vty.loginMode === 'login') {
+              if (vty.password === rawCmd) {
+                valid = true;
+              }
+            }
+
+            if (valid) {
+              const userRec = targetCisco.cliState.users[auth.username];
+              targetCisco.cliState.mode = (userRec && userRec.privilege === 15) ? 'priv' : 'user';
+              st.remoteSession = {
+                targetNodeId: targetCisco.id,
+                targetIp: auth.targetIp,
+                protocol: auth.protocol,
+                username: auth.username || 'vty'
+              };
+              st.pendingAuth = null;
+            } else {
+              auth.attempts++;
+              appendTerminalLine(screen, '% Login invalid', 'text-rose-400', node);
+              if (auth.attempts >= 3) {
+                st.pendingAuth = null;
+                appendTerminalLine(screen, `[Connection to ${auth.targetIp} closed by foreign host]`, 'text-slate-400', node);
+              } else if (vty.loginMode === 'local' || auth.protocol === 'ssh') {
+                auth.stage = 'username';
+              }
+            }
+            document.getElementById(`term_prm_${nodeId}`).textContent = getPromptString(node);
+            screen.scrollTop = screen.scrollHeight;
+            return;
+          }
+        }
+      }
+
+      // If currently inside a remote Telnet/SSH session, forward commands to remote device
+      if (st.remoteSession) {
+        const remoteNode = nodes.find(n => n.id === st.remoteSession.targetNodeId);
+        if (!remoteNode) {
+          st.remoteSession = null;
+          appendTerminalLine(screen, '[Remote host disconnected]', 'text-amber-400', node);
+        } else {
+          const lowerCmd = cmd.toLowerCase();
+          // Exiting from User EXEC or Privileged EXEC terminates the Telnet/SSH session
+          if ((lowerCmd === 'exit' || lowerCmd === 'logout' || lowerCmd === 'quit') &&
+              (remoteNode.vendor !== 'cisco' || remoteNode.cliState.mode === 'user' || remoteNode.cliState.mode === 'priv')) {
+            const closedIp = st.remoteSession.targetIp;
+            st.remoteSession = null;
+            appendTerminalLine(screen, `[Connection to ${closedIp} closed by foreign host]`, 'text-slate-400', node);
+          } else if (cmd !== '') {
+            st.history.push(cmd);
+            const outputLines = executeVendorCommand(remoteNode, cmd, screen, node);
+            outputLines.forEach(line => appendTerminalLine(screen, line.text, line.cls || 'text-slate-200', node));
+          }
+        }
+        document.getElementById(`term_prm_${nodeId}`).textContent = getPromptString(node);
+        screen.scrollTop = screen.scrollHeight;
+        return;
+      }
 
       if (cmd !== '') {
         st.history.push(cmd);
-        const outputLines = executeVendorCommand(node, cmd, screen);
+        const outputLines = executeVendorCommand(node, cmd, screen, node);
         outputLines.forEach(line => appendTerminalLine(screen, line.text, line.cls || 'text-slate-200', node));
       }
 
@@ -1822,24 +2424,43 @@
       screen.scrollTop = screen.scrollHeight;
     }
 
-    function executeVendorCommand(node, cmd, screen) {
+    // =========================================================================
+    // MULTI-VENDOR COMMAND EXECUTION ENGINE (CISCO IOS, PAN-OS, LINUX, WINDOWS)
+    // =========================================================================
+    function executeVendorCommand(node, cmd, screen, sessionOwnerNode = node) {
       const lower = cmd.toLowerCase();
       const tokens = cmd.split(/\s+/);
       const st = node.cliState;
 
       if (lower === 'clear' || (node.vendor === 'host' && lower === 'cls')) {
-        st.terminalLog = [];
+        sessionOwnerNode.cliState.terminalLog = [];
         if (screen) screen.innerHTML = '';
         return [];
       }
 
+      // 1. WINDOWS WORKSTATION CMD
       if (node.vendor === 'host') {
-        if (lower === 'ipconfig') {
+        if (lower === '?' || lower === 'help') {
+          return [
+            { text: 'Workstation CLI Commands:', cls: 'text-blue-400 font-semibold' },
+            { text: '  ipconfig                 Display current TCP/IP network configuration' },
+            { text: '  ipconfig /renew          Request a new IPv4 lease from DHCP server' },
+            { text: '  ping <ip>                Send ICMP echo requests to target host' },
+            { text: '  tracert <ip>             Trace network path hops to target host' },
+            { text: '  telnet <ip>              Open interactive Telnet session to remote device' },
+            { text: '  ssh <user>@<ip>          Open interactive SSH session to remote device' },
+            { text: '  cls / clear              Clear command prompt screen' }
+          ];
+        }
+        if (lower === 'ipconfig' || lower === 'ipconfig /all') {
           return [
             { text: '\nWindows IP Configuration\n' },
+            { text: `   Host Name . . . . . . . . . . . . : ${node.name}` },
+            { text: `   DHCP Enabled. . . . . . . . . . . : ${node.ipConfig.mode === 'dhcp' ? 'Yes' : 'No'}` },
             { text: `   IPv4 Address. . . . . . . . . . . : ${node.ipConfig.ip}` },
             { text: `   Subnet Mask . . . . . . . . . . . : ${node.ipConfig.subnet}` },
-            { text: `   Default Gateway . . . . . . . . . : ${node.ipConfig.gateway}\n` }
+            { text: `   Default Gateway . . . . . . . . . : ${node.ipConfig.gateway}` },
+            { text: `   DNS Servers . . . . . . . . . . . : ${node.ipConfig.dns || '8.8.8.8'}\n` }
           ];
         }
         if (lower === 'ipconfig /renew') {
@@ -1847,20 +2468,137 @@
           if (lease.success) {
             node.ipConfig = { mode: 'dhcp', ip: lease.ip, subnet: lease.subnet, gateway: lease.gateway, dns: lease.dns };
             renderNodeDOM(node);
-            return [{ text: `DHCP Lease acquired: ${node.ipConfig.ip}`, cls: 'text-emerald-400' }];
+            return [{ text: `DHCP Lease acquired from ${lease.serverName}: ${node.ipConfig.ip}`, cls: 'text-emerald-400' }];
           }
-          return [{ text: 'No DHCP server responded.', cls: 'text-amber-400' }];
+          return [{ text: 'An error occurred while renewing interface Ethernet0 : unable to contact your DHCP server.', cls: 'text-amber-400' }];
         }
         if (lower.startsWith('ping ')) {
           const target = tokens[1];
           const res = traceReachabilityPath(node, target);
           return res.reachable
-            ? [{ text: `Reply from ${target}: bytes=32 time=1ms TTL=126`, cls: 'text-emerald-400' }]
-            : [{ text: 'Request timed out.', cls: 'text-amber-400' }];
+            ? [
+                { text: `Pinging ${target} with 32 bytes of data:` },
+                { text: `Reply from ${target}: bytes=32 time=1ms TTL=126`, cls: 'text-emerald-400' },
+                { text: `Reply from ${target}: bytes=32 time<1ms TTL=126`, cls: 'text-emerald-400' }
+              ]
+            : [
+                { text: `Pinging ${target} with 32 bytes of data:` },
+                { text: `Request timed out. (${res.reason})`, cls: 'text-amber-400' }
+              ];
         }
-        return [{ text: `'${tokens[0]}' is not recognized.`, cls: 'text-rose-400' }];
+        if (lower.startsWith('tracert ')) {
+          const target = tokens[1];
+          const res = traceReachabilityPath(node, target);
+          if (!res.reachable) return [{ text: `Unable to resolve target system name ${target}. (${res.reason})`, cls: 'text-amber-400' }];
+          return [
+            { text: `Tracing route to ${target} over a maximum of 30 hops:\n` },
+            ...res.hops.map((h, i) => ({ text: `  ${i + 1}     1 ms     1 ms     1 ms  ${h}`, cls: 'text-emerald-400' })),
+            { text: '\nTrace complete.' }
+          ];
+        }
+        if (lower.startsWith('telnet ')) {
+          const targetIp = tokens[1];
+          if (!targetIp) return [{ text: 'Usage: telnet <host-ip>', cls: 'text-amber-400' }];
+          return initiateRemoteSession(sessionOwnerNode, 'telnet', targetIp, null);
+        }
+        if (lower.startsWith('ssh ')) {
+          const arg = tokens[1] || '';
+          if (arg.includes('@')) {
+            const [u, ip] = arg.split('@');
+            return initiateRemoteSession(sessionOwnerNode, 'ssh', ip, u);
+          } else if (tokens[1] === '-l' && tokens[2] && tokens[3]) {
+            return initiateRemoteSession(sessionOwnerNode, 'ssh', tokens[3], tokens[2]);
+          }
+          return [{ text: 'Usage: ssh <username>@<host-ip> or ssh -l <username> <host-ip>', cls: 'text-amber-400' }];
+        }
+        return [{ text: `'${tokens[0]}' is not recognized as an internal or external command.`, cls: 'text-rose-400' }];
       }
 
+      // 2. ENTERPRISE SERVER LINUX BASH CLI
+      if (node.vendor === 'server') {
+        if (lower === '?' || lower === 'help') {
+          return [
+            { text: 'Enterprise Linux Server Shell Commands:', cls: 'text-indigo-400 font-semibold' },
+            { text: '  ip addr / ifconfig       Show network interface IPv4 configuration' },
+            { text: '  ip route                 Show kernel IP routing table' },
+            { text: '  dhclient eth0            Request DHCP IPv4 lease' },
+            { text: '  ping <ip>                Send ICMP echo packets to host' },
+            { text: '  telnet <ip>              Connect to remote router/switch via Telnet' },
+            { text: '  ssh <user>@<ip>          Connect to remote host via SSH' },
+            { text: '  netstat -tulnp           Display active listening TCP/UDP sockets' },
+            { text: '  systemctl status         Display running enterprise daemons' },
+            { text: '  hostname                 Display server hostname' },
+            { text: '  clear                    Clear terminal screen' }
+          ];
+        }
+        if (lower === 'hostname') return [{ text: st.hostname }];
+        if (lower === 'ip addr' || lower === 'ip a' || lower === 'ifconfig') {
+          return [
+            { text: `1: lo: <LOOPBACK,UP,LOWER_UP> mtu 65536 state UNKNOWN` },
+            { text: `    inet 127.0.0.1/8 scope host lo` },
+            { text: `2: eth0: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 state UP` },
+            { text: `    inet ${node.ipConfig.ip}/${maskToCidr(node.ipConfig.subnet)} scope global eth0`, cls: 'text-emerald-400' },
+            { text: `    gateway ${node.ipConfig.gateway || 'none'}` }
+          ];
+        }
+        if (lower === 'ip route' || lower === 'route -n') {
+          const lines = [];
+          if (node.ipConfig.gateway) lines.push({ text: `default via ${node.ipConfig.gateway} dev eth0 proto static` });
+          if (node.ipConfig.ip && node.ipConfig.ip !== '0.0.0.0') {
+            lines.push({ text: `${getNetworkAddress(node.ipConfig.ip, node.ipConfig.subnet)}/${maskToCidr(node.ipConfig.subnet)} dev eth0 proto kernel scope link src ${node.ipConfig.ip}` });
+          }
+          return lines.length ? lines : [{ text: 'Kernel IP routing table is empty.' }];
+        }
+        if (lower.startsWith('dhclient')) {
+          const lease = requestDhcpLease(node);
+          if (lease.success) {
+            node.ipConfig = { mode: 'dhcp', ip: lease.ip, subnet: lease.subnet, gateway: lease.gateway, dns: lease.dns };
+            renderNodeDOM(node);
+            return [{ text: `DHCPACK of ${lease.ip} from ${lease.serverName} (bound to eth0)`, cls: 'text-emerald-400' }];
+          }
+          return [{ text: 'No DHCPOFFERS received.', cls: 'text-amber-400' }];
+        }
+        if (lower === 'netstat -tulnp' || lower === 'ss -tulnp') {
+          return [
+            { text: 'Proto Recv-Q Send-Q Local Address           Foreign Address         State       PID/Program' },
+            { text: 'tcp        0      0 0.0.0.0:22              0.0.0.0:*               LISTEN      1042/sshd' },
+            { text: 'tcp        0      0 0.0.0.0:80              0.0.0.0:*               LISTEN      1188/nginx' },
+            { text: 'tcp        0      0 0.0.0.0:443             0.0.0.0:*               LISTEN      1188/nginx' }
+          ];
+        }
+        if (lower.startsWith('systemctl')) {
+          return [
+            { text: '● ssh.service - OpenBSD Secure Shell server (active/running)', cls: 'text-emerald-400' },
+            { text: '● nginx.service - High Performance Web Server (active/running)', cls: 'text-emerald-400' },
+            { text: '● systemd-networkd.service - Network Configuration (active/running)', cls: 'text-emerald-400' }
+          ];
+        }
+        if (lower.startsWith('ping ')) {
+          const target = tokens[1];
+          const res = traceReachabilityPath(node, target);
+          return res.reachable
+            ? [{ text: `64 bytes from ${target}: icmp_seq=1 ttl=64 time=0.62 ms\n64 bytes from ${target}: icmp_seq=2 ttl=64 time=0.58 ms`, cls: 'text-emerald-400' }]
+            : [{ text: `From ${node.ipConfig.ip || '0.0.0.0'} icmp_seq=1 Destination Host Unreachable (${res.reason})`, cls: 'text-amber-400' }];
+        }
+        if (lower.startsWith('telnet ')) {
+          const targetIp = tokens[1];
+          if (!targetIp) return [{ text: 'Usage: telnet <host-ip>', cls: 'text-amber-400' }];
+          return initiateRemoteSession(sessionOwnerNode, 'telnet', targetIp, null);
+        }
+        if (lower.startsWith('ssh ')) {
+          const arg = tokens[1] || '';
+          if (arg.includes('@')) {
+            const [u, ip] = arg.split('@');
+            return initiateRemoteSession(sessionOwnerNode, 'ssh', ip, u);
+          } else if (tokens[1] === '-l' && tokens[2] && tokens[3]) {
+            return initiateRemoteSession(sessionOwnerNode, 'ssh', tokens[3], tokens[2]);
+          }
+          return [{ text: 'Usage: ssh <username>@<host-ip>', cls: 'text-amber-400' }];
+        }
+        return [{ text: `bash: ${tokens[0]}: command not found`, cls: 'text-rose-400' }];
+      }
+
+      // 3. PALO ALTO PAN-OS CLI
       if (node.vendor === 'paloalto') {
         const cand = st.panCandidate;
         const run = st.panRunning;
@@ -1890,7 +2628,6 @@
               { text: '  show config running                            Display running configuration' },
               { text: '  show config candidate                          Display candidate configuration' },
               { text: '  ping host <ip>                                 Send ICMP echo requests to target host' },
-              { text: '  exit / quit                                    Reset or exit console session' },
               { text: '  clear                                          Clear terminal screen' }
             ];
           }
@@ -2099,7 +2836,6 @@
           if (opResult) return opResult;
           return [{ text: `Unknown command: ${cmd}. Type '?' for available operational commands.`, cls: 'text-rose-400' }];
         } else {
-          // Configuration Mode (admin@PA-FW1#)
           if (lower === '?' || lower === 'help') {
             return [
               { text: 'Configuration Mode Commands:', cls: 'text-orange-400 font-semibold' },
@@ -2146,7 +2882,6 @@
             return [{ text: `Unknown operational command: ${innerCmd}`, cls: 'text-rose-400' }, { text: '[edit]' }];
           }
 
-          // Allow direct operational show commands in config mode for convenience
           if (lower.startsWith('show ')) {
             const opResult = executePanOperational(cmd);
             if (opResult) return [...opResult, { text: '[edit]' }];
@@ -2169,7 +2904,6 @@
             ];
           }
 
-          // Flexible order-independent parser for: set deviceconfig system ...
           if (lower.startsWith('set deviceconfig system ')) {
             const sysTokens = tokens.slice(3);
             let matchedAny = false;
@@ -2296,99 +3030,820 @@
         }
       }
 
-      // Cisco IOS CLI
-      if (lower === 'enable' || lower === 'en') { st.mode = 'priv'; return []; }
-      if (lower === 'configure terminal' || lower === 'conf t') { st.mode = 'config'; return []; }
-      if (lower === 'exit') {
-        if (st.mode === 'config-if' || st.mode === 'dhcp-config' || st.mode === 'config-router') st.mode = 'config';
-        else if (st.mode === 'config') st.mode = 'priv';
-        else st.mode = 'user';
+      // =======================================================================
+      // 4. COMPREHENSIVE CISCO IOS ROUTER & SWITCH CLI ENGINE
+      // =======================================================================
+
+      // Help menu (`?` or `help`) context-aware
+      if (lower === '?' || lower === 'help') {
+        if (st.mode === 'user') {
+          return [
+            { text: 'User EXEC commands:', cls: 'text-emerald-400 font-semibold' },
+            { text: '  enable                   Turn on privileged commands' },
+            { text: '  ping <ip>                Send echo messages' },
+            { text: '  traceroute <ip>          Trace route to destination' },
+            { text: '  telnet <ip>              Open a telnet connection' },
+            { text: '  ssh -l <user> <ip>       Open a secure shell client connection' },
+            { text: '  show ip interface brief  Brief summary of IP status and configuration' },
+            { text: '  show version             System hardware and software status' },
+            { text: '  exit                     Exit from the EXEC' }
+          ];
+        }
+        if (st.mode === 'priv') {
+          return [
+            { text: 'Privileged EXEC commands:', cls: 'text-emerald-400 font-semibold' },
+            { text: '  configure terminal       Enter configuration mode' },
+            { text: '  show running-config      Current operating configuration' },
+            { text: '  show startup-config      Contents of startup configuration' },
+            { text: '  write memory / wr        Save running config to NVRAM startup-config' },
+            { text: '  show ip interface brief  IP interface status and configuration' },
+            { text: '  show interfaces          Interface status and configuration' },
+            { text: '  show ip route            IP routing table' },
+            { text: '  show ip protocols        IP routing protocol process parameters and statistics' },
+            { text: '  show ip ospf neighbor    OSPF neighbor list' },
+            { text: '  show ip eigrp neighbors  IP-EIGRP neighbors' },
+            { text: '  show ip bgp summary      Summary of BGP neighbor status' },
+            { text: '  show ip dhcp binding     DHCP address bindings' },
+            { text: '  show ip dhcp pool        DHCP pools information' },
+            { text: '  show access-lists        List access lists' },
+            { text: '  show ip nat translations Translation entries' },
+            { text: '  show vlan brief          VTP VLAN status in brief' },
+            { text: '  show line                TTY line information' },
+            { text: '  show users               Display information about terminal lines' },
+            { text: '  show version             System hardware and software status' },
+            { text: '  telnet <ip>              Open a telnet connection' },
+            { text: '  ssh -l <user> <ip>       Open a secure shell client connection' },
+            { text: '  ping <ip> / traceroute <ip>' },
+            { text: '  disable / exit' }
+          ];
+        }
+        if (st.mode === 'config') {
+          return [
+            { text: 'Global Configuration commands:', cls: 'text-emerald-400 font-semibold' },
+            { text: '  hostname <name>                          Set system network name' },
+            { text: '  enable secret <password>                 Assign the privileged level secret' },
+            { text: '  enable password <password>               Assign the privileged level password' },
+            { text: '  username <user> [privilege 15] secret <pass>  Establish User Name Authentication' },
+            { text: '  ip domain-name <name>                    Define the default domain name' },
+            { text: '  crypto key generate rsa [modulus <bits>] Generate RSA keys for SSH' },
+            { text: '  service password-encryption              Encrypt system passwords' },
+            { text: '  banner motd <delim><text><delim>         Define login banner' },
+            { text: '  interface <type/num>                     Select an interface to configure' },
+            { text: '  line console 0 / line vty 0 4            Configure a terminal line' },
+            { text: '  ip route <dest> <mask> <nexthop>         Establish static routes' },
+            { text: '  ip dhcp excluded-address <start> [<end>] Prevent DHCP from assigning certain addresses' },
+            { text: '  ip dhcp pool <name>                      Configure DHCP address pools' },
+            { text: '  router ospf <pid> / router eigrp <asn> / router bgp <asn>' },
+            { text: '  access-list <1-199> <permit|deny> ...    Add an access list entry' },
+            { text: '  ip nat inside source list <acl> interface <if> overload' },
+            { text: '  vlan <id>                                VTP VLAN commands' },
+            { text: '  end / exit' }
+          ];
+        }
+        if (st.mode === 'config-line') {
+          return [
+            { text: 'Line Configuration commands:', cls: 'text-emerald-400 font-semibold' },
+            { text: '  password <pass>                          Set a password' },
+            { text: '  login                                    Enable password checking (line password)' },
+            { text: '  login local                              Enable local username/password checking' },
+            { text: '  no login                                 Disable password checking' },
+            { text: '  transport input <telnet|ssh|all|none>    Define which protocols to use when connecting' },
+            { text: '  transport output <telnet|ssh|all|none>   Define which protocols to use for outgoing connections' },
+            { text: '  exec-timeout <minutes> [<seconds>]       Set the EXEC timeout' },
+            { text: '  logging synchronous                      Synchronized message output' },
+            { text: '  exit / end' }
+          ];
+        }
+        if (st.mode === 'config-if') {
+          return [
+            { text: 'Interface Configuration commands:', cls: 'text-emerald-400 font-semibold' },
+            { text: '  ip address <ip> <mask> / no ip address' },
+            { text: '  description <text>' },
+            { text: '  no shutdown / shutdown' },
+            { text: '  ip nat <inside|outside>' },
+            { text: '  ip access-group <acl> <in|out>' },
+            { text: '  switchport mode <access|trunk>' },
+            { text: '  switchport access vlan <id>' },
+            { text: '  switchport trunk allowed vlan <list>' },
+            { text: '  exit / end' }
+          ];
+        }
+      }
+
+      // Common Navigation & Exec Commands
+      if (lower === 'enable' || lower === 'en') {
+        if (st.mode !== 'user') return [];
+        if (st.enableSecret || st.enablePassword) {
+          sessionOwnerNode.cliState.pendingAuth = {
+            type: 'enable',
+            targetNodeId: node.id,
+            stage: 'enable_pass',
+            attempts: 0
+          };
+          return [];
+        }
+        st.mode = 'priv';
         return [];
       }
-      if (lower === 'end') { st.mode = 'priv'; return []; }
 
+      if (lower === 'disable') {
+        if (st.mode === 'priv') st.mode = 'user';
+        return [];
+      }
+
+      if (lower === 'configure terminal' || lower === 'conf t' || lower === 'config t' || lower === 'configure') {
+        if (st.mode !== 'priv') return [{ text: '% Invalid input detected at \'^\' marker.', cls: 'text-rose-400' }];
+        st.mode = 'config';
+        return [{ text: 'Enter configuration commands, one per line.  End with CNTL/Z.' }];
+      }
+
+      if (lower === 'exit') {
+        if (['config-if', 'dhcp-config', 'config-router', 'config-vlan', 'config-line'].includes(st.mode)) {
+          st.mode = 'config';
+        } else if (st.mode === 'config') {
+          st.mode = 'priv';
+        } else if (st.mode === 'priv') {
+          st.mode = 'user';
+        }
+        return [];
+      }
+
+      if (lower === 'end') {
+        if (st.mode !== 'user') st.mode = 'priv';
+        return [];
+      }
+
+      // Support `do <exec-cmd>` inside any configuration sub-mode
+      if (lower.startsWith('do ') && st.mode.startsWith('config') || (lower.startsWith('do ') && st.mode === 'dhcp-config')) {
+        const innerCmd = cmd.slice(3).trim();
+        const savedMode = st.mode;
+        st.mode = 'priv';
+        const res = executeVendorCommand(node, innerCmd, screen, sessionOwnerNode);
+        st.mode = savedMode;
+        return res;
+      }
+
+      // =======================================================================
+      // GLOBAL CONFIGURATION MODE (`config`)
+      // =======================================================================
       if (st.mode === 'config') {
         if (lower.startsWith('hostname ')) {
+          if (!tokens[1]) return [{ text: '% Incomplete command.', cls: 'text-rose-400' }];
           st.hostname = tokens[1];
           node.name = tokens[1];
           renderNodeDOM(node);
           return [];
         }
+
+        if (lower.startsWith('enable secret ')) {
+          const sec = cmd.slice('enable secret '.length).trim();
+          if (!sec) return [{ text: '% Incomplete command.', cls: 'text-rose-400' }];
+          st.enableSecret = sec;
+          return [];
+        }
+        if (lower === 'no enable secret') {
+          st.enableSecret = '';
+          return [];
+        }
+
+        if (lower.startsWith('enable password ')) {
+          const pass = cmd.slice('enable password '.length).trim();
+          if (!pass) return [{ text: '% Incomplete command.', cls: 'text-rose-400' }];
+          st.enablePassword = pass;
+          return [];
+        }
+        if (lower === 'no enable password') {
+          st.enablePassword = '';
+          return [];
+        }
+
+        if (lower.startsWith('username ')) {
+          // username <name> [privilege <1-15>] <secret|password> <pass>
+          const uName = tokens[1];
+          if (!uName) return [{ text: '% Incomplete command.', cls: 'text-rose-400' }];
+          let priv = 1;
+          const privIdx = tokens.findIndex(t => t.toLowerCase() === 'privilege');
+          if (privIdx !== -1 && tokens[privIdx + 1]) {
+            priv = parseInt(tokens[privIdx + 1], 10) || 1;
+          }
+          const secIdx = tokens.findIndex(t => t.toLowerCase() === 'secret');
+          const passIdx = tokens.findIndex(t => t.toLowerCase() === 'password');
+          if (secIdx !== -1 && tokens[secIdx + 1]) {
+            st.users[uName] = { privilege: priv, secret: tokens.slice(secIdx + 1).join(' '), password: '' };
+            return [];
+          }
+          if (passIdx !== -1 && tokens[passIdx + 1]) {
+            st.users[uName] = { privilege: priv, password: tokens.slice(passIdx + 1).join(' '), secret: '' };
+            return [];
+          }
+          return [{ text: '% Incomplete command. Usage: username <name> [privilege 15] secret <password>', cls: 'text-rose-400' }];
+        }
+        if (lower.startsWith('no username ')) {
+          delete st.users[tokens[2]];
+          return [];
+        }
+
+        if (lower.startsWith('ip domain-name ') || lower.startsWith('ip domain name ')) {
+          const dom = tokens[tokens.length - 1];
+          if (!dom) return [{ text: '% Incomplete command.', cls: 'text-rose-400' }];
+          st.domainName = dom;
+          return [];
+        }
+
+        if (lower.startsWith('crypto key generate rsa')) {
+          if (!st.domainName) {
+            return [{ text: '% Please define a domain-name first.', cls: 'text-amber-400' }];
+          }
+          const modIdx = tokens.findIndex(t => t.toLowerCase() === 'modulus');
+          const bits = (modIdx !== -1 && tokens[modIdx + 1]) ? parseInt(tokens[modIdx + 1], 10) : 1024;
+          st.sshKeyGenerated = true;
+          st.sshKeyBits = bits || 1024;
+          return [
+            { text: `The name for the keys will be: ${st.hostname}.${st.domainName}` },
+            { text: `Choose the size of the key modulus in the range of 360 to 4096 for your` },
+            { text: `  General Purpose Keys. Choosing a key modulus greater than 512 may take` },
+            { text: `  a few minutes.` },
+            { text: `% Generating ${st.sshKeyBits} bit RSA keys, keys will be non-exportable...` },
+            { text: `[OK] (elapsed time was 1 seconds)`, cls: 'text-emerald-400' },
+            { text: `*Nov 13 09:55:00.123: %SSH-5-ENABLED: SSH 1.99 has been enabled`, cls: 'text-sky-400' }
+          ];
+        }
+
+        if (lower === 'service password-encryption') {
+          st.servicePasswordEncryption = true;
+          return [];
+        }
+        if (lower === 'no service password-encryption') {
+          st.servicePasswordEncryption = false;
+          return [];
+        }
+
+        if (lower.startsWith('banner motd ')) {
+          const rawBanner = cmd.slice('banner motd '.length).trim();
+          if (rawBanner.length >= 2) {
+            const delim = rawBanner[0];
+            const endIdx = rawBanner.indexOf(delim, 1);
+            st.bannerMotd = endIdx > 0 ? rawBanner.slice(1, endIdx) : rawBanner.slice(1);
+          }
+          return [];
+        }
+
+        if (lower === 'ip routing') { st.ipRouting = true; return []; }
+        if (lower === 'no ip routing') { st.ipRouting = false; return []; }
+
         if (lower.startsWith('ip route ')) {
+          if (tokens.length < 5) return [{ text: '% Incomplete command.', cls: 'text-rose-400' }];
+          st.staticRoutes = st.staticRoutes.filter(r => !(r.dest === tokens[2] && r.mask === tokens[3] && r.nexthop === tokens[4]));
           st.staticRoutes.push({ dest: tokens[2], mask: tokens[3], nexthop: tokens[4] });
           return [];
         }
+        if (lower.startsWith('no ip route ')) {
+          st.staticRoutes = st.staticRoutes.filter(r => !(r.dest === tokens[3] && r.mask === tokens[4]));
+          return [];
+        }
+
+        if (lower.startsWith('ip dhcp excluded-address ')) {
+          if (!tokens[2]) return [{ text: '% Incomplete command.', cls: 'text-rose-400' }];
+          st.dhcpExcluded.push({ start: tokens[2], end: tokens[3] || tokens[2] });
+          return [];
+        }
+
+        if (lower.startsWith('ip dhcp pool ')) {
+          const pName = tokens[3];
+          if (!pName) return [{ text: '% Incomplete command.', cls: 'text-rose-400' }];
+          st.activeDhcpPool = pName;
+          if (!st.dhcpPools[pName]) {
+            st.dhcpPools[pName] = { network: '', mask: '', defaultRouter: '', dnsServer: '8.8.8.8', domainName: '', lease: '1 day' };
+          }
+          st.mode = 'dhcp-config';
+          return [];
+        }
+
+        // Line Configuration (`line console 0`, `line con 0`, `line vty 0 4`, `line vty 0 15`)
+        if (lower.startsWith('line ')) {
+          const lineType = (tokens[1] || '').toLowerCase();
+          if (lineType === 'con' || lineType === 'console') {
+            st.activeLine = 'console 0';
+            if (!st.lines['console 0']) st.lines['console 0'] = { password: '', loginMode: 'none', transportOutput: ['all'], execTimeout: '10 0', loggingSync: false };
+            st.mode = 'config-line';
+            return [];
+          }
+          if (lineType === 'vty') {
+            if (!tokens[2]) return [{ text: '% Incomplete command. Usage: line vty 0 4', cls: 'text-rose-400' }];
+            st.activeLine = 'vty 0 4';
+            if (!st.lines['vty 0 4']) st.lines['vty 0 4'] = { password: '', loginMode: 'login', transportInput: ['telnet', 'ssh'], transportOutput: ['all'], execTimeout: '10 0', loggingSync: false };
+            st.mode = 'config-line';
+            return [];
+          }
+          return [{ text: '% Invalid line type. Use "line console 0" or "line vty 0 4".', cls: 'text-rose-400' }];
+        }
+
+        // Dynamic Routing Protocols
+        if (lower.startsWith('router ospf ')) {
+          const pid = parseInt(tokens[2], 10);
+          if (isNaN(pid)) return [{ text: '% Incomplete command.', cls: 'text-rose-400' }];
+          st.ospf.pid = pid;
+          st.activeRouterProto = 'ospf';
+          st.mode = 'config-router';
+          return [];
+        }
+        if (lower.startsWith('router eigrp ')) {
+          const asn = parseInt(tokens[2], 10);
+          if (isNaN(asn)) return [{ text: '% Incomplete command.', cls: 'text-rose-400' }];
+          st.eigrp.asn = asn;
+          st.activeRouterProto = 'eigrp';
+          st.mode = 'config-router';
+          return [];
+        }
+        if (lower.startsWith('router bgp ')) {
+          const asn = parseInt(tokens[2], 10);
+          if (isNaN(asn)) return [{ text: '% Incomplete command.', cls: 'text-rose-400' }];
+          st.bgp.asn = asn;
+          st.activeRouterProto = 'bgp';
+          st.mode = 'config-router';
+          return [];
+        }
+
+        // Access Control Lists
+        if (lower.startsWith('access-list ')) {
+          const aclNum = tokens[1];
+          const ruleBody = tokens.slice(2).join(' ');
+          if (!aclNum || !ruleBody) return [{ text: '% Incomplete command.', cls: 'text-rose-400' }];
+          if (!st.acls[aclNum]) st.acls[aclNum] = [];
+          st.acls[aclNum].push(ruleBody);
+          return [];
+        }
+        if (lower.startsWith('no access-list ')) {
+          delete st.acls[tokens[2]];
+          return [];
+        }
+
+        // NAT Configuration
+        if (lower.startsWith('ip nat inside source list ')) {
+          // ip nat inside source list <acl> interface <iface> overload
+          const acl = tokens[5];
+          const ifIdx = tokens.findIndex(t => t.toLowerCase() === 'interface');
+          const iface = ifIdx !== -1 ? tokens[ifIdx + 1] : 'Gi0/1';
+          st.nat.overload = { acl, iface };
+          return [];
+        }
+        if (lower.startsWith('ip nat inside source static ')) {
+          const local = tokens[5], global = tokens[6];
+          if (!local || !global) return [{ text: '% Incomplete command.', cls: 'text-rose-400' }];
+          st.nat.statics.push({ local, global });
+          return [];
+        }
+
+        // VLAN Creation
+        if (lower.startsWith('vlan ')) {
+          const vId = tokens[1];
+          if (!vId || isNaN(parseInt(vId, 10))) return [{ text: '% Invalid VLAN ID.', cls: 'text-rose-400' }];
+          if (!st.vlans[vId]) st.vlans[vId] = { name: `VLAN${vId.padStart(4, '0')}`, status: 'active' };
+          st.activeVlanId = vId;
+          st.mode = 'config-vlan';
+          return [];
+        }
+
+        // Interface Selection
+        if (lower.startsWith('interface ') || lower.startsWith('int ')) {
+          const rawIf = tokens[1] || '';
+          const targetIf = Object.keys(st.ifaceConfigs).find(k =>
+            k.toLowerCase() === rawIf.toLowerCase() ||
+            k.toLowerCase().replace('gi', 'gigabitethernet') === rawIf.toLowerCase() ||
+            k.toLowerCase().replace('te', 'tengigabitethernet') === rawIf.toLowerCase() ||
+            k.toLowerCase().replace('eth', 'ethernet') === rawIf.toLowerCase()
+          );
+          if (!targetIf) return [{ text: `% Invalid interface '${rawIf}'`, cls: 'text-rose-400' }];
+          st.activeIface = targetIf;
+          st.mode = 'config-if';
+          return [];
+        }
       }
 
+      // =======================================================================
+      // LINE CONFIGURATION MODE (`config-line`) — TELNET & SSH SETTINGS
+      // =======================================================================
+      if (st.mode === 'config-line') {
+        const lineObj = st.lines[st.activeLine];
+        if (!lineObj) { st.mode = 'config'; return []; }
+
+        if (lower.startsWith('password ')) {
+          const pass = cmd.slice('password '.length).trim();
+          if (!pass) return [{ text: '% Incomplete command.', cls: 'text-rose-400' }];
+          lineObj.password = pass;
+          return [];
+        }
+        if (lower === 'no password') {
+          lineObj.password = '';
+          return [];
+        }
+
+        if (lower === 'login') {
+          lineObj.loginMode = 'login';
+          if (!lineObj.password) {
+            return [{ text: '% Login disabled on line, until \'password\' is set', cls: 'text-amber-400' }];
+          }
+          return [];
+        }
+        if (lower === 'login local') {
+          lineObj.loginMode = 'local';
+          return [];
+        }
+        if (lower === 'no login') {
+          lineObj.loginMode = 'none';
+          return [];
+        }
+
+        if (lower.startsWith('transport input ')) {
+          const protos = tokens.slice(2).map(p => p.toLowerCase());
+          const validProtos = ['telnet', 'ssh', 'all', 'none'];
+          if (protos.length === 0 || protos.some(p => !validProtos.includes(p))) {
+            return [{ text: '% Invalid input. Valid options: telnet, ssh, all, none', cls: 'text-rose-400' }];
+          }
+          if (protos.includes('all')) {
+            lineObj.transportInput = ['telnet', 'ssh'];
+          } else if (protos.includes('none')) {
+            lineObj.transportInput = ['none'];
+          } else {
+            lineObj.transportInput = [...new Set(protos)];
+          }
+          return [];
+        }
+
+        if (lower.startsWith('transport output ')) {
+          const protos = tokens.slice(2).map(p => p.toLowerCase());
+          lineObj.transportOutput = protos;
+          return [];
+        }
+
+        if (lower.startsWith('exec-timeout ')) {
+          const mins = tokens[1] || '10';
+          const secs = tokens[2] || '0';
+          lineObj.execTimeout = `${mins} ${secs}`;
+          return [];
+        }
+
+        if (lower === 'logging synchronous' || lower === 'logging sync') {
+          lineObj.loggingSync = true;
+          return [];
+        }
+        if (lower === 'no logging synchronous') {
+          lineObj.loggingSync = false;
+          return [];
+        }
+      }
+
+      // =======================================================================
+      // INTERFACE CONFIGURATION MODE (`config-if`)
+      // =======================================================================
       if (st.mode === 'config-if') {
+        const cfg = st.ifaceConfigs[st.activeIface];
+        if (!cfg) { st.mode = 'config'; return []; }
+
         if (lower.startsWith('ip address ')) {
-          const cfg = st.ifaceConfigs[st.activeIface];
-          if (cfg) { cfg.ip = tokens[2]; cfg.mask = tokens[3]; }
+          if (!tokens[2] || !tokens[3]) return [{ text: '% Incomplete command. Usage: ip address <ip> <mask>', cls: 'text-rose-400' }];
+          cfg.ip = tokens[2];
+          cfg.mask = tokens[3];
+          return [];
+        }
+        if (lower === 'no ip address') {
+          cfg.ip = 'unassigned';
+          cfg.mask = '';
+          return [];
+        }
+        if (lower.startsWith('description ')) {
+          cfg.description = cmd.slice('description '.length).trim();
           return [];
         }
         if (lower === 'no shutdown' || lower === 'no shut') {
-          if (st.ifaceConfigs[st.activeIface]) {
-            st.ifaceConfigs[st.activeIface].status = 'up';
-            st.ifaceConfigs[st.activeIface].protocol = 'up';
-          }
+          cfg.status = 'up';
+          cfg.protocol = 'up';
           renderLinks();
-          return [];
+          return [{ text: `%LINK-3-UPDOWN: Interface ${st.activeIface}, changed state to up`, cls: 'text-emerald-400' }];
         }
         if (lower === 'shutdown' || lower === 'shut') {
-          if (st.ifaceConfigs[st.activeIface]) {
-            st.ifaceConfigs[st.activeIface].status = 'administratively down';
-            st.ifaceConfigs[st.activeIface].protocol = 'down';
-          }
+          cfg.status = 'administratively down';
+          cfg.protocol = 'down';
           renderLinks();
+          return [{ text: `%LINK-5-CHANGED: Interface ${st.activeIface}, changed state to administratively down`, cls: 'text-amber-400' }];
+        }
+        if (lower === 'ip nat inside') { cfg.natDirection = 'inside'; return []; }
+        if (lower === 'ip nat outside') { cfg.natDirection = 'outside'; return []; }
+        if (lower.startsWith('ip access-group ')) {
+          const aclId = tokens[2], dir = (tokens[3] || '').toLowerCase();
+          if (dir === 'in') cfg.aclIn = aclId;
+          else if (dir === 'out') cfg.aclOut = aclId;
+          return [];
+        }
+        if (lower.startsWith('switchport mode ')) {
+          const swMode = (tokens[2] || '').toLowerCase();
+          if (!['access', 'trunk'].includes(swMode)) return [{ text: '% Invalid switchport mode.', cls: 'text-rose-400' }];
+          cfg.switchportMode = swMode;
+          return [];
+        }
+        if (lower.startsWith('switchport access vlan ')) {
+          const vId = parseInt(tokens[3], 10);
+          if (isNaN(vId)) return [{ text: '% Invalid VLAN ID.', cls: 'text-rose-400' }];
+          cfg.accessVlan = vId;
+          if (!st.vlans[String(vId)]) st.vlans[String(vId)] = { name: `VLAN${String(vId).padStart(4, '0')}`, status: 'active' };
+          return [];
+        }
+        if (lower.startsWith('switchport trunk allowed vlan ')) {
+          cfg.trunkAllowedVlans = tokens[4] || '1-4094';
           return [];
         }
       }
 
-      if (lower.startsWith('interface ') || lower.startsWith('int ')) {
-        const targetIf = Object.keys(st.ifaceConfigs).find(k => k.toLowerCase() === tokens[1]?.toLowerCase());
-        if (!targetIf) return [{ text: `% Invalid interface '${tokens[1]}'`, cls: 'text-rose-400' }];
-        st.activeIface = targetIf;
-        st.mode = 'config-if';
-        return [];
-      }
-      if (lower.startsWith('ip dhcp pool ')) {
-        st.activeDhcpPool = tokens[3];
-        st.dhcpPools[st.activeDhcpPool] = { network: '', mask: '', defaultRouter: '', dnsServer: '8.8.8.8' };
-        st.mode = 'dhcp-config';
-        return [];
-      }
+      // =======================================================================
+      // DHCP POOL CONFIGURATION MODE (`dhcp-config`)
+      // =======================================================================
       if (st.mode === 'dhcp-config') {
-        if (lower.startsWith('network ') && st.activeDhcpPool) {
-          st.dhcpPools[st.activeDhcpPool].network = tokens[1];
-          st.dhcpPools[st.activeDhcpPool].mask = tokens[2] || '255.255.255.0';
+        const pool = st.dhcpPools[st.activeDhcpPool];
+        if (!pool) { st.mode = 'config'; return []; }
+
+        if (lower.startsWith('network ')) {
+          pool.network = tokens[1];
+          pool.mask = tokens[2] || '255.255.255.0';
           return [];
         }
-        if (lower.startsWith('default-router ') && st.activeDhcpPool) {
-          st.dhcpPools[st.activeDhcpPool].defaultRouter = tokens[1];
+        if (lower.startsWith('default-router ')) {
+          pool.defaultRouter = tokens[1];
+          return [];
+        }
+        if (lower.startsWith('dns-server ')) {
+          pool.dnsServer = tokens[1];
+          return [];
+        }
+        if (lower.startsWith('domain-name ')) {
+          pool.domainName = tokens[1];
+          return [];
+        }
+        if (lower.startsWith('lease ')) {
+          pool.lease = tokens.slice(1).join(' ');
           return [];
         }
       }
-      if (lower.startsWith('show ip int')) {
+
+      // =======================================================================
+      // ROUTING PROTOCOL CONFIGURATION MODE (`config-router`)
+      // =======================================================================
+      if (st.mode === 'config-router') {
+        if (st.activeRouterProto === 'ospf') {
+          if (lower.startsWith('router-id ')) { st.ospf.routerId = tokens[1]; return []; }
+          if (lower.startsWith('network ')) {
+            const areaIdx = tokens.findIndex(t => t.toLowerCase() === 'area');
+            const area = areaIdx !== -1 ? tokens[areaIdx + 1] : '0';
+            st.ospf.networks.push({ net: tokens[1], wildcard: tokens[2] || '0.0.0.255', area });
+            return [];
+          }
+          if (lower.startsWith('passive-interface ')) {
+            st.ospf.passiveInterfaces.push(tokens[1]);
+            return [];
+          }
+          if (lower === 'default-information originate') {
+            st.ospf.defaultOriginate = true;
+            return [];
+          }
+        }
+        if (st.activeRouterProto === 'eigrp') {
+          if (lower.startsWith('network ')) {
+            st.eigrp.networks.push({ net: tokens[1], wildcard: tokens[2] || '' });
+            return [];
+          }
+          if (lower === 'no auto-summary') { st.eigrp.autoSummary = false; return []; }
+        }
+        if (st.activeRouterProto === 'bgp') {
+          if (lower.startsWith('bgp router-id ')) { st.bgp.routerId = tokens[2]; return []; }
+          if (lower.startsWith('neighbor ') && lower.includes('remote-as')) {
+            const rasIdx = tokens.findIndex(t => t.toLowerCase() === 'remote-as');
+            st.bgp.neighbors.push({ ip: tokens[1], remoteAs: tokens[rasIdx + 1] });
+            return [];
+          }
+          if (lower.startsWith('network ')) {
+            const maskIdx = tokens.findIndex(t => t.toLowerCase() === 'mask');
+            st.bgp.networks.push({ net: tokens[1], mask: maskIdx !== -1 ? tokens[maskIdx + 1] : '255.255.255.0' });
+            return [];
+          }
+        }
+      }
+
+      // =======================================================================
+      // VLAN CONFIGURATION MODE (`config-vlan`)
+      // =======================================================================
+      if (st.mode === 'config-vlan') {
+        if (lower.startsWith('name ') && st.activeVlanId) {
+          st.vlans[st.activeVlanId].name = tokens[1];
+          return [];
+        }
+      }
+
+      // =======================================================================
+      // SHOW & EXEC COMMANDS (`user` and `priv`)
+      // =======================================================================
+      if (lower === 'show running-config' || lower === 'show run' || lower === 'sh run') {
+        if (st.mode !== 'priv') return [{ text: '% Invalid input detected at \'^\' marker.', cls: 'text-rose-400' }];
+        return generateCiscoRunningConfig(node).map(line => ({ text: line }));
+      }
+
+      if (lower === 'show startup-config' || lower === 'show start' || lower === 'sh start') {
+        if (st.mode !== 'priv') return [{ text: '% Invalid input detected at \'^\' marker.', cls: 'text-rose-400' }];
+        if (!st.startupConfig) return [{ text: 'startup-config is not present', cls: 'text-amber-400' }];
+        return st.startupConfig.split('\n').map(line => ({ text: line }));
+      }
+
+      if (lower === 'write memory' || lower === 'write' || lower === 'wr' || lower === 'copy running-config startup-config' || lower === 'copy run start') {
+        if (st.mode !== 'priv') return [{ text: '% Invalid input detected at \'^\' marker.', cls: 'text-rose-400' }];
+        st.startupConfig = generateCiscoRunningConfig(node).join('\n');
         return [
-          { text: 'Interface              IP-Address      OK? Method Status                Protocol' },
+          { text: 'Building configuration...' },
+          { text: '[OK]', cls: 'text-emerald-400' }
+        ];
+      }
+
+      if (lower.startsWith('show ip int') || lower === 'sh ip int br') {
+        return [
+          { text: 'Interface              IP-Address      OK? Method Status                Protocol', cls: 'text-slate-400 font-semibold' },
           ...Object.entries(st.ifaceConfigs).map(([k, v]) => ({
             text: `${k.padEnd(22)} ${v.ip.padEnd(15)} YES manual ${v.status.padEnd(21)} ${v.protocol}`
           }))
         ];
       }
-      if (lower.startsWith('ping ')) {
-        const target = tokens[1];
-        const res = traceReachabilityPath(node, target);
-        return res.reachable
-          ? [{ text: `Sending 5, 100-byte ICMP Echos to ${target}, timeout is 2 seconds:\n!!!!!\nSuccess rate is 100 percent (5/5)`, cls: 'text-emerald-400' }]
-          : [{ text: `Sending 5, 100-byte ICMP Echos to ${target}, timeout is 2 seconds:\n.....\nSuccess rate is 0 percent (0/5)`, cls: 'text-amber-400' }];
+
+      if (lower === 'show interfaces' || lower === 'show int' || lower.startsWith('show interfaces ')) {
+        return Object.entries(st.ifaceConfigs).map(([k, v]) => ({
+          text: `${k} is ${v.status}, line protocol is ${v.protocol}\n  Hardware is iGbE, address is 5254.0012.0001\n  ${v.description ? 'Description: ' + v.description + '\n  ' : ''}Internet address is ${v.ip !== 'unassigned' ? v.ip + '/' + maskToCidr(v.mask) : 'unassigned'}\n  MTU 1500 bytes, BW 1000000 Kbit/sec, DLY 10 usec`
+        }));
       }
 
-      return [{ text: '% Invalid input detected.', cls: 'text-rose-400' }];
+      if (lower === 'show ip route' || lower === 'sh ip route') {
+        const out = [
+          { text: 'Codes: L - local, C - connected, S - static, R - RIP, M - mobile, B - BGP' },
+          { text: '       D - EIGRP, EX - EIGRP external, O - OSPF, IA - OSPF inter area' },
+          { text: '' },
+          { text: st.staticRoutes.some(r => r.dest === '0.0.0.0') ? `Gateway of last resort is ${st.staticRoutes.find(r => r.dest === '0.0.0.0').nexthop} to network 0.0.0.0\n` : 'Gateway of last resort is not set\n' }
+        ];
+        Object.entries(st.ifaceConfigs).forEach(([ifName, cfg]) => {
+          if (cfg.ip && cfg.ip !== 'unassigned' && cfg.status === 'up') {
+            const cidr = maskToCidr(cfg.mask);
+            const net = getNetworkAddress(cfg.ip, cfg.mask);
+            out.push({ text: `C        ${net}/${cidr} is directly connected, ${ifName}`, cls: 'text-emerald-400' });
+            out.push({ text: `L        ${cfg.ip}/32 is directly connected, ${ifName}` });
+          }
+        });
+        st.staticRoutes.forEach(sr => {
+          const cidr = maskToCidr(sr.mask);
+          out.push({ text: `S        ${sr.dest}/${cidr} [1/0] via ${sr.nexthop}`, cls: 'text-sky-400' });
+        });
+        if (st.ospf.pid && st.ospf.networks.length > 0) {
+          st.ospf.networks.forEach(n => {
+            out.push({ text: `O        ${n.net} [110/2] via OSPF Process ${st.ospf.pid}, Area ${n.area}`, cls: 'text-amber-300' });
+          });
+        }
+        return out;
+      }
+
+      if (lower === 'show ip protocols') {
+        const out = [];
+        if (st.ospf.pid) {
+          out.push({ text: `Routing Protocol is "ospf ${st.ospf.pid}"` });
+          out.push({ text: `  Router ID ${st.ospf.routerId || '1.1.1.1'}` });
+          out.push({ text: `  Routing for Networks:` });
+          st.ospf.networks.forEach(n => out.push({ text: `    ${n.net} ${n.wildcard} area ${n.area}` }));
+        }
+        if (st.eigrp.asn) {
+          out.push({ text: `Routing Protocol is "eigrp ${st.eigrp.asn}"` });
+          st.eigrp.networks.forEach(n => out.push({ text: `    ${n.net}` }));
+        }
+        if (st.bgp.asn) {
+          out.push({ text: `Routing Protocol is "bgp ${st.bgp.asn}"` });
+          st.bgp.neighbors.forEach(nb => out.push({ text: `    Neighbor ${nb.ip} remote-as ${nb.remoteAs}` }));
+        }
+        return out.length ? out : [{ text: 'No dynamic IP routing protocols currently active.' }];
+      }
+
+      if (lower === 'show ip dhcp binding') {
+        if (st.dhcpBindings.length === 0) return [{ text: 'IP address       Client-ID/              Lease expiration        Type' }];
+        return [
+          { text: 'IP address       Client-ID/              Lease expiration        Type', cls: 'text-slate-400 font-semibold' },
+          ...st.dhcpBindings.map(b => ({
+            text: `${b.ip.padEnd(16)} ${b.mac.padEnd(23)} ${b.lease.padEnd(23)} ${b.type}`
+          }))
+        ];
+      }
+
+      if (lower === 'show ip dhcp pool') {
+        const pools = Object.entries(st.dhcpPools);
+        if (pools.length === 0) return [{ text: 'No DHCP pools configured.' }];
+        return pools.map(([name, p]) => ({
+          text: `Pool ${name} :\n  Network: ${p.network} / ${p.mask}\n  Default-Router: ${p.defaultRouter || 'none'} | DNS: ${p.dnsServer || 'none'}`
+        }));
+      }
+
+      if (lower === 'show access-lists' || lower === 'show ip access-lists') {
+        const entries = Object.entries(st.acls);
+        if (entries.length === 0) return [{ text: 'No access lists configured.' }];
+        const out = [];
+        entries.forEach(([id, rules]) => {
+          out.push({ text: `Standard/Extended IP access list ${id}` });
+          rules.forEach((r, idx) => out.push({ text: `    ${(idx + 1) * 10} ${r}` }));
+        });
+        return out;
+      }
+
+      if (lower === 'show ip nat translations') {
+        if (!st.nat.overload && st.nat.statics.length === 0) return [{ text: 'No active NAT translations.' }];
+        const out = [{ text: 'Pro Inside global      Inside local       Outside local      Outside global', cls: 'text-slate-400 font-semibold' }];
+        st.nat.statics.forEach(s => out.push({ text: `--- ${s.global.padEnd(18)} ${s.local.padEnd(18)} ---                ---` }));
+        return out;
+      }
+
+      if (lower === 'show vlan brief' || lower === 'show vlan') {
+        return [
+          { text: 'VLAN Name                             Status    Ports', cls: 'text-slate-400 font-semibold' },
+          { text: '---- -------------------------------- --------- -------------------------------' },
+          ...Object.entries(st.vlans).map(([id, v]) => {
+            const ports = Object.entries(st.ifaceConfigs)
+              .filter(([_, c]) => c.switchportMode === 'access' && String(c.accessVlan) === id)
+              .map(([p]) => p).join(', ');
+            return { text: `${id.padEnd(4)} ${v.name.padEnd(32)} ${v.status.padEnd(9)} ${ports}` };
+          })
+        ];
+      }
+
+      if (lower === 'show line') {
+        const con = st.lines['console 0'] || {};
+        const vty = st.lines['vty 0 4'] || {};
+        return [
+          { text: '   Tty Typ     Tx/Rx    A Modem  Roty AccO AccI   Uses   Noise  Overruns   Int', cls: 'text-slate-400 font-semibold' },
+          { text: `*    0 CTY              -    -      -    -    -      1       0     0/0       -` },
+          { text: `     2 VTY              -    -      -    -    -      ${sessionOwnerNode.id !== node.id ? '1' : '0'}       0     0/0       -   (${(vty.transportInput || ['telnet', 'ssh']).join(',')})` }
+        ];
+      }
+
+      if (lower === 'show users') {
+        const lines = [
+          { text: '    Line       User       Host(s)              Idle       Location', cls: 'text-slate-400 font-semibold' },
+          { text: '*  0 con 0                idle                 00:00:00' }
+        ];
+        if (sessionOwnerNode.id !== node.id && sessionOwnerNode.cliState.remoteSession) {
+          lines.push({ text: `   2 vty 0     ${sessionOwnerNode.cliState.remoteSession.username.padEnd(10)} idle                 00:00:01   ${sessionOwnerNode.name}`, cls: 'text-emerald-400' });
+        }
+        return lines;
+      }
+
+      if (lower === 'show version' || lower === 'sh ver') {
+        return [
+          { text: `Cisco IOS Software, IOSv Software (VIOS-ADVENTERPRISEK9-M), Version 15.9(3)M2` },
+          { text: `${st.hostname} uptime is 1 hour, 42 minutes` },
+          { text: `Processor board ID 9X7Y6Z5W4V3` },
+          { text: `${node.interfaces.length} Gigabit Ethernet interfaces` },
+          { text: `Configuration register is 0x2102` }
+        ];
+      }
+
+      if (lower.startsWith('ping ')) {
+        const target = tokens[1];
+        if (!target) return [{ text: '% Incomplete command.', cls: 'text-rose-400' }];
+        const res = traceReachabilityPath(node, target);
+        return res.reachable
+          ? [{ text: `Type escape sequence to abort.\nSending 5, 100-byte ICMP Echos to ${target}, timeout is 2 seconds:\n!!!!!\nSuccess rate is 100 percent (5/5), round-trip min/avg/max = 1/1/4 ms`, cls: 'text-emerald-400' }]
+          : [{ text: `Type escape sequence to abort.\nSending 5, 100-byte ICMP Echos to ${target}, timeout is 2 seconds:\n.....\nSuccess rate is 0 percent (0/5)`, cls: 'text-amber-400' }];
+      }
+
+      if (lower.startsWith('traceroute ')) {
+        const target = tokens[1];
+        if (!target) return [{ text: '% Incomplete command.', cls: 'text-rose-400' }];
+        const res = traceReachabilityPath(node, target);
+        if (!res.reachable) return [{ text: `Type escape sequence to abort.\nTracing the route to ${target}\n  1  *  *  *`, cls: 'text-amber-400' }];
+        return [
+          { text: `Type escape sequence to abort.\nTracing the route to ${target}` },
+          ...res.hops.map((h, i) => ({ text: `  ${i + 1} ${h} 2 msec 1 msec 1 msec`, cls: 'text-emerald-400' }))
+        ];
+      }
+
+      // Remote Telnet & SSH from Cisco Router/Switch
+      if (lower.startsWith('telnet ')) {
+        const targetIp = tokens[1];
+        if (!targetIp) return [{ text: '% Incomplete command. Usage: telnet <ip-address>', cls: 'text-rose-400' }];
+        return initiateRemoteSession(sessionOwnerNode, 'telnet', targetIp, null);
+      }
+
+      if (lower.startsWith('ssh ')) {
+        if (tokens[1] === '-l' && tokens[2] && tokens[3]) {
+          return initiateRemoteSession(sessionOwnerNode, 'ssh', tokens[3], tokens[2]);
+        }
+        if (tokens[1] && tokens[1].includes('@')) {
+          const [u, ip] = tokens[1].split('@');
+          return initiateRemoteSession(sessionOwnerNode, 'ssh', ip, u);
+        }
+        return [{ text: '% Incomplete command. Usage: ssh -l <username> <ip-address>', cls: 'text-rose-400' }];
+      }
+
+      return [{ text: '% Invalid input detected at \'^\' marker.', cls: 'text-rose-400' }];
     }
 
     function exportTopologyJSON() {
-      const payload = { app: 'NetForge Enterprise Studio', version: '6.0', topology: { nodes, links } };
+      const payload = { app: 'NetForge Enterprise Studio', version: '7.0', topology: { nodes, links } };
       const a = document.createElement('a');
       a.href = 'data:text/json;charset=utf-8,' + encodeURIComponent(JSON.stringify(payload, null, 2));
       a.download = 'netforge_topology.json';
