@@ -131,7 +131,7 @@
 
         <div class="flex items-center gap-2.5">
           <span id="supabase-status-pill" class="hidden sm:inline-flex px-2.5 py-1 rounded-full text-[11px] font-mono font-semibold bg-slate-100 text-slate-700 border border-slate-200">
-            Checking Supabase...
+            Checking Auth...
           </span>
           <button type="button" onclick="openLoginModal('signin')"
                   class="px-4 py-2 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs shadow-sm transition cursor-pointer">
@@ -248,13 +248,13 @@
               <text x="450" y="135" text-anchor="middle" fill="#475569" font-family="JetBrains Mono, monospace" font-size="9">DC Subnet</text>
 
               <!-- Animated Packet Dot -->
-              <circle id="show-pkt-dot" cx="133" cy="95" r="6" fill="#f59e0b" stroke="#ffffff" stroke-width="1.5" />
+              <circle id="show-pkt-dot" cx="450" cy="95" r="6" fill="#10b981" stroke="#ffffff" stroke-width="1.5" />
             </svg>
           </div>
 
           <div id="showcase-diagnostics" class="p-4 space-y-2 text-xs font-mono bg-white">
             <div class="flex items-center justify-between">
-              <span id="show-status-badge" class="px-2 py-0.5 rounded bg-emerald-100 text-emerald-800 font-bold text-[10px]">REACHABLE · 4/4 ICMP ECHO REPLY</span>
+              <span id="show-status-badge" class="px-2 py-0.5 rounded bg-emerald-100 text-emerald-800 font-bold text-[10px]">REACHABLE &middot; 4/4 ICMP ECHO REPLY</span>
               <span class="text-slate-400 text-[10px]">L2 Frame &rarr; L3 Route &rarr; Next Hop</span>
             </div>
             <div id="show-diag-text" class="text-[11px] text-slate-700 leading-relaxed">
@@ -325,7 +325,7 @@
       <div class="px-6 py-4 bg-slate-50 border-b border-slate-200 flex items-center justify-between">
         <div>
           <h3 id="modal-auth-title" class="text-sm font-extrabold text-slate-900">Nexacloud Academy Access</h3>
-          <p class="text-[11px] text-slate-500 mt-0.5">Sign in with Email OTP or verify plan entitlement</p>
+          <p class="text-[11px] text-slate-500 mt-0.5">Sign in with Email &amp; Password — persistent session enabled</p>
         </div>
         <button type="button" onclick="closeLoginModal()" class="p-1.5 rounded-lg text-slate-400 hover:text-slate-700 hover:bg-slate-200/70 cursor-pointer">
           <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M18 6 6 18M6 6l12 12"/></svg>
@@ -336,7 +336,7 @@
         <div class="grid grid-cols-2 bg-slate-100 p-1 rounded-xl border border-slate-200">
           <button type="button" id="gate-tab-signin" onclick="switchGateTab('signin')"
                   class="py-2 rounded-lg text-xs font-bold bg-white text-slate-900 shadow-2xs cursor-pointer transition">
-            Student Sign-In
+            Student / Admin Sign-In
           </button>
           <button type="button" id="gate-tab-register" onclick="switchGateTab('register')"
                   class="py-2 rounded-lg text-xs font-semibold text-slate-600 hover:text-slate-900 cursor-pointer transition">
@@ -346,26 +346,44 @@
       </div>
 
       <div class="p-6 space-y-4 text-xs">
-        <div id="gate-feedback-box" class="hidden p-3 rounded-xl border text-[11px] font-medium"></div>
+        <div id="gate-feedback-box" class="hidden p-3 rounded-xl border text-[11px] font-medium leading-relaxed"></div>
 
-        <!-- 1. STUDENT SIGN-IN FORM -->
-        <form id="gate-form-signin" onsubmit="handleGateLoginOtp(event)" class="space-y-4">
+        <!-- 1. EMAIL + PASSWORD SIGN-IN FORM -->
+        <form id="gate-form-signin" onsubmit="handleGatePasswordLogin(event)" class="space-y-3.5">
           <div>
-            <label for="gate-signin-email" class="block text-[11px] font-semibold text-slate-700 mb-1">Registered Student / Admin Email</label>
+            <label for="gate-signin-email" class="block text-[11px] font-semibold text-slate-700 mb-1">Email / Username</label>
             <input id="gate-signin-email" type="email" required placeholder="vshahilrao@gmail.com"
                    class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 bg-white text-slate-900 font-mono text-xs focus:outline-none focus:border-blue-600 selectable-text" />
-            <p id="gate-signin-hint" class="text-[11px] text-slate-500 mt-1.5">
-              We will send a 6-digit OTP code via Supabase Email. Admin accounts receive immediate full studio access.
+          </div>
+          <div>
+            <div class="flex items-center justify-between mb-1">
+              <label for="gate-signin-password" class="block text-[11px] font-semibold text-slate-700">Password</label>
+              <button type="button" onclick="togglePasswordVisibility('gate-signin-password', this)"
+                      class="text-[11px] font-semibold text-blue-700 hover:underline cursor-pointer">
+                Show
+              </button>
+            </div>
+            <input id="gate-signin-password" type="password" required minlength="6" placeholder="Enter your password"
+                   class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 bg-white text-slate-900 font-mono text-xs focus:outline-none focus:border-blue-600 selectable-text" />
+            <p class="text-[11px] text-slate-500 mt-1.5">
+              Instant login with persistent session across page reloads. Admin <span class="font-mono text-slate-700">vshahilrao@gmail.com</span> unlocks full access automatically.
             </p>
           </div>
-          <button type="submit" id="btn-gate-send-login-otp"
+          <button type="submit" id="btn-gate-signin"
                   class="w-full py-2.5 px-4 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs shadow-sm transition cursor-pointer">
-            Send Login OTP Code
+            Sign In &amp; Launch Studio
           </button>
+          <div class="pt-1 flex items-center justify-between text-[11px] text-slate-500 border-t border-slate-100">
+            <span>Created earlier via OTP without password?</span>
+            <button type="button" onclick="handlePasswordRecoveryRequest()"
+                    class="font-semibold text-blue-700 hover:underline cursor-pointer">
+              Send Password Setup Link
+            </button>
+          </div>
         </form>
 
-        <!-- 2. NEW STUDENT REGISTRATION FORM -->
-        <form id="gate-form-register" onsubmit="handleGateRegisterOtp(event)" class="hidden space-y-3.5">
+        <!-- 2. NEW STUDENT EMAIL + PASSWORD REGISTRATION FORM -->
+        <form id="gate-form-register" onsubmit="handleGatePasswordRegister(event)" class="hidden space-y-3">
           <div>
             <label for="gate-reg-name" class="block text-[11px] font-semibold text-slate-700 mb-1">Full Name</label>
             <input id="gate-reg-name" type="text" required placeholder="Jordan Patel"
@@ -385,38 +403,43 @@
             <input id="gate-reg-email" type="email" required placeholder="jordan.patel@example.com"
                    class="w-full px-3.5 py-2 rounded-xl border border-slate-300 bg-white text-slate-900 font-mono text-xs focus:outline-none focus:border-blue-600 selectable-text" />
           </div>
-          <button type="submit" id="btn-gate-send-reg-otp"
+          <div>
+            <div class="flex items-center justify-between mb-1">
+              <label for="gate-reg-password" class="block text-[11px] font-semibold text-slate-700">Create Password (min. 6 characters)</label>
+              <button type="button" onclick="togglePasswordVisibility('gate-reg-password', this)"
+                      class="text-[11px] font-semibold text-blue-700 hover:underline cursor-pointer">
+                Show
+              </button>
+            </div>
+            <input id="gate-reg-password" type="password" required minlength="6" placeholder="••••••••"
+                   class="w-full px-3.5 py-2 rounded-xl border border-slate-300 bg-white text-slate-900 font-mono text-xs focus:outline-none focus:border-blue-600 selectable-text" />
+          </div>
+          <button type="submit" id="btn-gate-register"
                   class="w-full py-2.5 px-4 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs shadow-sm transition cursor-pointer">
-            Register &amp; Send OTP
+            Create Account &amp; Enter Studio
           </button>
         </form>
 
-        <!-- 3. 6-DIGIT EMAIL OTP VERIFICATION FORM -->
-        <form id="gate-form-otp" onsubmit="handleGateVerifyOtp(event)" class="hidden space-y-4">
-          <div class="p-3.5 rounded-xl bg-blue-50/80 border border-blue-200 text-slate-800">
-            <div class="font-bold text-slate-900">Enter 6-Digit Email OTP</div>
-            <div class="text-[11px] text-slate-600 mt-0.5">
-              Code sent to <span id="gate-otp-email" class="font-mono font-bold text-blue-700"></span>
-            </div>
+        <!-- 3. SET NEW PASSWORD VIEW (PASSWORD_RECOVERY FLOW) -->
+        <form id="gate-form-new-password" onsubmit="handleSetNewPassword(event)" class="hidden space-y-3.5">
+          <div class="p-3 rounded-xl bg-blue-50 border border-blue-200 text-blue-900 text-[11px]">
+            Set a permanent password for your Nexacloud Academy account so you can log in directly anytime.
           </div>
           <div>
-            <label for="gate-otp-code" class="block text-[11px] font-semibold text-slate-700 mb-1">Verification Code</label>
-            <input id="gate-otp-code" type="text" inputmode="numeric" pattern="[0-9]{6,8}" maxlength="8" required placeholder="123456"
-                   class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 bg-white text-slate-900 font-mono text-lg font-bold tracking-[0.35em] text-center focus:outline-none focus:border-blue-600 selectable-text" />
+            <div class="flex items-center justify-between mb-1">
+              <label for="gate-new-password" class="block text-[11px] font-semibold text-slate-700">New Password (min. 6 characters)</label>
+              <button type="button" onclick="togglePasswordVisibility('gate-new-password', this)"
+                      class="text-[11px] font-semibold text-blue-700 hover:underline cursor-pointer">
+                Show
+              </button>
+            </div>
+            <input id="gate-new-password" type="password" required minlength="6" placeholder="Enter new password"
+                   class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 bg-white text-slate-900 font-mono text-xs focus:outline-none focus:border-blue-600 selectable-text" />
           </div>
-          <button type="submit" id="btn-gate-verify-otp"
-                  class="w-full py-2.5 px-4 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs shadow-sm transition cursor-pointer">
-            Verify OTP &amp; Continue
+          <button type="submit" id="btn-gate-new-password"
+                  class="w-full py-2.5 px-4 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs shadow-sm transition cursor-pointer">
+            Save Password &amp; Launch Studio
           </button>
-          <div class="flex items-center justify-between text-[11px] pt-1">
-            <button type="button" onclick="returnToGateAuthForm()" class="text-slate-500 hover:text-slate-800 font-medium cursor-pointer">
-              &larr; Change Email
-            </button>
-            <button type="button" id="btn-gate-resend-otp" onclick="handleGateResendOtp()"
-                    class="text-blue-600 hover:text-blue-800 font-semibold cursor-pointer disabled:opacity-40">
-              Resend OTP (<span id="gate-otp-timer">60</span>s)
-            </button>
-          </div>
         </form>
 
         <!-- 4. PLAN GATE VIEW (WHEN requirePaidAccess IS TRUE AND USER IS NOT ADMIN/ENTITLED) -->
@@ -429,7 +452,7 @@
                     class="px-3.5 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold cursor-pointer">
               Sign Out
             </button>
-            <button type="button" onclick="refreshAcademyEntitlement()"
+            <button type="button" onclick="recheckStudentEntitlement()"
                     class="px-4 py-2 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold cursor-pointer">
               Check Entitlement Again
             </button>
@@ -775,121 +798,278 @@ let selectedPlanId = academyPlans[1]?.id || academyPlans[0]?.id || 'pro-monthly'
 
 const gateState = {
   tab: 'signin',
-  pendingEmail: '',
-  pendingFlow: 'signin',
-  timerSec: 0,
-  timerInterval: null,
   user: null,
   entitlement: { allowed: false, isAdmin: false, planName: 'None', expiresAt: null, reason: '' }
 };
 
 function isAdminEmail(email) {
-  const norm = String(email || '').trim().toLowerCase();
-  if (!norm) return false;
-  const list = Array.isArray(NEXACLOUD_ACCESS_CONFIG.adminEmails)
-    ? NEXACLOUD_ACCESS_CONFIG.adminEmails.map(e => String(e || '').trim().toLowerCase())
-    : [];
-  return list.includes(norm);
+  if (!email) return false;
+  const normalized = String(email).trim().toLowerCase();
+  return (NEXACLOUD_ACCESS_CONFIG.adminEmails || []).some(
+    adm => String(adm).trim().toLowerCase() === normalized
+  );
 }
 
-function openLoginModal(tab = 'signin') {
-  const modal = document.getElementById('auth-login-modal');
-  if (modal) modal.classList.remove('hidden');
-  if (!gateState.user) {
-    switchGateTab(tab);
-  } else if (!gateState.entitlement.allowed) {
-    renderPlanGateView(gateState.user, gateState.entitlement);
+function togglePasswordVisibility(inputId, btnEl) {
+  const inp = document.getElementById(inputId);
+  if (!inp) return;
+  if (inp.type === 'password') {
+    inp.type = 'text';
+    if (btnEl) btnEl.textContent = 'Hide';
+  } else {
+    inp.type = 'password';
+    if (btnEl) btnEl.textContent = 'Show';
   }
 }
 
-function closeLoginModal() {
+function openLoginModal(tabName = 'signin') {
   const modal = document.getElementById('auth-login-modal');
-  if (modal) modal.classList.add('hidden');
+  if (!modal) return;
+  modal.classList.remove('hidden');
+  switchGateTab(tabName);
+  setTimeout(() => {
+    const focusTarget = tabName === 'register'
+      ? document.getElementById('gate-reg-name')
+      : document.getElementById('gate-signin-email');
+    focusTarget?.focus();
+  }, 30);
+}
+
+function closeLoginModal() {
+  document.getElementById('auth-login-modal')?.classList.add('hidden');
+}
+
+function runShowcaseScenario(mode) {
+  const wanLink = document.getElementById('show-wan-link');
+  const dstBox = document.getElementById('show-dst-box');
+  const pktDot = document.getElementById('show-pkt-dot');
+  const badge = document.getElementById('show-status-badge');
+  const diag = document.getElementById('show-diag-text');
+  const btnHealthy = document.getElementById('show-btn-healthy');
+  const btnTrouble = document.getElementById('show-btn-trouble');
+
+  if (!wanLink || !pktDot || !badge || !diag) return;
+
+  if (mode === 'troubleshoot') {
+    wanLink.setAttribute('stroke', '#e11d48');
+    wanLink.classList.remove('link-dash-active');
+    if (dstBox) dstBox.setAttribute('stroke', '#e11d48');
+    pktDot.setAttribute('cx', '305');
+    pktDot.setAttribute('fill', '#e11d48');
+    badge.className = 'px-2 py-0.5 rounded bg-rose-100 text-rose-800 font-bold text-[10px]';
+    badge.textContent = 'UNREACHABLE · DESTINATION HOST / NEXT-HOP DOWN';
+    diag.textContent = 'PC1 (192.168.10.10) → SW1 → R1 (192.168.10.1) drops packet: WAN link 10.1.12.0/30 to R2 is administratively shutdown (OSPF adjacency DOWN).';
+    if (btnTrouble) btnTrouble.className = 'px-2.5 py-1 rounded-lg bg-rose-500 text-white font-bold text-[11px] cursor-pointer transition';
+    if (btnHealthy) btnHealthy.className = 'px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 font-semibold text-[11px] cursor-pointer transition';
+  } else {
+    wanLink.setAttribute('stroke', '#16a34a');
+    wanLink.classList.add('link-dash-active');
+    if (dstBox) dstBox.setAttribute('stroke', '#0f172a');
+    pktDot.setAttribute('cx', '450');
+    pktDot.setAttribute('fill', '#10b981');
+    badge.className = 'px-2 py-0.5 rounded bg-emerald-100 text-emerald-800 font-bold text-[10px]';
+    badge.textContent = 'REACHABLE · 4/4 ICMP ECHO REPLY';
+    diag.textContent = 'PC1 (192.168.10.10) → SW1 → R1 (192.168.10.1) matches OSPF route 172.16.20.0/24 via 10.1.12.2 → R2 → SRV1 (172.16.20.10).';
+    if (btnHealthy) btnHealthy.className = 'px-2.5 py-1 rounded-lg bg-emerald-500 text-slate-950 font-bold text-[11px] cursor-pointer transition';
+    if (btnTrouble) btnTrouble.className = 'px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 font-semibold text-[11px] cursor-pointer transition';
+  }
 }
 
 function selectAcademyPlan(planId) {
   selectedPlanId = planId;
-  const plan = academyPlans.find(p => String(p.id) === String(planId)) || academyPlans[0];
-  const lbl = document.getElementById('selected-plan-name');
-  if (lbl && plan) lbl.textContent = `${plan.name} (${plan.price})`;
   const fb = document.getElementById('landing-plan-feedback');
   if (fb) fb.classList.add('hidden');
   renderPlansStrip();
+  if (gateState.user && !gateState.entitlement.allowed) {
+    renderPlanGateView(gateState.user, gateState.entitlement);
+  }
 }
 
 function handleSelectedPlanAction() {
-  const plan = academyPlans.find(p => String(p.id) === String(selectedPlanId)) || academyPlans[0];
-  const url = (plan && plan.paymentUrl) || NEXACLOUD_ACCESS_CONFIG.paymentUrl || '';
+  const activePlan = academyPlans.find(p => String(p.id) === String(selectedPlanId)) || academyPlans[0];
   const fb = document.getElementById('landing-plan-feedback');
+  if (!activePlan) return;
 
-  if (url) {
-    window.open(url, '_blank', 'noopener,noreferrer');
-    return;
-  }
-
-  if (!NEXACLOUD_ACCESS_CONFIG.requirePaidAccess) {
-    openLoginModal('register');
+  const linkUrl = activePlan.paymentUrl || NEXACLOUD_ACCESS_CONFIG.paymentUrl || '';
+  if (linkUrl) {
+    window.open(linkUrl, '_blank', 'noopener,noreferrer');
     return;
   }
 
   if (fb) {
-    fb.textContent = `Plan "${plan ? plan.name : 'Selected Plan'}" is selected. No payment URL is configured yet in NEXACLOUD_ACCESS_CONFIG.paymentUrl — sign in with your account or admin email (vshahilrao@gmail.com) to test studio access.`;
+    fb.textContent = `Selected "${activePlan.name}" (${activePlan.price}). Sign in or register to enter the studio — admin accounts and cohort students enter immediately.`;
     fb.classList.remove('hidden');
+  }
+  openLoginModal('signin');
+}
+
+async function fetchDynamicPlans() {
+  if (!supabaseClient) return;
+  try {
+    const { data, error } = await supabaseClient
+      .from(NEXACLOUD_ACCESS_CONFIG.plansTable)
+      .select('*')
+      .eq('active', true)
+      .order('sort_order', { ascending: true });
+
+    if (!error && Array.isArray(data) && data.length > 0) {
+      academyPlans = data.map(row => ({
+        id: row.id || row.plan_code || 'plan',
+        name: row.name || 'Academy Plan',
+        price: row.price_label || 'Included',
+        period: row.billing_period || '',
+        badge: row.badge || 'Plan',
+        paymentUrl: row.payment_url || '',
+        description: row.description || '',
+        features: Array.isArray(row.features) ? row.features : []
+      }));
+      if (!academyPlans.some(p => String(p.id) === String(selectedPlanId))) {
+        selectedPlanId = academyPlans[0].id;
+      }
+      renderPlansStrip();
+    }
+  } catch (_) {
+    // Gracefully keep fallbackPlans when academy_plans table is not created yet
   }
 }
 
-let showcaseAnimTimer = null;
-function runShowcaseScenario(mode = 'healthy') {
-  const btnHealthy = document.getElementById('show-btn-healthy');
-  const btnTrouble = document.getElementById('show-btn-trouble');
-  const wanLink = document.getElementById('show-wan-link');
-  const badge = document.getElementById('show-status-badge');
-  const diag = document.getElementById('show-diag-text');
-  const dot = document.getElementById('show-pkt-dot');
-
-  const isTrouble = mode === 'troubleshoot';
-  if (btnHealthy && btnTrouble) {
-    btnHealthy.className = isTrouble
-      ? 'px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 font-semibold text-[11px] cursor-pointer transition'
-      : 'px-2.5 py-1 rounded-lg bg-emerald-500 text-slate-950 font-bold text-[11px] cursor-pointer transition';
-    btnTrouble.className = isTrouble
-      ? 'px-2.5 py-1 rounded-lg bg-rose-500 text-white font-bold text-[11px] cursor-pointer transition'
-      : 'px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 font-semibold text-[11px] cursor-pointer transition';
+async function evaluateStudentAccess(user) {
+  const email = (user?.email || '').trim().toLowerCase();
+  if (isAdminEmail(email)) {
+    return {
+      allowed: true,
+      isAdmin: true,
+      planName: 'Admin Full Access',
+      expiresAt: null,
+      reason: 'Admin privileges granted'
+    };
   }
 
-  if (wanLink) {
-    if (isTrouble) {
-      wanLink.setAttribute('stroke', '#e11d48');
-      wanLink.classList.remove('link-dash-active');
-    } else {
-      wanLink.setAttribute('stroke', '#16a34a');
-      wanLink.classList.add('link-dash-active');
+  if (!NEXACLOUD_ACCESS_CONFIG.requirePaidAccess) {
+    const chosen = academyPlans.find(p => String(p.id) === String(selectedPlanId)) || academyPlans[0];
+    return {
+      allowed: true,
+      isAdmin: false,
+      planName: chosen?.name || 'Cohort Lab Pass',
+      expiresAt: null,
+      reason: 'Cohort access active'
+    };
+  }
+
+  if (!supabaseClient) {
+    return {
+      allowed: false,
+      isAdmin: false,
+      planName: 'Unverified',
+      expiresAt: null,
+      reason: 'Supabase client unavailable to verify entitlement.'
+    };
+  }
+
+  try {
+    const { data, error } = await supabaseClient
+      .from(NEXACLOUD_ACCESS_CONFIG.entitlementsTable)
+      .select('*')
+      .eq('email', email)
+      .maybeSingle();
+
+    if (error || !data) {
+      return {
+        allowed: false,
+        isAdmin: false,
+        planName: 'No Active Plan',
+        expiresAt: null,
+        reason: 'No active academy subscription found for this account.'
+      };
     }
+
+    const activeFlag = data.status === 'active' || data.is_active === true;
+    const expDate = data.expires_at ? new Date(data.expires_at) : null;
+    const notExpired = !expDate || expDate.getTime() > Date.now();
+
+    if (activeFlag && notExpired) {
+      return {
+        allowed: true,
+        isAdmin: false,
+        planName: data.plan_name || 'Pro Plan',
+        expiresAt: data.expires_at || null,
+        reason: 'Active plan verified'
+      };
+    }
+
+    return {
+      allowed: false,
+      isAdmin: false,
+      planName: data.plan_name || 'Expired Plan',
+      expiresAt: data.expires_at || null,
+      reason: !notExpired ? 'Your lab plan has expired. Renew below to continue.' : 'Your plan status is inactive.'
+    };
+  } catch (err) {
+    return {
+      allowed: false,
+      isAdmin: false,
+      planName: 'Verification Error',
+      expiresAt: null,
+      reason: `Could not verify entitlement: ${err.message}`
+    };
+  }
+}
+
+async function applyGateDecision(user) {
+  gateState.user = user || null;
+  const landingEl = document.getElementById('academy-auth-gate');
+  const studioEl = document.getElementById('studio-workspace-shell');
+
+  if (!user) {
+    gateState.entitlement = { allowed: false, isAdmin: false, planName: 'None', expiresAt: null, reason: '' };
+    document.body.classList.remove('lab-active');
+    if (studioEl) {
+      studioEl.classList.add('hidden');
+      studioEl.classList.remove('flex');
+    }
+    if (landingEl) landingEl.classList.remove('hidden');
+    return;
   }
 
-  if (badge) {
-    badge.className = isTrouble
-      ? 'px-2 py-0.5 rounded bg-rose-100 text-rose-800 font-bold text-[10px]'
-      : 'px-2 py-0.5 rounded bg-emerald-100 text-emerald-800 font-bold text-[10px]';
-    badge.textContent = isTrouble
-      ? 'PATH BROKEN · WAN LINK DOWN (10.1.12.0/30)'
-      : 'REACHABLE · 4/4 ICMP ECHO REPLY';
+  const ent = await evaluateStudentAccess(user);
+  gateState.entitlement = ent;
+
+  if (!ent.allowed) {
+    document.body.classList.remove('lab-active');
+    if (studioEl) {
+      studioEl.classList.add('hidden');
+      studioEl.classList.remove('flex');
+    }
+    if (landingEl) landingEl.classList.remove('hidden');
+    openLoginModal('signin');
+    renderPlanGateView(user, ent);
+    return;
   }
 
-  if (diag) {
-    diag.textContent = isTrouble
-      ? 'Fault injected on R1 <-> R2 link: R1 drops packets destined for 172.16.20.10 because next-hop 10.1.12.2 is unreachable. Open Studio to diagnose with CLI & Packet Tracer.'
-      : 'PC1 (192.168.10.10) -> SW1 -> R1 (192.168.10.1) matches OSPF route 172.16.20.0/24 via 10.1.12.2 -> R2 -> SRV1 (172.16.20.10).';
+  // Allowed: hide landing & modal, unlock studio workspace
+  closeLoginModal();
+  if (landingEl) landingEl.classList.add('hidden');
+  if (studioEl) {
+    studioEl.classList.remove('hidden');
+    studioEl.classList.add('flex');
+  }
+  document.body.classList.add('lab-active');
+
+  const emailEl = document.getElementById('studio-user-email');
+  const planEl = document.getElementById('studio-user-plan');
+  const adminBadgeEl = document.getElementById('studio-admin-badge');
+  if (emailEl) emailEl.textContent = user.email || 'Student';
+  if (planEl) planEl.textContent = ent.planName || 'Lab Access';
+  if (adminBadgeEl) {
+    if (ent.isAdmin) adminBadgeEl.classList.remove('hidden');
+    else adminBadgeEl.classList.add('hidden');
   }
 
-  if (showcaseAnimTimer) clearInterval(showcaseAnimTimer);
-  const stops = isTrouble ? [133, 255, 305] : [133, 255, 369, 450];
-  let idx = 0;
-  if (dot) dot.setAttribute('cx', String(stops[0]));
-  showcaseAnimTimer = setInterval(() => {
-    idx = (idx + 1) % stops.length;
-    if (dot) dot.setAttribute('cx', String(stops[idx]));
-  }, 650);
+  if (state.nodes.length === 0) {
+    loadPrebuiltEnterpriseLab();
+  } else {
+    refreshAllViews();
+  }
 }
 
 function initSupabaseGate() {
@@ -903,7 +1083,7 @@ function initSupabaseGate() {
 
   if (!hasCreds) {
     if (pill) {
-      pill.textContent = 'OTP Not Configured';
+      pill.textContent = 'Auth Not Configured';
       pill.className = 'px-2.5 py-1 rounded-full text-[11px] font-mono font-semibold bg-rose-50 text-rose-700 border border-rose-200';
     }
     setGateFeedback('Supabase URL or publishable key is missing in NEXACLOUD_SUPABASE_CONFIG.', true);
@@ -916,6 +1096,7 @@ function initSupabaseGate() {
       NEXACLOUD_SUPABASE_CONFIG.anonKey,
       {
         auth: {
+          storage: window.localStorage,
           persistSession: true,
           autoRefreshToken: true,
           detectSessionInUrl: true
@@ -924,14 +1105,23 @@ function initSupabaseGate() {
     );
 
     if (pill) {
-      pill.textContent = 'Supabase OTP Ready';
+      pill.textContent = 'Password Auth Ready';
       pill.className = 'px-2.5 py-1 rounded-full text-[11px] font-mono font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200';
     }
 
     fetchDynamicPlans();
 
-    supabaseClient.auth.onAuthStateChange((_event, session) => {
-      applyGateDecision(session?.user || null);
+    supabaseClient.auth.onAuthStateChange((event, session) => {
+      if (event === 'PASSWORD_RECOVERY') {
+        openLoginModal('signin');
+        showNewPasswordForm();
+        return;
+      }
+      if (event === 'SIGNED_OUT') {
+        applyGateDecision(null);
+      } else {
+        applyGateDecision(session?.user || null);
+      }
     });
 
     supabaseClient.auth.getSession().then(({ data }) => {
@@ -945,202 +1135,23 @@ function initSupabaseGate() {
   }
 }
 
-async function fetchDynamicPlans() {
-  if (!supabaseClient || !NEXACLOUD_ACCESS_CONFIG.plansTable) return;
-  try {
-    const { data, error } = await supabaseClient
-      .from(NEXACLOUD_ACCESS_CONFIG.plansTable)
-      .select('id, name, price, period, badge, description, features, payment_url, active')
-      .order('id', { ascending: true });
-
-    if (!error && Array.isArray(data) && data.length > 0) {
-      const activePlans = data.filter(row => row.active !== false);
-      if (activePlans.length > 0) {
-        academyPlans = activePlans.map(row => ({
-          id: row.id,
-          name: row.name,
-          price: row.price || 'Custom',
-          period: row.period || '',
-          badge: row.badge || 'Plan',
-          paymentUrl: row.payment_url || '',
-          description: row.description || '',
-          features: Array.isArray(row.features) ? row.features : []
-        }));
-        if (!academyPlans.some(p => String(p.id) === String(selectedPlanId))) {
-          selectedPlanId = academyPlans[0].id;
-        }
-        renderPlansStrip();
-      }
-    }
-  } catch (_) {
-    // Fallback plans remain active when table does not exist or is restricted
-  }
-}
-
-async function evaluateStudentEntitlement(user) {
-  if (!user) {
-    return { allowed: false, isAdmin: false, planName: 'None', expiresAt: null, reason: 'Authentication required.' };
-  }
-
-  if (isAdminEmail(user.email)) {
-    return {
-      allowed: true,
-      isAdmin: true,
-      planName: 'Admin Full Access',
-      expiresAt: null,
-      reason: 'Administrator account verified'
-    };
-  }
-
-  if (!NEXACLOUD_ACCESS_CONFIG.requirePaidAccess) {
-    return {
-      allowed: true,
-      isAdmin: false,
-      planName: user.user_metadata?.batch || 'Student Access',
-      expiresAt: null,
-      reason: 'Cohort / Open mode active'
-    };
-  }
-
-  if (!supabaseClient) {
-    return { allowed: false, isAdmin: false, planName: 'Unverified', expiresAt: null, reason: 'Supabase client unavailable for entitlement lookup.' };
-  }
-
-  try {
-    const emailNorm = (user.email || '').trim().toLowerCase();
-    const { data, error } = await supabaseClient
-      .from(NEXACLOUD_ACCESS_CONFIG.entitlementsTable)
-      .select('plan_name, status, expires_at')
-      .eq('email', emailNorm)
-      .maybeSingle();
-
-    if (error || !data) {
-      return {
-        allowed: false,
-        isAdmin: false,
-        planName: 'No Active Plan',
-        expiresAt: null,
-        reason: `No active entitlement record found for ${user.email}. Choose a plan below to unlock the studio.`
-      };
-    }
-
-    const statusActive = String(data.status || '').toLowerCase() === 'active';
-    const expiresAt = data.expires_at ? new Date(data.expires_at) : null;
-    const isExpired = expiresAt ? expiresAt.getTime() <= Date.now() : false;
-
-    if (!statusActive) {
-      return {
-        allowed: false,
-        isAdmin: false,
-        planName: data.plan_name || 'Locked',
-        expiresAt: data.expires_at || null,
-        reason: `Your access status is "${data.status}". Renew or activate a plan to continue.`
-      };
-    }
-
-    if (isExpired) {
-      return {
-        allowed: false,
-        isAdmin: false,
-        planName: data.plan_name || 'Expired',
-        expiresAt: data.expires_at || null,
-        reason: `Your lab plan expired on ${expiresAt.toLocaleDateString()}. Renew your plan to re-enter the studio.`
-      };
-    }
-
-    return {
-      allowed: true,
-      isAdmin: false,
-      planName: data.plan_name || 'Active Plan',
-      expiresAt: data.expires_at || null,
-      reason: 'Active'
-    };
-  } catch (err) {
-    return {
-      allowed: false,
-      isAdmin: false,
-      planName: 'Check Failed',
-      expiresAt: null,
-      reason: `Entitlement verification error: ${err.message}`
-    };
-  }
-}
-
-async function applyGateDecision(user) {
-  gateState.user = user;
-  const gateEl = document.getElementById('academy-auth-gate');
-  const shellEl = document.getElementById('studio-workspace-shell');
-  const chipEl = document.getElementById('studio-user-chip');
-  const chipEmail = document.getElementById('studio-user-email');
-  const chipPlan = document.getElementById('studio-user-plan');
-  const adminBadge = document.getElementById('studio-admin-badge');
-
-  if (!user) {
-    if (shellEl) {
-      shellEl.classList.add('hidden');
-      shellEl.classList.remove('flex');
-    }
-    if (gateEl) gateEl.classList.remove('hidden');
-    if (chipEl) chipEl.classList.add('hidden');
-    if (adminBadge) adminBadge.classList.add('hidden');
-    document.body.classList.remove('lab-active');
-    return;
-  }
-
-  const ent = await evaluateStudentEntitlement(user);
-  gateState.entitlement = ent;
-
-  if (!ent.allowed) {
-    if (shellEl) {
-      shellEl.classList.add('hidden');
-      shellEl.classList.remove('flex');
-    }
-    if (gateEl) gateEl.classList.remove('hidden');
-    document.body.classList.remove('lab-active');
-    openLoginModal('signin');
-    renderPlanGateView(user, ent);
-    return;
-  }
-
-  closeLoginModal();
-  if (gateEl) gateEl.classList.add('hidden');
-  if (shellEl) {
-    shellEl.classList.remove('hidden');
-    shellEl.classList.add('flex');
-  }
-  document.body.classList.add('lab-active');
-
-  if (chipEl) chipEl.classList.remove('hidden');
-  if (chipEmail) chipEmail.textContent = user.email || '';
-  if (chipPlan) chipPlan.textContent = ent.planName || 'Active';
-  if (adminBadge) {
-    if (ent.isAdmin) adminBadge.classList.remove('hidden');
-    else adminBadge.classList.add('hidden');
-  }
-
-  if (!state.nodes.length) {
-    loadPrebuiltEnterpriseLab();
-  } else {
-    refreshAllViews();
-  }
-}
-
 function renderPlanGateView(user, ent) {
   document.getElementById('gate-tabs-header')?.classList.add('hidden');
   document.getElementById('gate-form-signin')?.classList.add('hidden');
   document.getElementById('gate-form-register')?.classList.add('hidden');
-  document.getElementById('gate-form-otp')?.classList.add('hidden');
+  document.getElementById('gate-form-new-password')?.classList.add('hidden');
 
   const planView = document.getElementById('gate-view-plan');
   if (planView) planView.classList.remove('hidden');
 
-  const alertBox = document.getElementById('gate-plan-alert');
-  if (alertBox) alertBox.textContent = ent.reason || 'Active plan required to access the Nexacloud Studio.';
+  const alertEl = document.getElementById('gate-plan-alert');
+  if (alertEl) {
+    alertEl.textContent = ent.reason || 'An active academy plan is required to access the studio.';
+  }
 
-  const metaBox = document.getElementById('gate-plan-account-meta');
-  if (metaBox) {
-    const expStr = ent.expiresAt ? ` · Expires: ${new Date(ent.expiresAt).toLocaleDateString()}` : '';
-    metaBox.textContent = `Account: ${user.email || 'Unknown'} · Plan: ${ent.planName || 'None'}${expStr}`;
+  const metaEl = document.getElementById('gate-plan-account-meta');
+  if (metaEl) {
+    metaEl.textContent = `Signed in as ${user?.email || 'unknown'} · Current Plan: ${ent.planName}`;
   }
 
   const container = document.getElementById('gate-plans-container');
@@ -1166,18 +1177,27 @@ function renderPlanGateView(user, ent) {
   }
 }
 
-async function refreshAcademyEntitlement() {
+async function recheckStudentEntitlement() {
   if (gateState.user) {
     await applyGateDecision(gateState.user);
   }
+}
+
+function showNewPasswordForm() {
+  clearGateFeedback();
+  document.getElementById('gate-tabs-header')?.classList.add('hidden');
+  document.getElementById('gate-form-signin')?.classList.add('hidden');
+  document.getElementById('gate-form-register')?.classList.add('hidden');
+  document.getElementById('gate-view-plan')?.classList.add('hidden');
+  document.getElementById('gate-form-new-password')?.classList.remove('hidden');
 }
 
 function switchGateTab(tabName) {
   gateState.tab = tabName;
   clearGateFeedback();
   document.getElementById('gate-tabs-header')?.classList.remove('hidden');
-  document.getElementById('gate-form-otp')?.classList.add('hidden');
   document.getElementById('gate-view-plan')?.classList.add('hidden');
+  document.getElementById('gate-form-new-password')?.classList.add('hidden');
 
   const signTab = document.getElementById('gate-tab-signin');
   const regTab = document.getElementById('gate-tab-register');
@@ -1197,17 +1217,13 @@ function switchGateTab(tabName) {
   }
 }
 
-function returnToGateAuthForm() {
-  switchGateTab(gateState.tab);
-}
-
 function setGateFeedback(msg, isError = false) {
   const box = document.getElementById('gate-feedback-box');
   if (!box) return;
   box.textContent = msg;
   box.className = isError
-    ? 'p-3 rounded-xl border text-[11px] font-medium bg-rose-50 border-rose-200 text-rose-800'
-    : 'p-3 rounded-xl border text-[11px] font-medium bg-emerald-50 border-emerald-200 text-emerald-800';
+    ? 'p-3 rounded-xl border text-[11px] font-medium leading-relaxed bg-rose-50 border-rose-200 text-rose-800'
+    : 'p-3 rounded-xl border text-[11px] font-medium leading-relaxed bg-emerald-50 border-emerald-200 text-emerald-800';
   box.classList.remove('hidden');
 }
 
@@ -1216,155 +1232,143 @@ function clearGateFeedback() {
   if (box) box.classList.add('hidden');
 }
 
-function startGateOtpTimer(sec = 60) {
-  gateState.timerSec = sec;
-  const btn = document.getElementById('btn-gate-resend-otp');
-  const span = document.getElementById('gate-otp-timer');
-  if (gateState.timerInterval) clearInterval(gateState.timerInterval);
-  if (btn) btn.disabled = true;
-  if (span) span.textContent = String(sec);
+function formatSupabaseAuthError(rawMsg, context = 'signin') {
+  const msg = String(rawMsg || '');
+  const lower = msg.toLowerCase();
 
-  gateState.timerInterval = setInterval(() => {
-    gateState.timerSec -= 1;
-    if (span) span.textContent = String(Math.max(0, gateState.timerSec));
-    if (gateState.timerSec <= 0) {
-      clearInterval(gateState.timerInterval);
-      gateState.timerInterval = null;
-      if (btn) btn.disabled = false;
-    }
-  }, 1000);
+  if (lower.includes('email not confirmed')) {
+    return 'Email not confirmed: Go to Supabase Dashboard → Authentication → Sign In / Providers → Email, toggle "Confirm email" OFF, and save (or manually confirm the user under Authentication → Users).';
+  }
+  if (lower.includes('invalid login credentials')) {
+    return 'Invalid login credentials. If this email was created earlier via OTP without a password, click "Send Password Setup Link" below (or set a password in Supabase Dashboard → Authentication → Users).';
+  }
+  if (lower.includes('rate limit')) {
+    return 'Supabase email rate limit reached. Toggle "Confirm email" OFF in Supabase Dashboard → Authentication → Sign In / Providers → Email so sign-ups and logins work immediately without sending emails.';
+  }
+  if (lower.includes('user already registered')) {
+    return 'This email is already registered. Switch to "Student / Admin Sign-In" to log in with your password.';
+  }
+  return msg || (context === 'register' ? 'Unable to register account.' : 'Unable to sign in.');
 }
 
-function openGateOtpStep(email, flow) {
-  gateState.pendingEmail = email;
-  gateState.pendingFlow = flow;
-  document.getElementById('gate-tabs-header')?.classList.add('hidden');
-  document.getElementById('gate-form-signin')?.classList.add('hidden');
-  document.getElementById('gate-form-register')?.classList.add('hidden');
-  document.getElementById('gate-view-plan')?.classList.add('hidden');
-  document.getElementById('gate-form-otp')?.classList.remove('hidden');
-
-  const emailSpan = document.getElementById('gate-otp-email');
-  if (emailSpan) emailSpan.textContent = email;
-
-  const codeInp = document.getElementById('gate-otp-code');
-  if (codeInp) {
-    codeInp.value = '';
-    setTimeout(() => codeInp.focus(), 20);
-  }
-  startGateOtpTimer(60);
-}
-
-async function requestEmailOtp(email, options) {
-  if (!supabaseClient) {
-    setGateFeedback('Supabase client is not initialized. Check NEXACLOUD_SUPABASE_CONFIG.', true);
-    return false;
-  }
-  const { error } = await supabaseClient.auth.signInWithOtp({ email, options });
-  if (error) {
-    setGateFeedback(error.message || 'Unable to send OTP email.', true);
-    return false;
-  }
-  return true;
-}
-
-async function handleGateLoginOtp(e) {
+async function handleGatePasswordLogin(e) {
   e.preventDefault();
   clearGateFeedback();
   const email = (document.getElementById('gate-signin-email')?.value || '').trim().toLowerCase();
-  if (!email) return;
+  const password = document.getElementById('gate-signin-password')?.value || '';
+  if (!email || !password) return;
 
-  const btn = document.getElementById('btn-gate-send-login-otp');
-  if (btn) { btn.disabled = true; btn.textContent = 'Sending OTP...'; }
-
-  const adminUser = isAdminEmail(email);
-  const ok = await requestEmailOtp(email, {
-    shouldCreateUser: adminUser ? true : !NEXACLOUD_SUPABASE_CONFIG.requireRegisteredStudent
-  });
-
-  if (btn) { btn.disabled = false; btn.textContent = 'Send Login OTP Code'; }
-  if (ok) {
-    openGateOtpStep(email, 'signin');
-    setGateFeedback(
-      adminUser
-        ? `Admin OTP sent to ${email}. Enter the verification code from your email.`
-        : `6-digit OTP sent to ${email}. Check your inbox (and spam folder).`
-    );
+  if (!supabaseClient) {
+    setGateFeedback('Supabase client is not initialized. Check NEXACLOUD_SUPABASE_CONFIG.', true);
+    return;
   }
+
+  const btn = document.getElementById('btn-gate-signin');
+  if (btn) { btn.disabled = true; btn.textContent = 'Signing in...'; }
+
+  const { data, error } = await supabaseClient.auth.signInWithPassword({ email, password });
+
+  if (btn) { btn.disabled = false; btn.textContent = 'Sign In & Launch Studio'; }
+
+  if (error) {
+    setGateFeedback(formatSupabaseAuthError(error.message, 'signin'), true);
+    return;
+  }
+
+  const signedInUser = data?.user || data?.session?.user || { email };
+  await applyGateDecision(signedInUser);
 }
 
-async function handleGateRegisterOtp(e) {
+async function handleGatePasswordRegister(e) {
   e.preventDefault();
   clearGateFeedback();
   const fullName = (document.getElementById('gate-reg-name')?.value || '').trim();
   const batch = document.getElementById('gate-reg-batch')?.value || 'Enterprise Routing & Switching';
   const email = (document.getElementById('gate-reg-email')?.value || '').trim().toLowerCase();
-  if (!email) return;
+  const password = document.getElementById('gate-reg-password')?.value || '';
+  if (!email || !password) return;
 
-  const btn = document.getElementById('btn-gate-send-reg-otp');
-  if (btn) { btn.disabled = true; btn.textContent = 'Sending OTP...'; }
+  if (!supabaseClient) {
+    setGateFeedback('Supabase client is not initialized. Check NEXACLOUD_SUPABASE_CONFIG.', true);
+    return;
+  }
 
-  const ok = await requestEmailOtp(email, {
-    shouldCreateUser: true,
-    data: { full_name: fullName, batch, academy: 'Nexacloud Academy' }
+  const btn = document.getElementById('btn-gate-register');
+  if (btn) { btn.disabled = true; btn.textContent = 'Creating account...'; }
+
+  const { data, error } = await supabaseClient.auth.signUp({
+    email,
+    password,
+    options: {
+      data: { full_name: fullName, batch, academy: 'Nexacloud Academy' }
+    }
   });
 
-  if (btn) { btn.disabled = false; btn.textContent = 'Register & Send OTP'; }
-  if (ok) {
-    openGateOtpStep(email, 'register');
-    setGateFeedback(`Verification OTP sent to ${email}.`);
+  if (btn) { btn.disabled = false; btn.textContent = 'Create Account & Enter Studio'; }
+
+  if (error) {
+    setGateFeedback(formatSupabaseAuthError(error.message, 'register'), true);
+    return;
+  }
+
+  if (data?.session?.user) {
+    await applyGateDecision(data.session.user);
+  } else {
+    setGateFeedback('Account created! In Supabase Dashboard → Authentication → Sign In / Providers → Email, turn "Confirm email" OFF so accounts enter immediately without email confirmation.', false);
+    switchGateTab('signin');
+    const signEmail = document.getElementById('gate-signin-email');
+    if (signEmail) signEmail.value = email;
   }
 }
 
-async function handleGateResendOtp() {
-  if (!gateState.pendingEmail || gateState.timerSec > 0) return;
+async function handlePasswordRecoveryRequest() {
   clearGateFeedback();
-  const isReg = gateState.pendingFlow === 'register';
-  const fullName = (document.getElementById('gate-reg-name')?.value || '').trim();
-  const batch = document.getElementById('gate-reg-batch')?.value || 'Enterprise Routing & Switching';
-  const adminUser = isAdminEmail(gateState.pendingEmail);
-
-  const ok = await requestEmailOtp(gateState.pendingEmail, {
-    shouldCreateUser: isReg || adminUser ? true : !NEXACLOUD_SUPABASE_CONFIG.requireRegisteredStudent,
-    data: isReg ? { full_name: fullName, batch, academy: 'Nexacloud Academy' } : undefined
-  });
-
-  if (ok) {
-    startGateOtpTimer(60);
-    setGateFeedback(`A new verification OTP was sent to ${gateState.pendingEmail}.`);
+  const email = (document.getElementById('gate-signin-email')?.value || '').trim().toLowerCase();
+  if (!email) {
+    setGateFeedback('Enter your email address in the Email / Username field first, then click "Send Password Setup Link".', true);
+    return;
   }
-}
-
-async function handleGateVerifyOtp(e) {
-  e.preventDefault();
-  clearGateFeedback();
-  const token = (document.getElementById('gate-otp-code')?.value || '').trim();
-  const email = gateState.pendingEmail;
-  if (!email || !token) return;
-
   if (!supabaseClient) {
     setGateFeedback('Supabase client is not initialized.', true);
     return;
   }
 
-  const btn = document.getElementById('btn-gate-verify-otp');
-  if (btn) { btn.disabled = true; btn.textContent = 'Verifying...'; }
-
-  const { data, error } = await supabaseClient.auth.verifyOtp({
-    email,
-    token,
-    type: 'email'
+  const { error } = await supabaseClient.auth.resetPasswordForEmail(email, {
+    redirectTo: window.location.href.split('#')[0]
   });
 
-  if (btn) { btn.disabled = false; btn.textContent = 'Verify OTP & Continue'; }
-
   if (error) {
-    setGateFeedback(error.message || 'Invalid or expired OTP code.', true);
+    setGateFeedback(formatSupabaseAuthError(error.message, 'signin'), true);
     return;
   }
 
-  const verifiedUser = data?.user || data?.session?.user || { email };
-  await applyGateDecision(verifiedUser);
+  setGateFeedback(`Password setup/reset link sent to ${email}. Open the link in your email to set your password.`, false);
+}
+
+async function handleSetNewPassword(e) {
+  e.preventDefault();
+  clearGateFeedback();
+  const newPassword = document.getElementById('gate-new-password')?.value || '';
+  if (!newPassword || newPassword.length < 6) {
+    setGateFeedback('Please enter a password of at least 6 characters.', true);
+    return;
+  }
+  if (!supabaseClient) return;
+
+  const btn = document.getElementById('btn-gate-new-password');
+  if (btn) { btn.disabled = true; btn.textContent = 'Saving password...'; }
+
+  const { data, error } = await supabaseClient.auth.updateUser({ password: newPassword });
+
+  if (btn) { btn.disabled = false; btn.textContent = 'Save Password & Launch Studio'; }
+
+  if (error) {
+    setGateFeedback(error.message || 'Unable to update password.', true);
+    return;
+  }
+
+  showToast('Password saved! Launching studio...');
+  await applyGateDecision(data?.user || gateState.user);
 }
 
 async function signOutAcademyUser() {
@@ -1374,7 +1378,7 @@ async function signOutAcademyUser() {
     } catch (_) {}
   }
   await applyGateDecision(null);
-  returnToGateAuthForm();
+  switchGateTab('signin');
   showToast('Signed out of Nexacloud Academy');
 }
 
@@ -4135,24 +4139,20 @@ function renderCategorySidebar() {
   }).join('');
 }
 
-function toggleCategory(catKey) {
-  state.expandedCategory = state.expandedCategory === catKey ? null : catKey;
+function toggleSidebarCollapse() {
+  state.sidebarCollapsed = !state.sidebarCollapsed;
+  const aside = document.getElementById('hardware-sidebar');
+  const btn = document.getElementById('sidebar-collapse-btn');
+  if (aside) {
+    aside.classList.toggle('w-16', !state.sidebarCollapsed);
+    aside.classList.toggle('w-11', state.sidebarCollapsed);
+  }
+  if (btn) btn.textContent = state.sidebarCollapsed ? '\u00bb' : '\u00ab';
   renderCategorySidebar();
 }
 
-function toggleSidebarCollapse() {
-  state.sidebarCollapsed = !state.sidebarCollapsed;
-  const sb = document.getElementById('hardware-sidebar');
-  const btn = document.getElementById('sidebar-collapse-btn');
-  if (state.sidebarCollapsed) {
-    sb.classList.remove('w-16');
-    sb.classList.add('w-11');
-    btn.textContent = '\u00bb';
-  } else {
-    sb.classList.remove('w-11');
-    sb.classList.add('w-16');
-    btn.textContent = '\u00ab';
-  }
+function toggleCategory(catKey) {
+  state.expandedCategory = state.expandedCategory === catKey ? null : catKey;
   renderCategorySidebar();
 }
 
@@ -4162,108 +4162,138 @@ function onCatalogDragStart(e, catalogType) {
 }
 
 function spawnDeviceAtCenter(catalogType) {
-  const rect = document.getElementById('canvas-viewport').getBoundingClientRect();
-  const wx = (rect.width / 2 - state.pan.x) / state.zoom + (Math.random() * 50 - 25);
-  const wy = (rect.height / 2 - state.pan.y) / state.zoom + (Math.random() * 50 - 25);
-  const node = createDeviceNode(catalogType, Math.round(wx), Math.round(wy));
+  const vp = document.getElementById('canvas-viewport');
+  const rect = vp ? vp.getBoundingClientRect() : { width: 800, height: 500 };
+  const worldX = Math.round(((rect.width * 0.42 - state.pan.x) / state.zoom) + (state.nodes.length % 5) * 32);
+  const worldY = Math.round(((rect.height * 0.35 - state.pan.y) / state.zoom) + (state.nodes.length % 4) * 28);
+  const node = createDeviceNode(catalogType, worldX, worldY);
   state.nodes.push(node);
   state.selectedNodeId = node.id;
   refreshAllViews();
-  showToast(`Added ${node.config.hostname} (${node.label})`);
+  showToast(`Added ${node.config.hostname}`);
 }
 
-function toggleInspectorCollapse() {
-  const panel = document.getElementById('inspector-panel');
-  if (!panel) return;
-  if (panel.classList.contains('hidden')) {
-    panel.classList.remove('hidden');
-    renderInspector();
-  } else {
-    panel.classList.add('hidden');
+function updateSelectedDeviceToolbar() {
+  const bar = document.getElementById('selected-device-toolbar');
+  const badge = document.getElementById('sel-dev-badge');
+  const conBtn = document.getElementById('sel-dev-console-btn');
+  const ipBtn = document.getElementById('sel-dev-ip-btn');
+  if (!bar) return;
+
+  const node = state.nodes.find(n => n.id === state.selectedNodeId);
+  if (!node) {
+    bar.classList.add('hidden');
+    return;
   }
+  bar.classList.remove('hidden');
+  badge.textContent = node.config.hostname;
+  conBtn.onclick = () => spawnFloatingWindow(node.id, 'cli');
+  ipBtn.onclick = () => spawnFloatingWindow(node.id, node.role === 'host' ? 'ipcfg' : 'webui');
+}
+
+function openInspectorForNode(nodeId) {
+  state.selectedNodeId = nodeId;
+  const panel = document.getElementById('inspector-panel');
+  if (panel) panel.classList.remove('hidden');
+  renderInspectorDrawer();
+  renderNodesLayer();
 }
 
 function closeInspector() {
   document.getElementById('inspector-panel')?.classList.add('hidden');
 }
 
-function renderInspector() {
+function toggleInspectorCollapse() {
+  const panel = document.getElementById('inspector-panel');
+  if (!panel) return;
+  if (panel.classList.contains('hidden')) {
+    if (!state.selectedNodeId && state.nodes.length > 0) state.selectedNodeId = state.nodes[0].id;
+    panel.classList.remove('hidden');
+    renderInspectorDrawer();
+  } else {
+    panel.classList.add('hidden');
+  }
+}
+
+function renderInspectorDrawer() {
   const panel = document.getElementById('inspector-panel');
   if (!panel || panel.classList.contains('hidden')) return;
-  const node = state.nodes.find(n => n.id === state.selectedNodeId) || state.nodes[0];
-  const badge = document.getElementById('insp-vendor-badge');
-  const title = document.getElementById('insp-title');
-  const body = document.getElementById('insp-body');
-  if (!node) {
-    title.textContent = 'No Device Selected';
-    body.innerHTML = `<div class="text-slate-400 py-8 text-center">Click a device on the canvas or add one from the hardware dock.</div>`;
-    return;
-  }
-  badge.textContent = `${node.vendor.toUpperCase()} · ${node.os}`;
-  title.textContent = `${node.config.hostname} (${node.label})`;
+  const node = state.nodes.find(n => n.id === state.selectedNodeId);
+  if (!node) return;
 
-  const ifHtml = node.config.interfaces.map((inf, idx) => {
+  document.getElementById('insp-vendor-badge').textContent = `${node.vendor.toUpperCase()} \u00b7 ${node.role.toUpperCase()}`;
+  document.getElementById('insp-title').textContent = node.config.hostname;
+
+  const ifItems = node.config.interfaces.map((inf, idx) => {
     const st = computeInterfaceStatus(node, inf);
     return `
-      <div class="p-2.5 rounded-xl border border-slate-200 bg-slate-50/70 space-y-2">
+      <div class="p-2.5 rounded-xl border border-slate-200 bg-slate-50/70 space-y-1.5">
         <div class="flex items-center justify-between">
           <span class="font-mono font-bold text-slate-800">${escapeHtml(inf.name)}</span>
           <span class="px-1.5 py-0.5 rounded text-[10px] font-bold ${st.isUp ? 'bg-emerald-100 text-emerald-700' : 'bg-rose-100 text-rose-700'}">${st.isUp ? 'UP/UP' : 'DOWN'}</span>
         </div>
-        <div class="grid grid-cols-3 gap-1.5">
-          <input id="insp-ip-${node.id}-${idx}" type="text" value="${escapeHtml(inf.ip || '')}" placeholder="IPv4" class="col-span-2 px-2 py-1 rounded border border-slate-300 bg-white font-mono text-[11px] selectable-text" />
-          <input id="insp-pfx-${node.id}-${idx}" type="number" min="1" max="32" value="${inf.prefix || 24}" class="px-2 py-1 rounded border border-slate-300 bg-white font-mono text-[11px] selectable-text" />
-        </div>
-        <div class="flex items-center justify-between gap-1.5">
-          <button onclick="saveInspectorInterface('${node.id}', ${idx})" class="px-2.5 py-1 rounded bg-blue-600 hover:bg-blue-700 text-white font-semibold text-[11px] cursor-pointer">Apply IP</button>
-          <button onclick="toggleInterfaceAdminFromWeb('${node.id}', ${idx})" class="px-2 py-1 rounded bg-white hover:bg-slate-100 text-slate-700 border border-slate-300 font-semibold text-[11px] cursor-pointer">${inf.adminUp ? 'Shutdown' : 'No Shut'}</button>
-        </div>
+        ${node.role !== 'switch' ? `
+          <div class="flex gap-1.5">
+            <input id="insp-if-ip-${idx}" type="text" value="${escapeHtml(inf.ip || '')}" placeholder="IPv4 (e.g. 10.0.0.1)" class="flex-1 px-2 py-1 rounded border border-slate-300 bg-white font-mono text-[11px] selectable-text" />
+            <input id="insp-if-pfx-${idx}" type="number" min="1" max="32" value="${inf.prefix || 24}" class="w-14 px-2 py-1 rounded border border-slate-300 bg-white font-mono text-[11px] selectable-text" />
+            <button onclick="saveInspectorInterface('${node.id}', ${idx})" class="px-2 py-1 rounded bg-blue-600 text-white font-bold text-[10px] cursor-pointer">Set</button>
+          </div>
+        ` : `<div class="text-[11px] text-slate-500">Switchport ${inf.mode} (VLAN ${inf.vlan})</div>`}
       </div>
     `;
   }).join('');
 
-  body.innerHTML = `
-    <div class="flex gap-1.5">
-      <button onclick="spawnFloatingWindow('${node.id}', 'cli')" class="flex-1 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-bold text-[11px] cursor-pointer">Open Console</button>
-      <button onclick="spawnFloatingWindow('${node.id}', '${node.role === 'host' ? 'ipcfg' : 'webui'}')" class="flex-1 py-2 rounded-xl bg-blue-50 hover:bg-blue-100 text-blue-700 border border-blue-200 font-bold text-[11px] cursor-pointer">${node.role === 'host' ? 'IP/DHCP' : 'WebUI'}</button>
-    </div>
-    <div>
-      <label class="block text-[11px] font-semibold text-slate-600 mb-1">Hostname</label>
-      <div class="flex gap-1.5">
-        <input id="insp-hostname-${node.id}" type="text" value="${escapeHtml(node.config.hostname)}" class="flex-1 px-2.5 py-1.5 rounded-lg border border-slate-300 font-mono text-xs selectable-text" />
-        <button onclick="saveInspectorHostname('${node.id}')" class="px-3 py-1.5 rounded-lg bg-slate-800 text-white font-semibold text-[11px] cursor-pointer">Save</button>
+  document.getElementById('insp-body').innerHTML = `
+    <div class="space-y-3">
+      <div>
+        <label class="block text-[11px] font-semibold text-slate-600 mb-1">Device Hostname</label>
+        <div class="flex gap-1.5">
+          <input id="insp-hostname-input" type="text" value="${escapeHtml(node.config.hostname)}" class="flex-1 px-2.5 py-1.5 rounded-lg border border-slate-300 font-mono selectable-text" />
+          <button onclick="saveInspectorHostname('${node.id}')" class="px-3 py-1.5 rounded-lg bg-slate-900 text-white font-bold cursor-pointer">Rename</button>
+        </div>
       </div>
-    </div>
-    <div class="space-y-2">
-      <div class="font-bold text-slate-800">Interfaces (${node.config.interfaces.length})</div>
-      ${ifHtml}
+
+      <div class="grid grid-cols-2 gap-1.5">
+        <button onclick="spawnFloatingWindow('${node.id}', 'cli')" class="py-2 px-3 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-bold cursor-pointer">Open Console</button>
+        <button onclick="spawnFloatingWindow('${node.id}', '${node.role === 'host' ? 'ipcfg' : 'webui'}')" class="py-2 px-3 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold cursor-pointer">${node.role === 'host' ? 'IP / DHCP' : 'WebUI'}</button>
+      </div>
+
+      <div class="pt-1">
+        <div class="text-[11px] font-bold uppercase tracking-wider text-slate-400 mb-1.5">Interfaces (${node.config.interfaces.length})</div>
+        <div class="space-y-2">${ifItems}</div>
+      </div>
     </div>
   `;
 }
 
 function saveInspectorHostname(nodeId) {
   const node = state.nodes.find(n => n.id === nodeId);
-  const val = document.getElementById(`insp-hostname-${nodeId}`)?.value.trim();
+  const val = document.getElementById('insp-hostname-input')?.value.trim();
   if (!node || !val) return;
   node.config.hostname = val;
   refreshAllViews();
-  showToast(`Renamed device to ${val}`);
+  showToast(`Renamed to ${val}`);
 }
 
 function saveInspectorInterface(nodeId, idx) {
   const node = state.nodes.find(n => n.id === nodeId);
   if (!node || !node.config.interfaces[idx]) return;
-  const ipStr = document.getElementById(`insp-ip-${nodeId}-${idx}`)?.value.trim();
-  const pfxVal = Number(document.getElementById(`insp-pfx-${nodeId}-${idx}`)?.value) || 24;
-  if (!ipStr) {
+  const ipVal = document.getElementById(`insp-if-ip-${idx}`)?.value.trim();
+  const pfxVal = Number(document.getElementById(`insp-if-pfx-${idx}`)?.value) || 24;
+  if (!ipVal) {
     node.config.interfaces[idx].ip = null;
     refreshAllViews();
-    showToast(`Cleared IP on ${node.config.interfaces[idx].name}`);
     return;
   }
-  const res = setStaticIpConfig(node, ipStr, pfxVal, node.config.gateway, node.config.interfaces[idx].name);
-  if (!res.ok) { showToast(res.msg, true); return; }
-  showToast(`Set ${res.ip}/${res.prefix} on ${node.config.hostname} [${compactPortLabel(res.iface)}]`);
+  if (ipToInt(ipVal) === null) {
+    showToast('Invalid IPv4 address', true);
+    return;
+  }
+  node.config.interfaces[idx].ip = ipVal;
+  node.config.interfaces[idx].prefix = pfxVal;
+  node.config.interfaces[idx].adminUp = true;
+  refreshAllViews();
+  showToast(`Set ${node.config.interfaces[idx].name} to ${ipVal}/${pfxVal}`);
 }
 
 function openRoutingInspector() {
@@ -4271,103 +4301,256 @@ function openRoutingInspector() {
   const body = document.getElementById('routing-modal-body');
   if (!modal || !body) return;
 
-  if (!state.nodes.length) {
-    body.innerHTML = `<div class="text-slate-400 text-center py-8">No devices in topology.</div>`;
-    modal.classList.remove('hidden');
-    return;
-  }
+  const l3Nodes = state.nodes.filter(n => n.role !== 'switch');
+  if (!l3Nodes.length) {
+    body.innerHTML = `<div class="text-center text-slate-400 py-8">No Layer 3 devices in topology.</div>`;
+  } else {
+    body.innerHTML = l3Nodes.map(n => {
+      const routes = getEffectiveRoutes(n);
+      const rRows = routes.map(r => `
+        <tr class="border-b border-slate-100 font-mono text-[11px]">
+          <td class="py-1 font-bold text-blue-700">${escapeHtml(r.protocol)}</td>
+          <td class="py-1">${escapeHtml(r.prefix)}</td>
+          <td class="py-1">[${r.ad}/${r.metric}]</td>
+          <td class="py-1">${escapeHtml(r.nextHop)}</td>
+          <td class="py-1">${escapeHtml(r.outIf || '')}</td>
+        </tr>
+      `).join('');
 
-  body.innerHTML = state.nodes.map(n => {
-    const routes = getEffectiveRoutes(n);
-    const eigrpAdj = getProtocolAdjacencies(n, 'eigrp');
-    const ospfAdj = getProtocolAdjacencies(n, 'ospf');
-    const bgpAdj = getProtocolAdjacencies(n, 'bgp');
+      const eigrpAdj = getProtocolAdjacencies(n, 'eigrp');
+      const ospfAdj = getProtocolAdjacencies(n, 'ospf');
+      const bgpAdj = getProtocolAdjacencies(n, 'bgp');
 
-    const routeRows = routes.map(r => `
-      <tr class="border-b border-slate-100 font-mono text-[11px]">
-        <td class="py-1 font-bold text-blue-700">${escapeHtml(r.protocol)}</td>
-        <td class="py-1">${escapeHtml(r.prefix)}</td>
-        <td class="py-1">[${r.ad}/${r.metric}]</td>
-        <td class="py-1">${escapeHtml(r.nextHop)}</td>
-        <td class="py-1 text-slate-500">${escapeHtml(compactPortLabel(r.outIf || ''))}</td>
-      </tr>
-    `).join('');
+      const neighBadges = [
+        ...eigrpAdj.map(a => `<span class="px-2 py-0.5 rounded bg-indigo-50 text-indigo-800 border border-indigo-200 font-mono text-[10px]">EIGRP AS ${n.config.eigrp.asNumber}: ${escapeHtml(a.peerNode.config.hostname)} (${escapeHtml(a.peerIp)})</span>`),
+        ...ospfAdj.map(a => `<span class="px-2 py-0.5 rounded bg-emerald-50 text-emerald-800 border border-emerald-200 font-mono text-[10px]">OSPF FULL: ${escapeHtml(a.peerNode.config.hostname)} (${escapeHtml(a.peerIp)})</span>`),
+        ...bgpAdj.map(a => `<span class="px-2 py-0.5 rounded bg-amber-50 text-amber-800 border border-amber-200 font-mono text-[10px]">BGP AS ${a.remoteAs}: ${escapeHtml(a.peerNode.config.hostname)} (${escapeHtml(a.peerIp)})</span>`)
+      ].join('');
 
-    return `
-      <div class="p-3.5 rounded-xl border border-slate-200 bg-slate-50/50 space-y-2">
-        <div class="flex items-center justify-between flex-wrap gap-2">
-          <div class="font-bold text-slate-900">${escapeHtml(n.config.hostname)} <span class="text-slate-500 font-normal">(${escapeHtml(n.os)})</span></div>
-          <div class="flex gap-1.5 font-mono text-[10px]">
-            <span class="px-2 py-0.5 rounded bg-blue-50 text-blue-700 border border-blue-200">EIGRP(${n.config.eigrp.asNumber}): ${n.config.eigrp.enabled ? 'ON' : 'OFF'} (${eigrpAdj.length} nbr)</span>
-            <span class="px-2 py-0.5 rounded bg-emerald-50 text-emerald-700 border border-emerald-200">OSPF(${n.config.ospf.processId}): ${n.config.ospf.enabled ? 'ON' : 'OFF'} (${ospfAdj.length} nbr)</span>
-            <span class="px-2 py-0.5 rounded bg-indigo-50 text-indigo-700 border border-indigo-200">BGP(${n.config.bgp.asn}): ${n.config.bgp.enabled ? 'ON' : 'OFF'} (${bgpAdj.length} nbr)</span>
+      return `
+        <div class="border border-slate-200 rounded-xl p-3.5 bg-slate-50/50 space-y-2">
+          <div class="flex items-center justify-between flex-wrap gap-2">
+            <span class="font-bold text-slate-900">${escapeHtml(n.config.hostname)} (${escapeHtml(n.os)})</span>
+            <div class="flex flex-wrap gap-1">${neighBadges}</div>
           </div>
-        </div>
-        ${routes.length ? `
-          <table class="w-full text-left bg-white rounded-lg border border-slate-200">
+          <table class="w-full text-left">
             <thead>
               <tr class="text-[10px] uppercase text-slate-400 border-b border-slate-200">
-                <th class="py-1 px-2">Proto</th>
-                <th class="py-1 px-2">Prefix</th>
-                <th class="py-1 px-2">AD/Metric</th>
-                <th class="py-1 px-2">Next Hop</th>
-                <th class="py-1 px-2">Egress If</th>
+                <th class="py-1">Code</th>
+                <th class="py-1">Network</th>
+                <th class="py-1">AD/Metric</th>
+                <th class="py-1">Next-Hop</th>
+                <th class="py-1">Interface</th>
               </tr>
             </thead>
-            <tbody>${routeRows.replace(/<td /g, '<td class="px-2 "')}</tbody>
+            <tbody>${rRows || '<tr><td colspan="5" class="py-2 text-slate-400">No active routes</td></tr>'}</tbody>
           </table>
-        ` : `<div class="text-[11px] text-slate-400 font-mono">No active IPv4 routes.</div>`}
-      </div>
-    `;
-  }).join('');
+        </div>
+      `;
+    }).join('');
+  }
 
   modal.classList.remove('hidden');
 }
 
 // ============================================================================
-// 11. CANVAS INTERACTION, NON-OVERLAPPING PORT IP LABELS & CABLE MODALS
+// 11. CANVAS RENDERER, NON-OVERLAPPING PORT CALLOUTS & CLICKABLE CABLES
 // ============================================================================
-const NODE_BOX_W = 64;
-const NODE_BOX_H = 64;
-
-function getNodeCenter(node) {
-  return {
-    x: node.x + NODE_BOX_W / 2,
-    y: node.y + NODE_BOX_H / 2
-  };
-}
-
 function compactPortLabel(portName) {
   if (!portName) return '';
-  return portName
+  return String(portName)
     .replace(/^GigabitEthernet/i, 'Gi')
     .replace(/^TenGigabitEthernet/i, 'Te')
+    .replace(/^FastEthernet/i, 'Fa')
     .replace(/^Ethernet/i, 'Eth')
-    .replace(/^FastEthernet/i, 'Fa');
+    .replace(/^Management/i, 'Mgmt');
 }
 
-function formatPortIpTag(node, portName) {
-  if (!node || !portName) return '';
-  const inf = getInterface(node, portName);
-  const pTag = compactPortLabel(portName);
-  if (inf && inf.ip) {
-    return `${pTag}: ${inf.ip}/${inf.prefix || 24}`;
+function getNodeCenter(node) {
+  return { x: node.x + 56, y: node.y + 44 };
+}
+
+function renderLinksLayer() {
+  const svg = document.getElementById('links-svg');
+  if (!svg) return;
+
+  const pairGroups = {};
+  state.links.forEach(l => {
+    const key = [l.sourceId, l.targetId].sort().join('__');
+    if (!pairGroups[key]) pairGroups[key] = [];
+    pairGroups[key].push(l);
+  });
+
+  svg.innerHTML = state.links.map(link => {
+    const src = state.nodes.find(n => n.id === link.sourceId);
+    const dst = state.nodes.find(n => n.id === link.targetId);
+    if (!src || !dst) return '';
+
+    const c1 = getNodeCenter(src);
+    const c2 = getNodeCenter(dst);
+    const up = isLinkOperationallyUp(link);
+    const strokeColor = up ? '#16a34a' : '#e11d48';
+
+    const dx = c2.x - c1.x;
+    const dy = c2.y - c1.y;
+    const len = Math.hypot(dx, dy) || 1;
+    const ux = dx / len;
+    const uy = dy / len;
+    const nx = -uy;
+    const ny = ux;
+
+    const pairKey = [link.sourceId, link.targetId].sort().join('__');
+    const siblings = pairGroups[pairKey] || [link];
+    const sibIdx = siblings.indexOf(link);
+    const laneOffset = (sibIdx - (siblings.length - 1) / 2) * 26;
+
+    const x1 = c1.x + nx * laneOffset;
+    const y1 = c1.y + ny * laneOffset;
+    const x2 = c2.x + nx * laneOffset;
+    const y2 = c2.y + ny * laneOffset;
+
+    const srcIf = getInterface(src, link.sourcePort);
+    const dstIf = getInterface(dst, link.targetPort);
+    const srcPortShort = compactPortLabel(link.sourcePort);
+    const dstPortShort = compactPortLabel(link.targetPort);
+    const srcIpTxt = srcIf && srcIf.ip ? `${srcIf.ip}/${srcIf.prefix || 24}` : '';
+    const dstIpTxt = dstIf && dstIf.ip ? `${dstIf.ip}/${dstIf.prefix || 24}` : '';
+
+    const t1 = Math.min(0.32, Math.max(0.18, 76 / len));
+    const t2 = Math.max(0.68, Math.min(0.82, 1 - 76 / len));
+
+    const sideSign1 = sibIdx % 2 === 0 ? 1 : -1;
+    const sideSign2 = sibIdx % 2 === 0 ? -1 : 1;
+    const perpShift = 16;
+
+    const p1x = x1 + dx * t1 + nx * sideSign1 * perpShift;
+    const p1y = y1 + dy * t1 + ny * sideSign1 * perpShift;
+    const p2x = x1 + dx * t2 + nx * sideSign2 * perpShift;
+    const p2y = y1 + dy * t2 + ny * sideSign2 * perpShift;
+
+    let labelsSvg = '';
+    if (state.showInterfaceLabels) {
+      const w1 = Math.max(38, srcPortShort.length * 6.5 + 10);
+      const w2 = Math.max(38, dstPortShort.length * 6.5 + 10);
+
+      labelsSvg += `
+        <g style="pointer-events:none;">
+          <rect x="${p1x - w1 / 2}" y="${p1y - 8}" width="${w1}" height="15" rx="4" fill="#ffffff" stroke="${up ? '#86efac' : '#fecdd3'}" stroke-width="1.1"/>
+          <text x="${p1x}" y="${p1y + 3}" text-anchor="middle" fill="#0f172a" font-family="JetBrains Mono, monospace" font-size="9" font-weight="700">${escapeHtml(srcPortShort)}</text>
+          ${srcIpTxt ? `
+            <rect x="${p1x - (srcIpTxt.length * 5.6 + 10) / 2}" y="${p1y + 9}" width="${srcIpTxt.length * 5.6 + 10}" height="14" rx="4" fill="#eff6ff" stroke="#2563eb" stroke-width="0.95"/>
+            <text x="${p1x}" y="${p1y + 19}" text-anchor="middle" fill="#1e3a8a" font-family="JetBrains Mono, monospace" font-size="8.5" font-weight="700">${escapeHtml(srcIpTxt)}</text>
+          ` : ''}
+        </g>
+        <g style="pointer-events:none;">
+          <rect x="${p2x - w2 / 2}" y="${p2y - 8}" width="${w2}" height="15" rx="4" fill="#ffffff" stroke="${up ? '#86efac' : '#fecdd3'}" stroke-width="1.1"/>
+          <text x="${p2x}" y="${p2y + 3}" text-anchor="middle" fill="#0f172a" font-family="JetBrains Mono, monospace" font-size="9" font-weight="700">${escapeHtml(dstPortShort)}</text>
+          ${dstIpTxt ? `
+            <rect x="${p2x - (dstIpTxt.length * 5.6 + 10) / 2}" y="${p2y + 9}" width="${dstIpTxt.length * 5.6 + 10}" height="14" rx="4" fill="#eff6ff" stroke="#2563eb" stroke-width="0.95"/>
+            <text x="${p2x}" y="${p2y + 19}" text-anchor="middle" fill="#1e3a8a" font-family="JetBrains Mono, monospace" font-size="8.5" font-weight="700">${escapeHtml(dstIpTxt)}</text>
+          ` : ''}
+        </g>
+      `;
+    }
+
+    return `
+      <g class="cursor-pointer" style="pointer-events:all;" onclick="onLinkClick(event, '${link.id}')">
+        <line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="transparent" stroke-width="16" />
+        <line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}"
+              stroke="${strokeColor}" stroke-width="2.5" stroke-linecap="round"
+              class="${up ? 'link-dash-active' : ''}" />
+        <circle cx="${x1 + ux * 40}" cy="${y1 + uy * 40}" r="3.8" fill="${strokeColor}" stroke="#ffffff" stroke-width="1.2" />
+        <circle cx="${x2 - ux * 40}" cy="${y2 - uy * 40}" r="3.8" fill="${strokeColor}" stroke="#ffffff" stroke-width="1.2" />
+        ${labelsSvg}
+      </g>
+    `;
+  }).join('');
+}
+
+function renderNodesLayer() {
+  const container = document.getElementById('nodes-layer');
+  if (!container) return;
+
+  container.innerHTML = state.nodes.map(node => {
+    const isSelected = node.id === state.selectedNodeId;
+    const summary = getDeviceStatusSummary(node);
+    const hasDhcpServer = node.config.dhcpServer && node.config.dhcpServer.enabled;
+
+    return `
+      <div id="node-el-${node.id}"
+           onmousedown="onNodeMouseDown(event, '${node.id}')"
+           ondblclick="onNodeDoubleClick(event, '${node.id}')"
+           style="left:${node.x}px; top:${node.y}px; width:112px;"
+           class="node-card no-select-drag absolute flex flex-col items-center cursor-pointer group ${isSelected ? 'node-selected' : ''}">
+        <div class="relative w-16 h-16 rounded-2xl bg-white border ${isSelected ? 'border-blue-600' : 'border-slate-200'} shadow-sm flex items-center justify-center">
+          ${getHardwareSVG(node.type, 50)}
+          ${hasDhcpServer ? `<span class="absolute -top-1.5 -right-1.5 px-1.5 py-0.5 rounded-full bg-indigo-600 text-white text-[8px] font-bold shadow-2xs">DHCP</span>` : ''}
+        </div>
+        <div class="mt-1.5 px-2 py-0.5 rounded-lg bg-white/95 border border-slate-200/90 shadow-2xs text-center max-w-[124px]">
+          <div class="text-[11px] font-extrabold text-slate-900 truncate leading-tight">${escapeHtml(node.config.hostname)}</div>
+          <div class="text-[9.5px] font-mono text-slate-600 truncate leading-tight mt-0.5">${escapeHtml(summary.ipLine)}</div>
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+function renderPacketsLayer() {
+  const svg = document.getElementById('packets-svg');
+  if (!svg) return;
+  const anim = state.sim.activeAnim;
+  if (!anim) {
+    svg.innerHTML = '';
+    return;
   }
-  return pTag;
+  const fromN = state.nodes.find(n => n.id === anim.fromId);
+  const toN = state.nodes.find(n => n.id === anim.toId);
+  if (!fromN || !toN) {
+    svg.innerHTML = '';
+    return;
+  }
+  const c1 = getNodeCenter(fromN);
+  const c2 = getNodeCenter(toN);
+  const mx = (c1.x + c2.x) / 2;
+  const my = (c1.y + c2.y) / 2;
+
+  svg.innerHTML = `
+    <g>
+      <circle cx="${mx}" cy="${my}" r="14" fill="#f59e0b" class="pkt-pulse" />
+      <rect x="${mx - 24}" y="${my - 11}" width="48" height="22" rx="7" fill="#f59e0b" stroke="#ffffff" stroke-width="1.5" />
+      <text x="${mx}" y="${my + 3.5}" text-anchor="middle" fill="#0f172a" font-family="JetBrains Mono, monospace" font-size="10" font-weight="800">${escapeHtml(anim.proto || 'PKT')}</text>
+    </g>
+  `;
 }
 
+function refreshAllViews() {
+  renderLinksLayer();
+  renderNodesLayer();
+  renderPacketsLayer();
+  renderInspectorDrawer();
+  refreshAllFloatingWindowsContent();
+  updateSelectedDeviceToolbar();
+  const nEl = document.getElementById('stat-nodes');
+  const lEl = document.getElementById('stat-links');
+  if (nEl) nEl.textContent = state.nodes.length;
+  if (lEl) lEl.textContent = state.links.length;
+}
+
+// ============================================================================
+// 12. CANVAS INTERACTIONS, CABLE PATCHING MODAL & LINK INSPECTOR
+// ============================================================================
 function setTool(toolName) {
   state.tool = toolName;
   state.connectSourceId = null;
-  document.querySelectorAll('.tool-btn').forEach(btn => {
-    btn.classList.remove('bg-white', 'text-slate-900', 'shadow-2xs', 'border', 'border-slate-200');
-    btn.classList.add('text-slate-600');
+  ['select', 'connect', 'delete'].forEach(t => {
+    const btn = document.getElementById(`tool-${t}`);
+    if (!btn) return;
+    if (t === toolName) {
+      btn.className = 'tool-btn flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-xs font-semibold bg-white text-slate-900 shadow-2xs border border-slate-200 transition cursor-pointer';
+    } else {
+      btn.className = 'tool-btn flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-xs font-semibold text-slate-600 hover:text-slate-900 hover:bg-white/70 transition cursor-pointer';
+    }
   });
-  const activeBtn = document.getElementById(`tool-${toolName}`);
-  if (activeBtn) {
-    activeBtn.classList.remove('text-slate-600');
-    activeBtn.classList.add('bg-white', 'text-slate-900', 'shadow-2xs', 'border', 'border-slate-200');
-  }
   const banner = document.getElementById('connect-banner');
   if (banner) {
     if (toolName === 'connect') {
@@ -4386,206 +4569,21 @@ function toggleInterfaceLabels() {
   renderLinksLayer();
 }
 
-function zoomCanvas(delta) {
-  state.zoom = Math.max(0.4, Math.min(2.0, Number((state.zoom + delta).toFixed(2))));
-  applyCanvasTransform();
-}
-
-function resetView() {
-  state.pan = { x: 24, y: 20 };
-  state.zoom = 1;
-  applyCanvasTransform();
-}
-
-function applyCanvasTransform() {
-  const world = document.getElementById('canvas-world');
-  const readout = document.getElementById('zoom-readout');
-  if (world) {
-    world.style.transform = `translate(${state.pan.x}px, ${state.pan.y}px) scale(${state.zoom})`;
-  }
-  if (readout) {
-    readout.textContent = `${Math.round(state.zoom * 100)}%`;
-  }
-}
-
-function setupCanvasViewportEvents() {
-  const viewport = document.getElementById('canvas-viewport');
-  if (!viewport) return;
-
-  let isPanning = false;
-  let panStartX = 0;
-  let panStartY = 0;
-
-  viewport.addEventListener('mousedown', (e) => {
-    if (e.target.closest('.node-card') || e.target.closest('button') || e.target.closest('input') || e.target.closest('select')) {
-      return;
-    }
-    isPanning = true;
-    panStartX = e.clientX - state.pan.x;
-    panStartY = e.clientY - state.pan.y;
-  });
-
-  window.addEventListener('mousemove', (e) => {
-    if (!isPanning) return;
-    state.pan.x = e.clientX - panStartX;
-    state.pan.y = e.clientY - panStartY;
-    applyCanvasTransform();
-  });
-
-  window.addEventListener('mouseup', () => {
-    isPanning = false;
-  });
-
-  viewport.addEventListener('wheel', (e) => {
-    e.preventDefault();
-    zoomCanvas(e.deltaY < 0 ? 0.1 : -0.1);
-  }, { passive: false });
-
-  viewport.addEventListener('dragover', (e) => {
-    e.preventDefault();
-    e.dataTransfer.dropEffect = 'copy';
-  });
-
-  viewport.addEventListener('drop', (e) => {
-    e.preventDefault();
-    const catalogType = e.dataTransfer.getData('text/plain');
-    if (!catalogType) return;
-    const rect = viewport.getBoundingClientRect();
-    const wx = (e.clientX - rect.left - state.pan.x) / state.zoom - NODE_BOX_W / 2;
-    const wy = (e.clientY - rect.top - state.pan.y) / state.zoom - NODE_BOX_H / 2;
-    const node = createDeviceNode(catalogType, Math.round(wx), Math.round(wy));
-    state.nodes.push(node);
-    state.selectedNodeId = node.id;
-    refreshAllViews();
-    showToast(`Placed ${node.config.hostname} (${node.label})`);
-  });
-
-  document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape') {
-      setTool('select');
-      closePortModal();
-      closeLinkModal();
-      closeLoginModal();
-    }
-  });
-}
-
-function renderNodesLayer() {
-  const layer = document.getElementById('nodes-layer');
-  if (!layer) return;
-
-  layer.innerHTML = state.nodes.map(node => {
-    const isSelected = node.id === state.selectedNodeId;
-    const isConnectSrc = node.id === state.connectSourceId;
-    const statusInfo = getDeviceStatusSummary(node);
-    const hasDhcpServer = Boolean(node.config.dhcpServer && node.config.dhcpServer.enabled);
-
-    return `
-      <div id="node-${node.id}"
-           style="left:${node.x}px; top:${node.y}px; width:${NODE_BOX_W}px;"
-           onmousedown="onNodeMouseDown(event, '${node.id}')"
-           onclick="onNodeClick(event, '${node.id}')"
-           ondblclick="onNodeDoubleClick(event, '${node.id}')"
-           class="node-card no-select-drag absolute flex flex-col items-center cursor-pointer ${isSelected ? 'node-selected' : ''} ${isConnectSrc ? 'ring-2 ring-emerald-500 rounded-2xl' : ''}">
-        <div class="relative w-14 h-14 rounded-2xl bg-white border border-slate-200/90 shadow-sm flex items-center justify-center">
-          ${getHardwareSVG(node.type, 46)}
-          ${hasDhcpServer ? `<span title="DHCP Server Active" class="absolute -top-1.5 -right-1.5 px-1 py-0.2 rounded bg-emerald-600 text-white font-mono text-[8px] font-bold shadow-2xs">DHCP</span>` : ''}
-        </div>
-        <div class="mt-1 px-1.5 py-0.5 rounded bg-white/95 border border-slate-200/90 shadow-2xs text-center leading-tight max-w-[112px]">
-          <div class="text-[11px] font-extrabold text-slate-900 truncate">${escapeHtml(node.config.hostname)}</div>
-          <div class="text-[9px] font-mono font-semibold text-blue-700 truncate">${escapeHtml(statusInfo.ipLine)}</div>
-        </div>
-      </div>
-    `;
-  }).join('');
-
-  updateSelectedDeviceToolbar();
-}
-
-function updateSelectedDeviceToolbar() {
-  const bar = document.getElementById('selected-device-toolbar');
-  const badge = document.getElementById('sel-dev-badge');
-  const cliBtn = document.getElementById('sel-dev-console-btn');
-  const ipBtn = document.getElementById('sel-dev-ip-btn');
-  const node = state.nodes.find(n => n.id === state.selectedNodeId);
-
-  if (!bar || !badge || !cliBtn || !ipBtn) return;
-  if (!node) {
-    bar.classList.add('hidden');
-    return;
-  }
-  bar.classList.remove('hidden');
-  badge.textContent = `${node.config.hostname}`;
-  cliBtn.onclick = () => spawnFloatingWindow(node.id, 'cli');
-  ipBtn.onclick = () => spawnFloatingWindow(node.id, node.role === 'host' ? 'ipcfg' : 'webui');
-}
-
 function onNodeMouseDown(e, nodeId) {
   if (e.button !== 0) return;
-  if (state.tool !== 'select') return;
-  const node = state.nodes.find(n => n.id === nodeId);
-  if (!node) return;
-
   e.stopPropagation();
-  state.selectedNodeId = node.id;
-  updateSelectedDeviceToolbar();
-  renderInspector();
-
-  const startX = e.clientX;
-  const startY = e.clientY;
-  const origX = node.x;
-  const origY = node.y;
-  let moved = false;
-
-  function onMove(ev) {
-    const dx = (ev.clientX - startX) / state.zoom;
-    const dy = (ev.clientY - startY) / state.zoom;
-    if (Math.abs(dx) > 2 || Math.abs(dy) > 2) moved = true;
-    node.x = Math.round(origX + dx);
-    node.y = Math.round(origY + dy);
-    const el = document.getElementById(`node-${node.id}`);
-    if (el) { el.style.left = `${node.x}px`; el.style.top = `${node.y}px`; }
-    renderLinksLayer();
-    renderPacketsLayer();
-  }
-
-  function onUp() {
-    window.removeEventListener('mousemove', onMove);
-    window.removeEventListener('mouseup', onUp);
-    if (moved) {
-      renderNodesLayer();
-    }
-  }
-
-  window.addEventListener('mousemove', onMove);
-  window.addEventListener('mouseup', onUp);
-}
-
-function onNodeClick(e, nodeId) {
-  e.stopPropagation();
-  const node = state.nodes.find(n => n.id === nodeId);
-  if (!node) return;
 
   if (state.tool === 'delete') {
-    state.nodes = state.nodes.filter(n => n.id !== nodeId);
-    state.links = state.links.filter(l => l.sourceId !== nodeId && l.targetId !== nodeId);
-    state.floatingWindows = state.floatingWindows.filter(w => w.nodeId !== nodeId);
-    if (state.selectedNodeId === nodeId) state.selectedNodeId = null;
-    refreshAllViews();
-    showToast(`Deleted ${node.config.hostname}`);
+    deleteNodeById(nodeId);
     return;
   }
 
   if (state.tool === 'connect') {
     if (!state.connectSourceId) {
       state.connectSourceId = nodeId;
-      document.getElementById('connect-banner-text').textContent = `Source: ${node.config.hostname} — now click destination device...`;
-      renderNodesLayer();
-    } else if (state.connectSourceId === nodeId) {
-      state.connectSourceId = null;
-      document.getElementById('connect-banner-text').textContent = 'Click a source device to begin patching a cable...';
-      renderNodesLayer();
-    } else {
+      const srcN = state.nodes.find(n => n.id === nodeId);
+      document.getElementById('connect-banner-text').textContent = `Source: ${srcN?.config.hostname} — now click destination device...`;
+    } else if (state.connectSourceId !== nodeId) {
       openPortModal(state.connectSourceId, nodeId);
       state.connectSourceId = null;
       setTool('select');
@@ -4595,202 +4593,133 @@ function onNodeClick(e, nodeId) {
 
   state.selectedNodeId = nodeId;
   renderNodesLayer();
-  renderInspector();
+  renderInspectorDrawer();
+  updateSelectedDeviceToolbar();
+
+  const node = state.nodes.find(n => n.id === nodeId);
+  if (!node) return;
+  const startMouseX = e.clientX;
+  const startMouseY = e.clientY;
+  const origX = node.x;
+  const origY = node.y;
+
+  function onMove(ev) {
+    node.x = Math.round(origX + (ev.clientX - startMouseX) / state.zoom);
+    node.y = Math.round(origY + (ev.clientY - startMouseY) / state.zoom);
+    const el = document.getElementById(`node-el-${nodeId}`);
+    if (el) { el.style.left = `${node.x}px`; el.style.top = `${node.y}px`; }
+    renderLinksLayer();
+    renderPacketsLayer();
+  }
+  function onUp() {
+    window.removeEventListener('mousemove', onMove);
+    window.removeEventListener('mouseup', onUp);
+  }
+  window.addEventListener('mousemove', onMove);
+  window.addEventListener('mouseup', onUp);
 }
 
 function onNodeDoubleClick(e, nodeId) {
   e.stopPropagation();
   const node = state.nodes.find(n => n.id === nodeId);
   if (!node) return;
-  state.selectedNodeId = node.id;
-  renderNodesLayer();
-  spawnFloatingWindow(node.id, 'cli');
+  state.selectedNodeId = nodeId;
+  updateSelectedDeviceToolbar();
+  spawnFloatingWindow(nodeId, 'cli');
 }
 
-function renderLinksLayer() {
-  const svg = document.getElementById('links-svg');
-  if (!svg) return;
-
-  const placedLabelBoxes = [];
-  function placeNonOverlappingCallout(anchorX, anchorY, perpX, perpY, text) {
-    const charW = 5.6;
-    const boxW = Math.max(44, text.length * charW + 12);
-    const boxH = 16;
-
-    const candidates = [
-      { cx: anchorX + perpX * 22, cy: anchorY + perpY * 22 },
-      { cx: anchorX - perpX * 22, cy: anchorY - perpY * 22 },
-      { cx: anchorX + perpX * 38, cy: anchorY + perpY * 38 },
-      { cx: anchorX - perpX * 38, cy: anchorY - perpY * 38 },
-      { cx: anchorX, cy: anchorY - 26 },
-      { cx: anchorX, cy: anchorY + 26 }
-    ];
-
-    for (const c of candidates) {
-      const rect = {
-        left: c.cx - boxW / 2,
-        right: c.cx + boxW / 2,
-        top: c.cy - boxH / 2,
-        bottom: c.cy + boxH / 2
-      };
-      const overlaps = placedLabelBoxes.some(b =>
-        !(rect.right < b.left - 3 || rect.left > b.right + 3 || rect.bottom < b.top - 3 || rect.top > b.bottom + 3)
-      );
-      if (!overlaps) {
-        placedLabelBoxes.push(rect);
-        return { x: c.cx, y: c.cy, w: boxW, h: boxH };
-      }
-    }
-
-    const fallback = candidates[0];
-    placedLabelBoxes.push({
-      left: fallback.cx - boxW / 2,
-      right: fallback.cx + boxW / 2,
-      top: fallback.cy - boxH / 2,
-      bottom: fallback.cy + boxH / 2
-    });
-    return { x: fallback.cx, y: fallback.cy, w: boxW, h: boxH };
+function deleteNodeById(nodeId) {
+  const n = state.nodes.find(x => x.id === nodeId);
+  state.nodes = state.nodes.filter(x => x.id !== nodeId);
+  state.links = state.links.filter(l => l.sourceId !== nodeId && l.targetId !== nodeId);
+  state.floatingWindows = state.floatingWindows.filter(w => w.nodeId !== nodeId);
+  if (state.selectedNodeId === nodeId) {
+    state.selectedNodeId = state.nodes[0]?.id || null;
   }
-
-  const parts = [];
-  for (const link of state.links) {
-    const nA = state.nodes.find(n => n.id === link.sourceId);
-    const nB = state.nodes.find(n => n.id === link.targetId);
-    if (!nA || !nB) continue;
-
-    const cA = getNodeCenter(nA);
-    const cB = getNodeCenter(nB);
-    const up = isLinkOperationallyUp(link);
-    const strokeColor = up ? '#16a34a' : '#e11d48';
-
-    const dx = cB.x - cA.x;
-    const dy = cB.y - cA.y;
-    const len = Math.hypot(dx, dy) || 1;
-    const ux = dx / len;
-    const uy = dy / len;
-    const perpX = -uy;
-    const perpY = ux;
-
-    parts.push(`
-      <line x1="${cA.x}" y1="${cA.y}" x2="${cB.x}" y2="${cB.y}"
-            stroke="transparent" stroke-width="14" class="pointer-events-auto cursor-pointer"
-            onclick="onLinkClick('${link.id}')" />
-      <line x1="${cA.x}" y1="${cA.y}" x2="${cB.x}" y2="${cB.y}"
-            stroke="${strokeColor}" stroke-width="2.5"
-            class="pointer-events-none ${up ? 'link-dash-active' : ''}" />
-    `);
-
-    if (state.showInterfaceLabels) {
-      const tagA = formatPortIpTag(nA, link.sourcePort);
-      const tagB = formatPortIpTag(nB, link.targetPort);
-
-      const anchorAX = cA.x + ux * Math.min(64, len * 0.28);
-      const anchorAY = cA.y + uy * Math.min(64, len * 0.28);
-      const boxA = placeNonOverlappingCallout(anchorAX, anchorAY, perpX, perpY, tagA);
-
-      const anchorBX = cB.x - ux * Math.min(64, len * 0.28);
-      const anchorBY = cB.y - uy * Math.min(64, len * 0.28);
-      const boxB = placeNonOverlappingCallout(anchorBX, anchorBY, perpX, perpY, tagB);
-
-      const ifA = getInterface(nA, link.sourcePort);
-      const ifB = getInterface(nB, link.targetPort);
-      const fillA = (ifA && ifA.ip) ? '#eff6ff' : '#ffffff';
-      const strokeA = (ifA && ifA.ip) ? '#2563eb' : '#cbd5e1';
-      const textA = (ifA && ifA.ip) ? '#1e3a8a' : '#334155';
-
-      const fillB = (ifB && ifB.ip) ? '#eff6ff' : '#ffffff';
-      const strokeB = (ifB && ifB.ip) ? '#2563eb' : '#cbd5e1';
-      const textB = (ifB && ifB.ip) ? '#1e3a8a' : '#334155';
-
-      parts.push(`
-        <g onclick="onLinkClick('${link.id}')" class="pointer-events-auto cursor-pointer">
-          <line x1="${anchorAX}" y1="${anchorAY}" x2="${boxA.x}" y2="${boxA.y}" stroke="#94a3b8" stroke-width="1" stroke-dasharray="2,2" />
-          <rect x="${boxA.x - boxA.w / 2}" y="${boxA.y - boxA.h / 2}" width="${boxA.w}" height="${boxA.h}" rx="5" fill="${fillA}" stroke="${strokeA}" stroke-width="1" />
-          <text x="${boxA.x}" y="${boxA.y + 3.5}" text-anchor="middle" fill="${textA}" font-family="JetBrains Mono, monospace" font-size="8.5" font-weight="700">${escapeHtml(tagA)}</text>
-        </g>
-        <g onclick="onLinkClick('${link.id}')" class="pointer-events-auto cursor-pointer">
-          <line x1="${anchorBX}" y1="${anchorBY}" x2="${boxB.x}" y2="${boxB.y}" stroke="#94a3b8" stroke-width="1" stroke-dasharray="2,2" />
-          <rect x="${boxB.x - boxB.w / 2}" y="${boxB.y - boxB.h / 2}" width="${boxB.w}" height="${boxB.h}" rx="5" fill="${fillB}" stroke="${strokeB}" stroke-width="1" />
-          <text x="${boxB.x}" y="${boxB.y + 3.5}" text-anchor="middle" fill="${textB}" font-family="JetBrains Mono, monospace" font-size="8.5" font-weight="700">${escapeHtml(tagB)}</text>
-        </g>
-      `);
-    }
-  }
-
-  svg.innerHTML = parts.join('');
+  renderFloatingWindows();
+  refreshAllViews();
+  if (n) showToast(`Deleted ${n.config.hostname}`);
 }
 
-function renderPacketsLayer() {
-  const svg = document.getElementById('packets-svg');
-  if (!svg) return;
-  const anim = state.sim.activeAnim;
-  if (!anim) {
-    svg.innerHTML = '';
-    return;
-  }
-  const fromN = state.nodes.find(n => n.id === anim.fromId);
-  const toN = state.nodes.find(n => n.id === anim.toId);
-  if (!fromN || !toN) {
-    svg.innerHTML = '';
-    return;
-  }
-  const cFrom = getNodeCenter(fromN);
-  const cTo = getNodeCenter(toN);
-  const midX = (cFrom.x + cTo.x) / 2;
-  const midY = (cFrom.y + cTo.y) / 2;
-
-  svg.innerHTML = `
-    <line x1="${cFrom.x}" y1="${cFrom.y}" x2="${cTo.x}" y2="${cTo.y}" stroke="#f59e0b" stroke-width="4" opacity="0.7" />
-    <circle cx="${midX}" cy="${midY}" r="9" fill="#f59e0b" opacity="0.35" class="pkt-pulse" />
-    <circle cx="${midX}" cy="${midY}" r="6" fill="#f59e0b" stroke="#ffffff" stroke-width="1.5" />
-    <rect x="${midX - 95}" y="${midY - 28}" width="190" height="17" rx="5" fill="#0f172a" />
-    <text x="${midX}" y="${midY - 16.5}" text-anchor="middle" fill="#fde68a" font-family="JetBrains Mono, monospace" font-size="9" font-weight="700">${escapeHtml(anim.stepLabel)}</text>
-  `;
-}
-
-function onLinkClick(linkId) {
-  const link = state.links.find(l => l.id === linkId);
-  if (!link) return;
+function onLinkClick(e, linkId) {
+  e.stopPropagation();
   if (state.tool === 'delete') {
-    state.links = state.links.filter(l => l.id !== linkId);
-    refreshAllViews();
-    showToast('Disconnected cable');
+    deleteLinkById(linkId);
     return;
   }
   openLinkModal(linkId);
 }
 
+function deleteLinkById(linkId) {
+  state.links = state.links.filter(l => l.id !== linkId);
+  closeLinkModal();
+  refreshAllViews();
+  showToast('Disconnected Ethernet cable');
+}
+
+function openLinkModal(linkId) {
+  const link = state.links.find(l => l.id === linkId);
+  if (!link) return;
+  const src = state.nodes.find(n => n.id === link.sourceId);
+  const dst = state.nodes.find(n => n.id === link.targetId);
+  if (!src || !dst) return;
+
+  const srcIf = getInterface(src, link.sourcePort);
+  const dstIf = getInterface(dst, link.targetPort);
+  const up = isLinkOperationallyUp(link);
+
+  const body = document.getElementById('link-modal-body');
+  body.innerHTML = `
+    <div class="flex items-center justify-between p-3 rounded-xl border ${up ? 'bg-emerald-50/70 border-emerald-200' : 'bg-rose-50/70 border-rose-200'}">
+      <span class="font-bold text-slate-900">Link Operational Status</span>
+      <span class="px-2 py-0.5 rounded-full text-[11px] font-bold ${up ? 'bg-emerald-600 text-white' : 'bg-rose-600 text-white'}">${up ? 'UP / UP' : 'DOWN'}</span>
+    </div>
+    <div class="grid grid-cols-2 gap-3">
+      <div class="p-3 rounded-xl bg-slate-50 border border-slate-200 space-y-1">
+        <div class="text-[10px] uppercase font-bold text-slate-400">Endpoint A</div>
+        <div class="font-bold text-slate-900">${escapeHtml(src.config.hostname)}</div>
+        <div class="font-mono text-slate-700">${escapeHtml(link.sourcePort)}</div>
+        <div class="font-mono text-blue-700 font-semibold">${escapeHtml(srcIf && srcIf.ip ? `${srcIf.ip}/${srcIf.prefix || 24}` : 'unassigned')}</div>
+      </div>
+      <div class="p-3 rounded-xl bg-slate-50 border border-slate-200 space-y-1">
+        <div class="text-[10px] uppercase font-bold text-slate-400">Endpoint B</div>
+        <div class="font-bold text-slate-900">${escapeHtml(dst.config.hostname)}</div>
+        <div class="font-mono text-slate-700">${escapeHtml(link.targetPort)}</div>
+        <div class="font-mono text-blue-700 font-semibold">${escapeHtml(dstIf && dstIf.ip ? `${dstIf.ip}/${dstIf.prefix || 24}` : 'unassigned')}</div>
+      </div>
+    </div>
+  `;
+
+  document.getElementById('link-modal-disconnect-btn').onclick = () => deleteLinkById(link.id);
+  document.getElementById('link-modal').classList.remove('hidden');
+}
+
+function closeLinkModal() {
+  document.getElementById('link-modal')?.classList.add('hidden');
+}
+
 function openPortModal(srcId, dstId) {
-  const srcNode = state.nodes.find(n => n.id === srcId);
-  const dstNode = state.nodes.find(n => n.id === dstId);
-  if (!srcNode || !dstNode) return;
+  const src = state.nodes.find(n => n.id === srcId);
+  const dst = state.nodes.find(n => n.id === dstId);
+  if (!src || !dst) return;
 
   state.pendingPatch = { srcId, dstId };
-  document.getElementById('pm-src-label').textContent = `Source: ${srcNode.config.hostname} (${srcNode.label})`;
-  document.getElementById('pm-dst-label').textContent = `Destination: ${dstNode.config.hostname} (${dstNode.label})`;
+  document.getElementById('pm-src-label').textContent = `${src.config.hostname} Interface`;
+  document.getElementById('pm-dst-label').textContent = `${dst.config.hostname} Interface`;
 
-  const busyPorts = new Set();
-  for (const l of state.links) {
-    if (l.sourceId === srcId) busyPorts.add(l.sourcePort);
-    if (l.targetId === srcId) busyPorts.add(l.targetPort);
-    if (l.sourceId === dstId) busyPorts.add(l.sourcePort);
-    if (l.targetId === dstId) busyPorts.add(l.targetPort);
-  }
+  const fillSelect = (node, selId) => {
+    const sel = document.getElementById(selId);
+    sel.innerHTML = node.config.interfaces.map(inf => {
+      const inUse = state.links.some(l =>
+        (l.sourceId === node.id && l.sourcePort === inf.name) ||
+        (l.targetId === node.id && l.targetPort === inf.name)
+      );
+      return `<option value="${escapeHtml(inf.name)}" ${inUse ? 'disabled' : ''}>${escapeHtml(inf.name)} ${inUse ? '(Patched)' : (inf.ip ? '[' + inf.ip + ']' : '(Free)')}</option>`;
+    }).join('');
+  };
 
-  const srcSel = document.getElementById('pm-src-select');
-  const dstSel = document.getElementById('pm-dst-select');
-  srcSel.innerHTML = srcNode.config.interfaces.map(i =>
-    `<option value="${i.name}" ${busyPorts.has(i.name) ? 'disabled' : ''}>${i.name} ${busyPorts.has(i.name) ? '(in use)' : (i.ip ? `[${i.ip}]` : '')}</option>`
-  ).join('');
-  dstSel.innerHTML = dstNode.config.interfaces.map(i =>
-    `<option value="${i.name}" ${busyPorts.has(i.name) ? 'disabled' : ''}>${i.name} ${busyPorts.has(i.name) ? '(in use)' : (i.ip ? `[${i.ip}]` : '')}</option>`
-  ).join('');
-
-  const firstFreeSrc = srcNode.config.interfaces.find(i => !busyPorts.has(i.name));
-  const firstFreeDst = dstNode.config.interfaces.find(i => !busyPorts.has(i.name));
-  if (firstFreeSrc) srcSel.value = firstFreeSrc.name;
-  if (firstFreeDst) dstSel.value = firstFreeDst.name;
-
+  fillSelect(src, 'pm-src-select');
+  fillSelect(dst, 'pm-dst-select');
   document.getElementById('port-modal').classList.remove('hidden');
 }
 
@@ -4801,60 +4730,38 @@ function closePortModal() {
 
 function confirmPortLink() {
   if (!state.pendingPatch) return;
-  const srcPort = document.getElementById('pm-src-select').value;
-  const dstPort = document.getElementById('pm-dst-select').value;
-  addCableLink(state.pendingPatch.srcId, srcPort, state.pendingPatch.dstId, dstPort);
+  const sPort = document.getElementById('pm-src-select').value;
+  const dPort = document.getElementById('pm-dst-select').value;
+  addCableLink(state.pendingPatch.srcId, sPort, state.pendingPatch.dstId, dPort);
   closePortModal();
 }
 
-function openLinkModal(linkId) {
-  const link = state.links.find(l => l.id === linkId);
-  if (!link) return;
-  const nA = state.nodes.find(n => n.id === link.sourceId);
-  const nB = state.nodes.find(n => n.id === link.targetId);
-  const ifA = nA ? getInterface(nA, link.sourcePort) : null;
-  const ifB = nB ? getInterface(nB, link.targetPort) : null;
-  const up = isLinkOperationallyUp(link);
-
-  document.getElementById('link-modal-body').innerHTML = `
-    <div class="flex items-center justify-between p-3 rounded-xl bg-slate-50 border border-slate-200">
-      <span class="font-bold text-slate-800">Operational Status</span>
-      <span class="px-2 py-0.5 rounded font-mono text-[11px] font-bold ${up ? 'bg-emerald-100 text-emerald-700' : 'bg-rose-100 text-rose-700'}">${up ? 'UP / UP' : 'DOWN'}</span>
-    </div>
-    <div class="grid grid-cols-2 gap-3">
-      <div class="p-3 rounded-xl border border-slate-200 space-y-1">
-        <div class="font-bold text-slate-900">${escapeHtml(nA?.config.hostname || 'Node A')}</div>
-        <div class="font-mono text-[11px] text-blue-700">${escapeHtml(link.sourcePort)}</div>
-        <div class="font-mono text-[11px] text-slate-600">IP: ${escapeHtml(ifA?.ip ? `${ifA.ip}/${ifA.prefix || 24}` : 'unassigned')}</div>
-      </div>
-      <div class="p-3 rounded-xl border border-slate-200 space-y-1">
-        <div class="font-bold text-slate-900">${escapeHtml(nB?.config.hostname || 'Node B')}</div>
-        <div class="font-mono text-[11px] text-blue-700">${escapeHtml(link.targetPort)}</div>
-        <div class="font-mono text-[11px] text-slate-600">IP: ${escapeHtml(ifB?.ip ? `${ifB.ip}/${ifB.prefix || 24}` : 'unassigned')}</div>
-      </div>
-    </div>
-  `;
-
-  document.getElementById('link-modal-disconnect-btn').onclick = () => {
-    state.links = state.links.filter(l => l.id !== linkId);
-    closeLinkModal();
-    refreshAllViews();
-    showToast('Cable disconnected');
-  };
-
-  document.getElementById('link-modal').classList.remove('hidden');
+function applyWorldTransform() {
+  const world = document.getElementById('canvas-world');
+  if (world) {
+    world.style.transform = `translate(${state.pan.x}px, ${state.pan.y}px) scale(${state.zoom})`;
+  }
+  const zr = document.getElementById('zoom-readout');
+  if (zr) zr.textContent = `${Math.round(state.zoom * 100)}%`;
 }
 
-function closeLinkModal() {
-  document.getElementById('link-modal')?.classList.add('hidden');
+function zoomCanvas(delta) {
+  state.zoom = Math.max(0.45, Math.min(2.0, +(state.zoom + delta).toFixed(2)));
+  applyWorldTransform();
+}
+
+function resetView() {
+  state.pan = { x: 24, y: 20 };
+  state.zoom = 1;
+  applyWorldTransform();
 }
 
 // ============================================================================
-// 12. TOPOLOGY JSON EXPORT / IMPORT & GLOBAL REFRESH
+// 13. TOPOLOGY JSON EXPORT / IMPORT & UTILITIES
 // ============================================================================
 function exportTopologyJSON() {
   const payload = {
-    version: 'nexacloud-v4',
+    version: 'nexacloud-studio-v4',
     exportedAt: new Date().toISOString(),
     nodes: state.nodes,
     links: state.links
@@ -4869,53 +4776,34 @@ function exportTopologyJSON() {
   showToast('Exported topology JSON');
 }
 
-function importTopologyJSON(event) {
-  const file = event.target.files?.[0];
+function importTopologyJSON(e) {
+  const file = e.target.files?.[0];
   if (!file) return;
   const reader = new FileReader();
-  reader.onload = () => {
+  reader.onload = ev => {
     try {
-      const parsed = JSON.parse(String(reader.result || '{}'));
+      const parsed = JSON.parse(ev.target.result);
       if (!Array.isArray(parsed.nodes) || !Array.isArray(parsed.links)) {
-        showToast('Invalid topology JSON format', true);
-        return;
+        throw new Error('Invalid topology JSON format');
       }
       state.nodes = parsed.nodes;
       state.links = parsed.links;
       state.floatingWindows = [];
       state.selectedNodeId = state.nodes[0]?.id || null;
+      renderFloatingWindows();
       refreshAllViews();
-      showToast(`Imported ${state.nodes.length} devices and ${state.links.length} links`);
+      showToast(`Imported ${state.nodes.length} devices & ${state.links.length} links`);
     } catch (err) {
       showToast(`Import failed: ${err.message}`, true);
     }
+    e.target.value = '';
   };
   reader.readAsText(file);
-  event.target.value = '';
-}
-
-function updateStatsFooter() {
-  const nEl = document.getElementById('stat-nodes');
-  const lEl = document.getElementById('stat-links');
-  if (nEl) nEl.textContent = String(state.nodes.length);
-  if (lEl) lEl.textContent = String(state.links.length);
-}
-
-function refreshAllViews() {
-  updateStatsFooter();
-  renderNodesLayer();
-  renderLinksLayer();
-  renderPacketsLayer();
-  renderInspector();
-  refreshAllFloatingWindowsContent();
-  if (state.engineMode === 'simulation') {
-    populateSimSourceDropdown();
-    renderSimulationPanel();
-  }
 }
 
 function escapeHtml(str) {
-  return String(str ?? '')
+  if (str === null || str === undefined) return '';
+  return String(str)
     .replace(/&/g, '&amp;')
     .replace(/</g, '&lt;')
     .replace(/>/g, '&gt;')
@@ -4924,25 +4812,79 @@ function escapeHtml(str) {
 }
 
 let toastTimer = null;
-function showToast(msg, isError = false) {
+function showToast(message, isError = false) {
   const box = document.getElementById('toast-box');
-  const text = document.getElementById('toast-msg');
   const dot = document.getElementById('toast-dot');
-  if (!box || !text) return;
-  text.textContent = msg;
-  if (dot) dot.className = `w-2 h-2 rounded-full ${isError ? 'bg-rose-400' : 'bg-emerald-400'}`;
+  const msg = document.getElementById('toast-msg');
+  if (!box || !msg) return;
+  msg.textContent = message;
+  dot.className = `w-2 h-2 rounded-full ${isError ? 'bg-rose-400' : 'bg-emerald-400'}`;
   box.classList.remove('hidden');
   if (toastTimer) clearTimeout(toastTimer);
-  toastTimer = setTimeout(() => box.classList.add('hidden'), 2800);
+  toastTimer = setTimeout(() => box.classList.add('hidden'), 3200);
 }
 
+// ============================================================================
+// 14. INITIALIZATION (GATE FIRST, THEN CANVAS BINDINGS)
+// ============================================================================
 window.addEventListener('DOMContentLoaded', () => {
-  renderCategorySidebar();
-  setupCanvasViewportEvents();
-  applyCanvasTransform();
   renderPlansStrip();
-  runShowcaseScenario('healthy');
+  renderCategorySidebar();
   initSupabaseGate();
+
+  const vp = document.getElementById('canvas-viewport');
+  if (vp) {
+    vp.addEventListener('dragover', e => {
+      e.preventDefault();
+      e.dataTransfer.dropEffect = 'copy';
+    });
+
+    vp.addEventListener('drop', e => {
+      e.preventDefault();
+      const catalogType = e.dataTransfer.getData('text/plain');
+      if (!catalogType) return;
+      const rect = vp.getBoundingClientRect();
+      const worldX = Math.round((e.clientX - rect.left - state.pan.x) / state.zoom - 56);
+      const worldY = Math.round((e.clientY - rect.top - state.pan.y) / state.zoom - 44);
+      const node = createDeviceNode(catalogType, worldX, worldY);
+      state.nodes.push(node);
+      state.selectedNodeId = node.id;
+      refreshAllViews();
+      showToast(`Deployed ${node.config.hostname}`);
+    });
+
+    vp.addEventListener('mousedown', e => {
+      if (e.target !== vp && e.target.id !== 'canvas-world') return;
+      const startX = e.clientX - state.pan.x;
+      const startY = e.clientY - state.pan.y;
+      function onMove(ev) {
+        state.pan.x = ev.clientX - startX;
+        state.pan.y = ev.clientY - startY;
+        applyWorldTransform();
+      }
+      function onUp() {
+        window.removeEventListener('mousemove', onMove);
+        window.removeEventListener('mouseup', onUp);
+      }
+      window.addEventListener('mousemove', onMove);
+      window.addEventListener('mouseup', onUp);
+    });
+
+    vp.addEventListener('wheel', e => {
+      e.preventDefault();
+      zoomCanvas(e.deltaY < 0 ? 0.08 : -0.08);
+    }, { passive: false });
+  }
+
+  window.addEventListener('keydown', e => {
+    if (e.key === 'Escape') {
+      if (state.tool !== 'select') setTool('select');
+      closePortModal();
+      closeLinkModal();
+      closeLoginModal();
+      document.getElementById('routing-modal')?.classList.add('hidden');
+    }
+  });
 });
 </script>
 </body>
