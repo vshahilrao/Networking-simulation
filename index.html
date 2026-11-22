@@ -181,20 +181,55 @@
           </button>
           <div class="flex items-center justify-between text-[11px] pt-1">
             <button type="button" onclick="resetOtpStep()" class="text-slate-500 hover:text-slate-800 font-medium cursor-pointer">
-              &larr; Change Email
-            </button>
-            <button type="button" id="btn-resend-otp" onclick="handleResendOtp()" class="text-blue-600 hover:text-blue-800 font-semibold cursor-pointer disabled:opacity-40">
-              Resend OTP (<span id="otp-countdown">60</span>s)
-            </button>
+            &larr; Change Email
+          </button>
+          <button type="button" id="btn-resend-otp" onclick="handleResendOtp()" class="text-blue-600 hover:text-blue-800 font-semibold cursor-pointer disabled:opacity-40">
+            Resend OTP (<span id="otp-countdown">60</span>s)
+          </button>
+        </div>
+      </form>
+
+      <!-- STEP 3: ACCESS & PLAN GATE (SHOWN WHEN requirePaidAccess IS TRUE AND ENTITLEMENT IS INACTIVE/EXPIRED) -->
+      <div id="auth-step-plan-gate" class="hidden space-y-3.5">
+        <div id="plan-gate-status-card" class="p-3 rounded-xl bg-amber-50 border border-amber-200 text-slate-800 space-y-1">
+          <div class="flex items-center justify-between gap-2">
+            <span class="font-bold text-slate-900">Lab Access &amp; Plan Status</span>
+            <span id="plan-gate-status-pill" class="px-2 py-0.5 rounded-full text-[10px] font-mono font-bold bg-amber-100 text-amber-800 border border-amber-300">LOCKED</span>
           </div>
-        </form>
+          <div id="plan-gate-account-line" class="text-[11px] font-mono text-slate-600 truncate"></div>
+          <div id="plan-gate-reason-line" class="text-[11px] text-amber-900 font-medium"></div>
+        </div>
+
+        <div class="space-y-1.5">
+          <div class="flex items-center justify-between text-[11px] font-semibold text-slate-700">
+            <span>Available Nexacloud Plans</span>
+            <span id="plan-source-badge" class="text-[10px] font-mono text-slate-500">Dynamic Config</span>
+          </div>
+          <div id="academy-plans-list" class="space-y-2 max-h-44 overflow-y-auto pr-0.5"></div>
+        </div>
+
+        <div class="flex flex-col sm:flex-row gap-2 pt-1">
+          <button type="button" id="btn-open-payment-link" onclick="openConfiguredPaymentLink()" class="flex-1 py-2.5 px-3 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs shadow-sm transition cursor-pointer">
+            Enroll / Pay Now
+          </button>
+          <button type="button" id="btn-recheck-entitlement" onclick="recheckStudentEntitlement()" class="py-2.5 px-3 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-800 border border-slate-300 font-bold text-xs transition cursor-pointer">
+            Re-check Access
+          </button>
+        </div>
+
+        <div class="pt-1 flex items-center justify-between text-[11px] border-t border-slate-100">
+          <span class="text-slate-500">Need a different student account?</span>
+          <button type="button" onclick="signOutAcademyStudent()" class="text-rose-600 hover:text-rose-800 font-semibold cursor-pointer">
+            Sign Out
+          </button>
+        </div>
       </div>
     </div>
   </div>
+</div>
 
-  <!-- STUDIO WORKSPACE SHELL (HIDDEN UNTIL AUTHENTICATED) -->
-  <div id="studio-workspace-shell" class="hidden flex-1 flex-col min-h-0 overflow-hidden">
-
+<!-- STUDIO WORKSPACE SHELL (HIDDEN & LOCKED UNTIL AUTHENTICATION + ACCESS CHECKS PASS) -->
+<div id="studio-workspace-shell" class="hidden flex-col h-screen w-screen overflow-hidden">
   <!-- TOP EXECUTIVE HEADER BAR -->
   <header class="h-14 bg-white border-b border-slate-200 px-3.5 flex items-center justify-between gap-2 shrink-0 z-30">
     <!-- NEXACLOUD LOGO & BRANDING -->
@@ -253,6 +288,7 @@
         <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
         <span id="academy-student-email" class="font-mono font-semibold text-blue-900 max-w-[150px] truncate">student@nexacloud.edu</span>
         <span id="academy-student-batch" class="hidden xl:inline px-1.5 py-0.2 rounded bg-white text-slate-600 border border-blue-100 text-[10px] font-medium">CCNA</span>
+        <span id="academy-student-plan-badge" class="px-1.5 py-0.5 rounded bg-emerald-100 text-emerald-800 border border-emerald-200 text-[10px] font-mono font-bold">FREE LAB</span>
       </div>
       <button onclick="openRoutingInspector()" class="flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-xs font-semibold bg-emerald-50 text-emerald-700 hover:bg-emerald-100 border border-emerald-200 transition cursor-pointer">
         <span>Routing</span>
@@ -472,18 +508,89 @@
 <script>
 /**
  * ============================================================================
- * 0. NEXACLOUD ACADEMY SUPABASE EMAIL OTP CONFIGURATION
+ * 0. NEXACLOUD ACADEMY SUPABASE EMAIL OTP & ACCESS / PLAN CONFIGURATION
  * ============================================================================
  * Replace `url` and `anonKey` with your Supabase Project credentials.
  * - `requireRegisteredStudent: true` restricts Sign-In OTP to already
  *   registered/enrolled students (`shouldCreateUser: false`).
  * - New Student Registration uses `shouldCreateUser: true` with student
  *   metadata (`full_name`, `batch`) and verifies via 6-digit Email OTP.
+ *
+ * SQL SETUP FOR SUPABASE (RUN IN SQL EDITOR):
+ * ----------------------------------------------------------------------------
+ * create table if not exists public.academy_plans (
+ *   id text primary key,
+ *   name text not null,
+ *   price numeric(10,2) not null,
+ *   currency text not null default 'INR',
+ *   billing_interval text not null default 'month',
+ *   description text,
+ *   payment_url text,
+ *   active boolean not null default true,
+ *   sort_order int not null default 1
+ * );
+ *
+ * create table if not exists public.student_entitlements (
+ *   user_id uuid primary key references auth.users(id) on delete cascade,
+ *   email text,
+ *   plan_id text references public.academy_plans(id),
+ *   plan_name text,
+ *   access_status text not null default 'inactive', -- 'active' | 'inactive' | 'suspended'
+ *   valid_until timestamptz,
+ *   updated_at timestamptz not null default now()
+ * );
+ *
+ * alter table public.academy_plans enable row level security;
+ * alter table public.student_entitlements enable row level security;
+ *
+ * create policy "Students can view active plans"
+ *   on public.academy_plans for select
+ *   to authenticated
+ *   using (active = true);
+ *
+ * create policy "Students can view own entitlement"
+ *   on public.student_entitlements for select
+ *   to authenticated
+ *   using (auth.uid() = user_id);
+ * ----------------------------------------------------------------------------
  */
 const NEXACLOUD_SUPABASE_CONFIG = {
   url: '',
   anonKey: '',
   requireRegisteredStudent: true
+};
+
+/**
+ * Configurable Access & Plan Gate for Nexacloud Academy.
+ * - Set `requirePaidAccess: false` while students have free OTP-verified lab access.
+ * - Flip `requirePaidAccess: true` when enforcing active/non-expired paid plans,
+ *   and update prices anytime in Supabase (`academy_plans`) or `fallbackPlans`.
+ */
+const NEXACLOUD_ACCESS_CONFIG = {
+  requirePaidAccess: false,
+  plansTable: 'academy_plans',
+  entitlementsTable: 'student_entitlements',
+  paymentUrl: '',
+  fallbackPlans: [
+    {
+      id: 'monthly-lab-pass',
+      name: 'Monthly Lab Pass',
+      price: 499,
+      currency: 'INR',
+      billing_interval: 'month',
+      description: '30-day access to multi-vendor routers, switches, firewalls & packet simulation.',
+      payment_url: ''
+    },
+    {
+      id: 'batch-semester-pass',
+      name: 'Batch / Semester Pass',
+      price: 1499,
+      currency: 'INR',
+      billing_interval: 'batch',
+      description: 'Full coaching cohort duration with saved labs and routing/protocol practice.',
+      payment_url: ''
+    }
+  ]
 };
 
 let supabaseClient = null;
@@ -493,7 +600,13 @@ const academyAuthState = {
   pendingFlow: 'signin',
   countdownSec: 0,
   countdownTimer: null,
-  sessionUser: null
+  sessionUser: null,
+  studioInitialized: false,
+  plans: [...NEXACLOUD_ACCESS_CONFIG.fallbackPlans],
+  plansSource: 'Fallback Config',
+  entitlement: null,
+  accessGranted: false,
+  accessReason: ''
 };
 
 function initSupabaseAuthClient() {
@@ -506,13 +619,13 @@ function initSupabaseAuthClient() {
     typeof window.supabase.createClient === 'function'
   );
 
-  applyAuthenticatedSession(null);
-
   if (!hasConfig) {
     if (pill) {
       pill.textContent = 'OTP Not Configured';
       pill.className = 'px-2 py-0.5 rounded-full text-[10px] font-mono font-semibold bg-rose-50 text-rose-700 border border-rose-200';
     }
+    setAuthFeedback('Supabase Auth is not configured yet. Add your Supabase URL and Anon Key in NEXACLOUD_SUPABASE_CONFIG to send real Email OTPs.', true);
+    applyAuthenticatedSession(null);
     return null;
   }
 
@@ -544,63 +657,228 @@ function initSupabaseAuthClient() {
     return supabaseClient;
   } catch (err) {
     setAuthFeedback(`Supabase client initialization error: ${err.message}`, true);
+    applyAuthenticatedSession(null);
     return null;
   }
 }
 
-function applyAuthenticatedSession(user) {
-  academyAuthState.sessionUser = user || null;
+function formatPlanPrice(plan) {
+  const curr = (plan.currency || 'INR').toUpperCase();
+  const num = Number(plan.price ?? 0);
+  const formattedAmt = Number.isFinite(num) ? num.toLocaleString('en-IN') : String(plan.price ?? '0');
+  const symbol = curr === 'INR' ? '₹' : (curr === 'USD' ? '$' : `${curr} `);
+  const interval = plan.billing_interval ? ` / ${plan.billing_interval}` : '';
+  return `${symbol}${formattedAmt}${interval}`;
+}
+
+async function fetchDynamicAcademyPlans() {
+  academyAuthState.plans = [...NEXACLOUD_ACCESS_CONFIG.fallbackPlans];
+  academyAuthState.plansSource = 'Local Config';
+
+  if (!supabaseClient || !NEXACLOUD_ACCESS_CONFIG.plansTable) {
+    return academyAuthState.plans;
+  }
+
+  try {
+    const { data, error } = await supabaseClient
+      .from(NEXACLOUD_ACCESS_CONFIG.plansTable)
+      .select('id, name, price, currency, billing_interval, description, payment_url, active, sort_order')
+      .eq('active', true)
+      .order('sort_order', { ascending: true });
+
+    if (!error && Array.isArray(data) && data.length > 0) {
+      academyAuthState.plans = data;
+      academyAuthState.plansSource = 'Supabase Plans';
+    }
+  } catch (_) {
+    // Keep clean fallback plans when table is not yet provisioned or unreachable
+  }
+  return academyAuthState.plans;
+}
+
+async function fetchStudentEntitlement(user) {
+  academyAuthState.entitlement = null;
+  if (!user) return null;
+
+  if (!supabaseClient || !NEXACLOUD_ACCESS_CONFIG.entitlementsTable) {
+    return null;
+  }
+
+  try {
+    const { data, error } = await supabaseClient
+      .from(NEXACLOUD_ACCESS_CONFIG.entitlementsTable)
+      .select('user_id, email, plan_id, plan_name, access_status, valid_until')
+      .eq('user_id', user.id)
+      .maybeSingle();
+
+    if (!error && data) {
+      academyAuthState.entitlement = data;
+      return data;
+    }
+  } catch (_) {
+    // Ignore table/network error and treat as no row found
+  }
+  return null;
+}
+
+function evaluateStudentAccess(user, entitlement) {
+  if (!user) {
+    return { allowed: false, statusLabel: 'SIGNED OUT', reason: 'Please verify your Email OTP to continue.' };
+  }
+
+  const isActiveStatus = entitlement && String(entitlement.access_status || '').toLowerCase() === 'active';
+  const validUntilDate = entitlement && entitlement.valid_until ? new Date(entitlement.valid_until) : null;
+  const hasValidDate = !validUntilDate || (!Number.isNaN(validUntilDate.getTime()) && validUntilDate.getTime() > Date.now());
+  const isNotExpired = !entitlement || hasValidDate;
+
+  if (!NEXACLOUD_ACCESS_CONFIG.requirePaidAccess) {
+    const label = isActiveStatus && isNotExpired
+      ? (entitlement.plan_name || 'ACTIVE PLAN')
+      : 'FREE LAB ACCESS';
+    return {
+      allowed: true,
+      statusLabel: label,
+      reason: 'Open student access enabled (requirePaidAccess is false).'
+    };
+  }
+
+  if (isActiveStatus && hasValidDate) {
+    const expiryText = validUntilDate ? ` · valid until ${validUntilDate.toLocaleDateString()}` : '';
+    return {
+      allowed: true,
+      statusLabel: (entitlement.plan_name || 'ACTIVE PASS').toUpperCase(),
+      reason: `Active entitlement verified${expiryText}.`
+    };
+  }
+
+  if (isActiveStatus && !hasValidDate) {
+    return {
+      allowed: false,
+      statusLabel: 'EXPIRED',
+      reason: `Your plan (${entitlement.plan_name || 'Lab Pass'}) expired on ${validUntilDate.toLocaleDateString()}. Renew to restore lab access.`
+    };
+  }
+
+  return {
+    allowed: false,
+    statusLabel: 'PLAN REQUIRED',
+    reason: 'Paid lab plans are active. Select a plan below and complete enrollment to unlock the studio.'
+  };
+}
+
+function renderPlanGateView(user, evalResult) {
+  document.getElementById('auth-step-signin')?.classList.add('hidden');
+  document.getElementById('auth-step-register')?.classList.add('hidden');
+  document.getElementById('auth-step-otp')?.classList.add('hidden');
+  document.getElementById('auth-step-plan-gate')?.classList.remove('hidden');
+
+  const pill = document.getElementById('plan-gate-status-pill');
+  const acctLine = document.getElementById('plan-gate-account-line');
+  const reasonLine = document.getElementById('plan-gate-reason-line');
+  const sourceBadge = document.getElementById('plan-source-badge');
+  const listEl = document.getElementById('academy-plans-list');
+  const payBtn = document.getElementById('btn-open-payment-link');
+
+  if (pill) pill.textContent = evalResult.statusLabel;
+  if (acctLine) acctLine.textContent = `Student: ${user?.email || ''}`;
+  if (reasonLine) reasonLine.textContent = evalResult.reason;
+  if (sourceBadge) sourceBadge.textContent = academyAuthState.plansSource;
+
+  const chosenPlan = academyAuthState.plans[0] || null;
+  const effectivePayUrl = (chosenPlan && chosenPlan.payment_url) || NEXACLOUD_ACCESS_CONFIG.paymentUrl || '';
+  if (payBtn) {
+    payBtn.disabled = !effectivePayUrl;
+    payBtn.className = effectivePayUrl
+      ? 'flex-1 py-2.5 px-3 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs shadow-sm transition cursor-pointer'
+      : 'flex-1 py-2.5 px-3 rounded-xl bg-slate-200 text-slate-500 font-bold text-xs cursor-not-allowed';
+    payBtn.title = effectivePayUrl ? 'Open payment checkout' : 'Set paymentUrl in NEXACLOUD_ACCESS_CONFIG or Supabase academy_plans';
+  }
+
+  if (listEl) {
+    listEl.innerHTML = academyAuthState.plans.map(plan => `
+      <div class="p-3 rounded-xl border border-slate-200 bg-slate-50/80 flex items-start justify-between gap-3">
+        <div class="min-w-0">
+          <div class="font-bold text-slate-900 text-xs">${escapeHtml(plan.name)}</div>
+          ${plan.description ? `<div class="text-[11px] text-slate-500 mt-0.5 leading-snug">${escapeHtml(plan.description)}</div>` : ''}
+        </div>
+        <div class="font-mono font-bold text-blue-700 text-xs shrink-0 bg-blue-50 border border-blue-200 px-2 py-1 rounded-lg">
+          ${escapeHtml(formatPlanPrice(plan))}
+        </div>
+      </div>
+    `).join('');
+  }
+}
+
+function openConfiguredPaymentLink() {
+  const firstPlan = academyAuthState.plans[0];
+  const url = (firstPlan && firstPlan.payment_url) || NEXACLOUD_ACCESS_CONFIG.paymentUrl;
+  if (!url) {
+    setAuthFeedback('No payment link configured yet. Set paymentUrl in NEXACLOUD_ACCESS_CONFIG or payment_url in Supabase academy_plans.', true);
+    return;
+  }
+  window.open(url, '_blank', 'noopener,noreferrer');
+}
+
+async function recheckStudentEntitlement() {
+  if (!academyAuthState.sessionUser) return;
+  const btn = document.getElementById('btn-recheck-entitlement');
+  if (btn) { btn.disabled = true; btn.textContent = 'Checking...'; }
+  await applyAuthenticatedSession(academyAuthState.sessionUser);
+  if (btn) { btn.disabled = false; btn.textContent = 'Re-check Access'; }
+}
+
+async function applyAuthenticatedSession(user) {
+  academyAuthState.sessionUser = user;
   const gate = document.getElementById('academy-auth-gate');
-  const studioShell = document.getElementById('studio-workspace-shell');
+  const shell = document.getElementById('studio-workspace-shell');
   const badge = document.getElementById('academy-student-badge');
   const emailEl = document.getElementById('academy-student-email');
   const batchEl = document.getElementById('academy-student-batch');
+  const planBadgeEl = document.getElementById('academy-student-plan-badge');
 
-  const isAuthenticated = Boolean(user && user.email);
+  if (!user) {
+    academyAuthState.accessGranted = false;
+    academyAuthState.entitlement = null;
+    if (gate) gate.classList.remove('hidden');
+    if (shell) {
+      shell.classList.add('hidden');
+      shell.classList.remove('flex');
+    }
+    if (badge) badge.classList.add('hidden');
+    return;
+  }
 
-  if (isAuthenticated) {
+  await fetchDynamicAcademyPlans();
+  const entitlement = await fetchStudentEntitlement(user);
+  const evalResult = evaluateStudentAccess(user, entitlement);
+  academyAuthState.accessGranted = evalResult.allowed;
+  academyAuthState.accessReason = evalResult.reason;
+
+  if (evalResult.allowed) {
     if (gate) gate.classList.add('hidden');
-    if (studioShell) {
-      studioShell.classList.remove('hidden');
-      studioShell.classList.add('flex');
+    if (shell) {
+      shell.classList.remove('hidden');
+      shell.classList.add('flex');
     }
     if (badge) badge.classList.remove('hidden');
-    if (emailEl) emailEl.textContent = user.email;
+    if (emailEl) emailEl.textContent = user.email || 'student@nexacloud.academy';
     if (batchEl) batchEl.textContent = user.user_metadata?.batch || 'Enrolled Student';
-    if (!state.nodes.length) {
+    if (planBadgeEl) planBadgeEl.textContent = evalResult.statusLabel;
+
+    if (!academyAuthState.studioInitialized) {
+      academyAuthState.studioInitialized = true;
       loadPrebuiltEnterpriseLab();
     } else {
       refreshAllViews();
     }
   } else {
-    state.floatingWindows = [];
-    renderFloatingWindows();
-    if (studioShell) {
-      studioShell.classList.add('hidden');
-      studioShell.classList.remove('flex');
+    if (gate) gate.classList.remove('hidden');
+    if (shell) {
+      shell.classList.add('hidden');
+      shell.classList.remove('flex');
     }
     if (badge) badge.classList.add('hidden');
-    if (gate) gate.classList.remove('hidden');
-  }
-}
-
-function applyAuthenticatedSession(user) {
-  academyAuthState.sessionUser = user;
-  const gate = document.getElementById('academy-auth-gate');
-  const badge = document.getElementById('academy-student-badge');
-  const emailEl = document.getElementById('academy-student-email');
-  const batchEl = document.getElementById('academy-student-batch');
-
-  if (user || academyAuthState.localBypass) {
-    if (gate) gate.classList.add('hidden');
-    if (badge) badge.classList.remove('hidden');
-    const displayEmail = user?.email || 'sandbox-student@nexacloud.academy';
-    const displayBatch = user?.user_metadata?.batch || (academyAuthState.localBypass ? 'Local Preview' : 'Enrolled Student');
-    if (emailEl) emailEl.textContent = displayEmail;
-    if (batchEl) batchEl.textContent = displayBatch;
-  } else {
-    if (gate) gate.classList.remove('hidden');
-    if (badge) badge.classList.add('hidden');
+    renderPlanGateView(user, evalResult);
   }
 }
 
@@ -802,6 +1080,9 @@ async function handleVerifyOtpCode(e) {
 }
 
 async function signOutAcademyStudent() {
+  academyAuthState.sessionUser = null;
+  academyAuthState.accessGranted = false;
+  academyAuthState.entitlement = null;
   if (supabaseClient) {
     try {
       await supabaseClient.auth.signOut();
