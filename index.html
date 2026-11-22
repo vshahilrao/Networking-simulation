@@ -87,7 +87,7 @@
 <body class="flex flex-col h-screen w-screen bg-white text-slate-900 font-sans antialiased overflow-hidden">
 
   <!-- NEXACLOUD ACADEMY SUPABASE EMAIL OTP AUTHENTICATION GATE -->
-  <div id="academy-auth-gate" class="fixed inset-0 z-50 bg-slate-950/35 backdrop-blur-xs flex items-center justify-center p-4">
+  <div id="academy-auth-gate" class="fixed inset-0 z-50 bg-slate-100 flex items-center justify-center p-4">
     <div class="bg-white w-full max-w-md rounded-2xl shadow-2xl border border-slate-200 overflow-hidden">
       <div class="px-6 py-5 bg-white border-b border-slate-200 flex items-center justify-between">
         <div class="flex items-center gap-3">
@@ -188,17 +188,12 @@
             </button>
           </div>
         </form>
-
-        <!-- Local Preview / Unconfigured Supabase Sandbox Option -->
-        <div class="pt-3 border-t border-slate-100 flex items-center justify-between gap-2 text-[11px] text-slate-500">
-          <span>No Supabase keys yet?</span>
-          <button type="button" onclick="enterLocalPreviewSandbox()" class="px-2.5 py-1 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold cursor-pointer transition">
-            Local Sandbox Bypass
-          </button>
-        </div>
       </div>
     </div>
   </div>
+
+  <!-- STUDIO WORKSPACE SHELL (HIDDEN UNTIL AUTHENTICATED) -->
+  <div id="studio-workspace-shell" class="hidden flex-1 flex-col min-h-0 overflow-hidden">
 
   <!-- TOP EXECUTIVE HEADER BAR -->
   <header class="h-14 bg-white border-b border-slate-200 px-3.5 flex items-center justify-between gap-2 shrink-0 z-30">
@@ -407,6 +402,8 @@
     <div id="floating-windows-layer" class="fixed inset-0 pointer-events-none z-40"></div>
   </div>
 
+  </div><!-- /#studio-workspace-shell -->
+
   <!-- CABLE PATCH PORT MODAL -->
   <div id="port-modal" class="hidden fixed inset-0 z-50 bg-slate-900/40 backdrop-blur-2xs flex items-center justify-center p-4">
     <div class="bg-white rounded-2xl shadow-2xl border border-slate-200 w-full max-w-md overflow-hidden">
@@ -496,8 +493,7 @@ const academyAuthState = {
   pendingFlow: 'signin',
   countdownSec: 0,
   countdownTimer: null,
-  sessionUser: null,
-  localBypass: false
+  sessionUser: null
 };
 
 function initSupabaseAuthClient() {
@@ -510,10 +506,12 @@ function initSupabaseAuthClient() {
     typeof window.supabase.createClient === 'function'
   );
 
+  applyAuthenticatedSession(null);
+
   if (!hasConfig) {
     if (pill) {
-      pill.textContent = 'Sandbox Ready';
-      pill.className = 'px-2 py-0.5 rounded-full text-[10px] font-mono font-semibold bg-amber-50 text-amber-700 border border-amber-200';
+      pill.textContent = 'OTP Not Configured';
+      pill.className = 'px-2 py-0.5 rounded-full text-[10px] font-mono font-semibold bg-rose-50 text-rose-700 border border-rose-200';
     }
     return null;
   }
@@ -540,15 +538,49 @@ function initSupabaseAuthClient() {
     });
 
     supabaseClient.auth.getSession().then(({ data }) => {
-      if (data?.session?.user) {
-        applyAuthenticatedSession(data.session.user);
-      }
+      applyAuthenticatedSession(data?.session?.user || null);
     });
 
     return supabaseClient;
   } catch (err) {
     setAuthFeedback(`Supabase client initialization error: ${err.message}`, true);
     return null;
+  }
+}
+
+function applyAuthenticatedSession(user) {
+  academyAuthState.sessionUser = user || null;
+  const gate = document.getElementById('academy-auth-gate');
+  const studioShell = document.getElementById('studio-workspace-shell');
+  const badge = document.getElementById('academy-student-badge');
+  const emailEl = document.getElementById('academy-student-email');
+  const batchEl = document.getElementById('academy-student-batch');
+
+  const isAuthenticated = Boolean(user && user.email);
+
+  if (isAuthenticated) {
+    if (gate) gate.classList.add('hidden');
+    if (studioShell) {
+      studioShell.classList.remove('hidden');
+      studioShell.classList.add('flex');
+    }
+    if (badge) badge.classList.remove('hidden');
+    if (emailEl) emailEl.textContent = user.email;
+    if (batchEl) batchEl.textContent = user.user_metadata?.batch || 'Enrolled Student';
+    if (!state.nodes.length) {
+      loadPrebuiltEnterpriseLab();
+    } else {
+      refreshAllViews();
+    }
+  } else {
+    state.floatingWindows = [];
+    renderFloatingWindows();
+    if (studioShell) {
+      studioShell.classList.add('hidden');
+      studioShell.classList.remove('flex');
+    }
+    if (badge) badge.classList.add('hidden');
+    if (gate) gate.classList.remove('hidden');
   }
 }
 
@@ -652,7 +684,7 @@ function resetOtpStep() {
 
 async function sendSupabaseEmailOtp(email, options) {
   if (!supabaseClient) {
-    setAuthFeedback('Supabase URL/Anon Key is not configured yet. Add credentials in NEXACLOUD_SUPABASE_CONFIG or use "Local Sandbox Bypass" for offline preview.', true);
+    setAuthFeedback('Supabase Auth is not configured yet. Add your Supabase URL and Anon Key in NEXACLOUD_SUPABASE_CONFIG to send real Email OTPs.', true);
     return false;
   }
   const { error } = await supabaseClient.auth.signInWithOtp({
@@ -739,7 +771,7 @@ async function handleVerifyOtpCode(e) {
   if (!email || !token) return;
 
   if (!supabaseClient) {
-    setAuthFeedback('Supabase client is not configured. Use "Local Sandbox Bypass" or add Supabase keys.', true);
+    setAuthFeedback('Supabase Auth is not configured yet. Add your Supabase URL and Anon Key in NEXACLOUD_SUPABASE_CONFIG to verify Email OTPs.', true);
     return;
   }
 
@@ -759,18 +791,17 @@ async function handleVerifyOtpCode(e) {
     return;
   }
 
-  applyAuthenticatedSession(data?.user || data?.session?.user || { email });
-  showToast(`Welcome to Nexacloud Academy (${email})`);
-}
+  const verifiedUser = data?.user || data?.session?.user || null;
+  if (!verifiedUser) {
+    setAuthFeedback('OTP verification did not return an authenticated student session.', true);
+    return;
+  }
 
-function enterLocalPreviewSandbox() {
-  academyAuthState.localBypass = true;
-  applyAuthenticatedSession(null);
-  showToast('Entered Nexacloud Local Preview Sandbox');
+  applyAuthenticatedSession(verifiedUser);
+  showToast(`Welcome to Nexacloud Academy (${verifiedUser.email})`);
 }
 
 async function signOutAcademyStudent() {
-  academyAuthState.localBypass = false;
   if (supabaseClient) {
     try {
       await supabaseClient.auth.signOut();
@@ -4069,169 +4100,6 @@ function closeLinkModal() {
 }
 
 // ============================================================================
-// 11B. AUTHENTICATION, USER REGISTRATION & 6-DIGIT EMAIL OTP GATE
-// ============================================================================
-const DEFAULT_ADMIN_USER = {
-  username: 'Admin',
-  password: 'Admin@123',
-  email: 'vshahilrao@gmail.com'
-};
-
-function getRegisteredUsers() {
-  try {
-    const raw = localStorage.getItem('nexacloud_users_v1');
-    const parsed = raw ? JSON.parse(raw) : [];
-    const list = Array.isArray(parsed) ? parsed : [];
-    if (!list.some(u => u.username.toLowerCase() === 'admin')) {
-      list.unshift({ ...DEFAULT_ADMIN_USER });
-    }
-    return list;
-  } catch (_) {
-    return [{ ...DEFAULT_ADMIN_USER }];
-  }
-}
-
-function saveRegisteredUsers(users) {
-  try {
-    localStorage.setItem('nexacloud_users_v1', JSON.stringify(users));
-  } catch (_) {}
-}
-
-function switchAuthTab(tab) {
-  const loginForm = document.getElementById('auth-login-form');
-  const regForm = document.getElementById('auth-register-form');
-  const otpForm = document.getElementById('auth-otp-form');
-  const loginBtn = document.getElementById('tab-login-btn');
-  const regBtn = document.getElementById('tab-register-btn');
-  const tabs = document.getElementById('auth-tabs');
-
-  otpForm.classList.add('hidden');
-  tabs.classList.remove('hidden');
-
-  if (tab === 'register') {
-    loginForm.classList.add('hidden');
-    regForm.classList.remove('hidden');
-    regBtn.className = 'py-2.5 text-blue-700 bg-white border-b-2 border-blue-600 cursor-pointer';
-    loginBtn.className = 'py-2.5 text-slate-500 hover:text-slate-800 cursor-pointer';
-  } else {
-    regForm.classList.add('hidden');
-    loginForm.classList.remove('hidden');
-    loginBtn.className = 'py-2.5 text-blue-700 bg-white border-b-2 border-blue-600 cursor-pointer';
-    regBtn.className = 'py-2.5 text-slate-500 hover:text-slate-800 cursor-pointer';
-  }
-}
-
-function handleRegisterSubmit(e) {
-  e.preventDefault();
-  const username = document.getElementById('reg-username').value.trim();
-  const email = document.getElementById('reg-email').value.trim();
-  const password = document.getElementById('reg-password').value;
-  const fb = document.getElementById('reg-feedback-msg');
-
-  if (!username || !email || !password) return;
-  const users = getRegisteredUsers();
-  if (users.some(u => u.username.toLowerCase() === username.toLowerCase())) {
-    fb.className = 'p-2.5 rounded-lg bg-rose-50 border border-rose-200 text-rose-700 text-xs font-medium';
-    fb.textContent = `Username "${username}" already exists.`;
-    fb.classList.remove('hidden');
-    return;
-  }
-
-  users.push({ username, email, password });
-  saveRegisteredUsers(users);
-
-  fb.className = 'p-2.5 rounded-lg bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs font-medium';
-  fb.textContent = `Registered "${username}" (${email}). Switching to Sign In...`;
-  fb.classList.remove('hidden');
-
-  setTimeout(() => {
-    switchAuthTab('login');
-    document.getElementById('login-username').value = username;
-    document.getElementById('login-password').value = '';
-    document.getElementById('login-password').focus();
-    fb.classList.add('hidden');
-  }, 650);
-}
-
-function handleLoginSubmit(e) {
-  e.preventDefault();
-  const username = document.getElementById('login-username').value.trim();
-  const password = document.getElementById('login-password').value;
-  const errEl = document.getElementById('login-error-msg');
-
-  const users = getRegisteredUsers();
-  const matched = users.find(
-    u => u.username.toLowerCase() === username.toLowerCase() && u.password === password
-  );
-
-  if (!matched) {
-    errEl.textContent = 'Invalid username or password. Try Admin / Admin@123 or register an account.';
-    errEl.classList.remove('hidden');
-    return;
-  }
-
-  errEl.classList.add('hidden');
-  const otpCode = String(Math.floor(100000 + Math.random() * 900000));
-  state.auth.pendingLoginUser = matched;
-  state.auth.pendingOtp = otpCode;
-
-  document.getElementById('auth-login-form').classList.add('hidden');
-  document.getElementById('auth-register-form').classList.add('hidden');
-  document.getElementById('auth-tabs').classList.add('hidden');
-  document.getElementById('auth-otp-form').classList.remove('hidden');
-
-  document.getElementById('otp-target-email').textContent = matched.email;
-  document.getElementById('otp-target-user').textContent = matched.username;
-  document.getElementById('otp-preview-code').textContent = otpCode;
-  document.getElementById('otp-input-code').value = '';
-  document.getElementById('otp-error-msg').classList.add('hidden');
-  setTimeout(() => document.getElementById('otp-input-code')?.focus(), 20);
-}
-
-function autofillGeneratedOtp() {
-  if (!state.auth.pendingOtp) return;
-  document.getElementById('otp-input-code').value = state.auth.pendingOtp;
-}
-
-function backToLoginForm() {
-  state.auth.pendingOtp = null;
-  document.getElementById('auth-otp-form').classList.add('hidden');
-  switchAuthTab('login');
-}
-
-function handleOtpVerifySubmit(e) {
-  e.preventDefault();
-  const entered = document.getElementById('otp-input-code').value.trim();
-  const errEl = document.getElementById('otp-error-msg');
-
-  if (entered !== state.auth.pendingOtp) {
-    errEl.textContent = 'Invalid 6-digit OTP code. Please check the dispatched code and try again.';
-    errEl.classList.remove('hidden');
-    return;
-  }
-
-  errEl.classList.add('hidden');
-  state.auth.authenticated = true;
-  state.auth.currentUser = state.auth.pendingLoginUser;
-  state.auth.pendingOtp = null;
-  state.auth.pendingLoginUser = null;
-
-  document.getElementById('auth-gate-overlay').classList.add('hidden');
-  if (!state.nodes.length) {
-    loadPrebuiltEnterpriseLab();
-  }
-  showToast(`Authenticated as ${state.auth.currentUser.username} via Email OTP`);
-}
-
-function logoutSession() {
-  state.auth.authenticated = false;
-  state.auth.currentUser = null;
-  document.getElementById('login-password').value = '';
-  document.getElementById('auth-gate-overlay').classList.remove('hidden');
-  switchAuthTab('login');
-}
-
-// ============================================================================
 // 12. EXPORT / IMPORT TOPOLOGY JSON & GLOBAL REFRESH
 // ============================================================================
 function exportTopologyJSON() {
@@ -4379,7 +4247,6 @@ function escapeHtml(s) {
 })();
 
 window.addEventListener('DOMContentLoaded', () => {
-  loadPrebuiltEnterpriseLab();
   initSupabaseAuthClient();
 });
 </script>
