@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>NetForge — Enterprise Network Emulator &amp; Topology Studio</title>
+  <title>Nexacloud — Enterprise Network Emulator &amp; Topology Studio</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -93,7 +93,7 @@
       </div>
       <div>
         <div class="flex items-center gap-2">
-          <span class="font-bold text-slate-900 tracking-tight text-base">NetForge</span>
+          <span class="font-bold text-slate-900 tracking-tight text-base">Nexacloud</span>
           <span class="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full bg-slate-100 text-slate-700 border border-slate-200">Enterprise Studio</span>
         </div>
         <p class="text-[11px] text-slate-500 leading-none mt-0.5">Multi-Vendor Network Emulator &amp; Dynamic Routing Sandbox</p>
@@ -658,7 +658,7 @@ function createNodeObject(catalogItem, x, y, customHostname = null) {
     config: {
       hostname,
       enableSecret: 'cisco',
-      domainName: 'netforge.local',
+      domainName: 'Nexacloud.local',
       interfaces,
       vlans: { 1: 'default', 10: 'CORP_LAN', 20: 'SERVERS', 99: 'MGMT' },
       staticRoutes: [],
@@ -1670,7 +1670,7 @@ function executeWorkstationPcCli(node, cmd) {
       `Host Name:                 DESKTOP-${cfg.hostname}`,
       `OS Name:                   Microsoft Windows 11 Enterprise`,
       `OS Version:                10.0.22631 N/A Build 22631`,
-      `System Manufacturer:       NetForge Virtual Hardware`,
+      `System Manufacturer:       Nexacloud Virtual Hardware`,
       `System Type:               x64-based PC`,
       `Domain:                    ${cfg.domainName || 'WORKGROUP'}`,
       `IPv4 Address(es):          ${eth0.ip || 'Media Disconnected / Unassigned'}`
@@ -1683,7 +1683,7 @@ function executeWorkstationPcCli(node, cmd) {
       '\nWindows IP Configuration\n',
       `Ethernet adapter Ethernet0:\n`,
       ...(isAll ? [
-        `   Connection-specific DNS Suffix  . : ${cfg.domainName || 'netforge.local'}`,
+        `   Connection-specific DNS Suffix  . : ${cfg.domainName || 'Nexacloud.local'}`,
         `   Description . . . . . . . . . . . : Intel(R) 82574L Gigabit Network Connection`,
         `   Physical Address. . . . . . . . . : 00-50-56-A1-20-01`,
         `   DHCP Enabled. . . . . . . . . . . : No`
@@ -2863,7 +2863,7 @@ function exportTopologyJSON() {
   const url = URL.createObjectURL(blob);
   const a = document.createElement('a');
   a.href = url;
-  a.download = `netforge-topology-${Date.now()}.json`;
+  a.download = `Nexacloud-topology-${Date.now()}.json`;
   a.click();
   URL.revokeObjectURL(url);
   showToast('Exported JSON topology');
