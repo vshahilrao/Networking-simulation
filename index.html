@@ -46,10 +46,11 @@
     .gate-pure-surface {
       background-color: #ffffff;
       background-image:
-        radial-gradient(circle at 85% 12%, rgba(37, 99, 235, 0.05), transparent 42%),
+        radial-gradient(circle at 85% 12%, rgba(37, 99, 235, 0.06), transparent 44%),
+        radial-gradient(circle at 12% 85%, rgba(14, 165, 233, 0.05), transparent 40%),
         linear-gradient(to right, rgba(226, 232, 240, 0.35) 1px, transparent 1px),
         linear-gradient(to bottom, rgba(226, 232, 240, 0.35) 1px, transparent 1px);
-      background-size: auto, 32px 32px, 32px 32px;
+      background-size: auto, auto, 32px 32px, 32px 32px;
     }
     .workspace-dot-canvas {
       background-color: #ffffff;
@@ -97,11 +98,11 @@
 <body class="bg-white text-slate-900 font-sans antialiased overflow-x-hidden">
 
   <!-- ===================================================================== -->
-  <!-- PURE-WHITE & SLATE-BLUE AUTHENTICATION & PLAN GATE (#academy-auth-gate) -->
+  <!-- EXECUTIVE PURE-WHITE & SLATE-BLUE LANDING EXPERIENCE (#academy-auth-gate) -->
   <!-- ===================================================================== -->
   <div id="academy-auth-gate" class="min-h-screen w-full gate-pure-surface flex flex-col justify-between">
-    <!-- Top Bar -->
-    <header class="bg-white border-b border-slate-200">
+    <!-- Top Executive Navigation Bar -->
+    <header class="bg-white/95 backdrop-blur border-b border-slate-200 sticky top-0 z-20">
       <div class="max-w-6xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between gap-3">
         <div class="flex items-center gap-3">
           <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-600 via-indigo-700 to-slate-900 flex items-center justify-center text-white shadow-sm">
@@ -116,177 +117,326 @@
           <div>
             <div class="flex items-center gap-2">
               <span class="font-extrabold text-slate-900 tracking-tight text-base sm:text-lg">Nexacloud Academy</span>
-              <span class="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-md bg-blue-50 text-blue-700 border border-blue-200">Email OTP</span>
+              <span class="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-md bg-blue-50 text-blue-700 border border-blue-200">Studio v4</span>
             </div>
             <p class="text-[11px] text-slate-500 leading-none mt-0.5 hidden sm:block">Enterprise Network Emulator &amp; Topology Studio</p>
           </div>
         </div>
 
-        <span id="supabase-status-pill" class="px-2.5 py-1 rounded-full text-[11px] font-mono font-semibold bg-slate-100 text-slate-700 border border-slate-200">
-          Checking Supabase...
-        </span>
+        <nav class="hidden md:flex items-center gap-6 text-xs font-semibold text-slate-600">
+          <a href="#showcase-lab" class="hover:text-blue-700 transition">Topology Showcase</a>
+          <a href="#capabilities-grid" class="hover:text-blue-700 transition">Vendor Labs</a>
+          <a href="#plans-section" class="hover:text-blue-700 transition">Plans</a>
+        </nav>
+
+        <div class="flex items-center gap-2.5">
+          <span id="supabase-status-pill" class="hidden sm:inline-flex px-2.5 py-1 rounded-full text-[11px] font-mono font-semibold bg-slate-100 text-slate-700 border border-slate-200">
+            Checking Supabase...
+          </span>
+          <button type="button" onclick="openLoginModal('signin')"
+                  class="px-4 py-2 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs shadow-sm transition cursor-pointer">
+            Student / Pro Login
+          </button>
+        </div>
       </div>
     </header>
 
-    <!-- Main Gate Container -->
-    <main class="flex-1 max-w-6xl w-full mx-auto px-4 sm:px-6 py-8 sm:py-10 flex flex-col justify-center gap-8">
-      <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-        <!-- Left Overview Column -->
+    <!-- Main Executive Landing Content -->
+    <main class="flex-1 max-w-6xl w-full mx-auto px-4 sm:px-6 py-10 sm:py-14 space-y-14">
+      <!-- Hero + Interactive Topology & Troubleshooting Showcase -->
+      <section id="showcase-lab" class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
         <div class="lg:col-span-6 space-y-5">
           <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-50 border border-blue-200 text-blue-800 text-[11px] font-semibold">
             <span class="w-2 h-2 rounded-full bg-blue-600"></span>
-            <span>Verified Student &amp; Lab Access Portal</span>
+            <span>Browser-Native Routing, Switching &amp; Packet Simulation</span>
           </div>
 
-          <h1 class="text-3xl sm:text-4xl font-extrabold text-slate-900 tracking-tight leading-tight">
-            Sign In with Email OTP to Launch Your Network Lab
+          <h1 class="text-3xl sm:text-5xl font-extrabold text-slate-900 tracking-tight leading-[1.12]">
+            Master Enterprise Networks Before Touching Production
           </h1>
 
           <p class="text-sm sm:text-base text-slate-600 leading-relaxed">
-            Configure multi-vendor routers, switches, firewalls, and endpoints in your browser with per-port IP callouts, CLI consoles, routing tables, and hop-by-hop Packet Tracer simulation.
+            Built for networking students, NOC engineers, and lab cohorts. Practice multi-vendor CLI workflows, verify OSPF, EIGRP, BGP, and static routing tables, lease IPv4 addresses via DHCP, and inspect hop-by-hop OSI packets in real time.
           </p>
 
-          <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-1 text-xs">
-            <div class="p-3.5 rounded-xl bg-white border border-slate-200 shadow-2xs">
-              <div class="font-extrabold text-slate-900">Multi-Vendor CLI</div>
-              <div class="text-slate-500 text-[11px] mt-0.5">Cisco, Junos, EOS, VRP, RouterOS &amp; NGFW</div>
+          <div class="flex flex-wrap items-center gap-3 pt-1">
+            <button type="button" onclick="openLoginModal('signin')"
+                    class="px-5 py-3 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs sm:text-sm shadow-sm transition cursor-pointer">
+              Launch Studio (Sign In)
+            </button>
+            <button type="button" onclick="openLoginModal('register')"
+                    class="px-5 py-3 rounded-xl bg-white hover:bg-slate-50 text-slate-900 font-bold text-xs sm:text-sm border border-slate-300 transition cursor-pointer">
+              Register Student Account
+            </button>
+            <a href="#plans-section"
+               class="px-4 py-3 rounded-xl text-blue-700 hover:bg-blue-50 font-semibold text-xs sm:text-sm transition">
+              Compare Plans &rarr;
+            </a>
+          </div>
+
+          <div class="grid grid-cols-3 gap-3 pt-2 text-xs">
+            <div class="p-3 rounded-xl bg-white border border-slate-200">
+              <div class="font-extrabold text-slate-900 text-sm sm:text-base">8+ Vendors</div>
+              <div class="text-slate-500 text-[11px] mt-0.5">Cisco, Juniper, Arista, Huawei, MikroTik &amp; NGFW</div>
             </div>
-            <div class="p-3.5 rounded-xl bg-white border border-slate-200 shadow-2xs">
-              <div class="font-extrabold text-slate-900">Per-Port IP Tags</div>
-              <div class="text-slate-500 text-[11px] mt-0.5">Clear non-overlapping interface IPs</div>
+            <div class="p-3 rounded-xl bg-white border border-slate-200">
+              <div class="font-extrabold text-slate-900 text-sm sm:text-base">L2&ndash;L7 PDU</div>
+              <div class="text-slate-500 text-[11px] mt-0.5">Step-by-step hop &amp; header inspection</div>
             </div>
-            <div class="p-3.5 rounded-xl bg-white border border-slate-200 shadow-2xs">
-              <div class="font-extrabold text-slate-900">PDU Simulation</div>
-              <div class="text-slate-500 text-[11px] mt-0.5">Step-by-step hop &amp; L2–L7 inspection</div>
+            <div class="p-3 rounded-xl bg-white border border-slate-200">
+              <div class="font-extrabold text-slate-900 text-sm sm:text-base">Instant Lab</div>
+              <div class="text-slate-500 text-[11px] mt-0.5">Zero VM setup, runs right in browser</div>
             </div>
           </div>
         </div>
 
-        <!-- Right Auth / OTP / Plan Gate Card -->
-        <div class="lg:col-span-6 bg-white rounded-2xl border border-slate-200 shadow-md overflow-hidden">
-          <div id="gate-tabs-header" class="px-6 pt-5 pb-2 border-b border-slate-100">
-            <div class="grid grid-cols-2 bg-slate-100 p-1 rounded-xl border border-slate-200">
-              <button type="button" id="gate-tab-signin" onclick="switchGateTab('signin')"
-                      class="py-2 rounded-lg text-xs font-bold bg-white text-slate-900 shadow-2xs cursor-pointer transition">
-                Student Sign-In
+        <!-- Interactive Topology & Troubleshooting Preview Card -->
+        <div class="lg:col-span-6 bg-white rounded-2xl border border-slate-200 shadow-lg overflow-hidden">
+          <div class="px-4 py-3 bg-slate-900 text-white flex items-center justify-between gap-2">
+            <div class="flex items-center gap-2">
+              <span class="w-2.5 h-2.5 rounded-full bg-emerald-400"></span>
+              <span class="text-xs font-mono font-bold">Interactive Lab Preview — Branch-to-DC Path</span>
+            </div>
+            <div class="flex items-center gap-1.5">
+              <button type="button" onclick="runShowcaseScenario('healthy')" id="show-btn-healthy"
+                      class="px-2.5 py-1 rounded-lg bg-emerald-500 text-slate-950 font-bold text-[11px] cursor-pointer transition">
+                Healthy Path
               </button>
-              <button type="button" id="gate-tab-register" onclick="switchGateTab('register')"
-                      class="py-2 rounded-lg text-xs font-semibold text-slate-600 hover:text-slate-900 cursor-pointer transition">
-                New Student Register
+              <button type="button" onclick="runShowcaseScenario('troubleshoot')" id="show-btn-trouble"
+                      class="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 font-semibold text-[11px] cursor-pointer transition">
+                Simulate Fault
               </button>
             </div>
           </div>
 
-          <div class="p-6 space-y-4 text-xs">
-            <div id="gate-feedback-box" class="hidden p-3 rounded-xl border text-[11px] font-medium"></div>
+          <div class="p-4 bg-slate-50/70 border-b border-slate-200">
+            <svg id="showcase-svg" viewBox="0 0 520 185" class="w-full h-auto rounded-xl bg-white border border-slate-200">
+              <!-- Link 1: PC1 <-> SW1 -->
+              <line x1="78" y1="95" x2="188" y2="95" stroke="#16a34a" stroke-width="2.5" class="link-dash-active" />
+              <rect x="95" y="72" width="76" height="16" rx="4" fill="#eff6ff" stroke="#2563eb" stroke-width="1" />
+              <text x="133" y="83" text-anchor="middle" fill="#1e3a8a" font-family="JetBrains Mono, monospace" font-size="8.5" font-weight="700">.10.10/24</text>
 
-            <!-- 1. STUDENT SIGN-IN FORM -->
-            <form id="gate-form-signin" onsubmit="handleGateLoginOtp(event)" class="space-y-4">
-              <div>
-                <label for="gate-signin-email" class="block text-[11px] font-semibold text-slate-700 mb-1">Registered Student Email</label>
-                <input id="gate-signin-email" type="email" required placeholder="student@nexacloud.edu"
-                       class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 bg-white text-slate-900 font-mono text-xs focus:outline-none focus:border-blue-600 selectable-text" />
-                <p id="gate-signin-hint" class="text-[11px] text-slate-500 mt-1.5">
-                  We will email a 6-digit one-time verification code to your registered address.
-                </p>
-              </div>
-              <button type="submit" id="btn-gate-send-login-otp"
-                      class="w-full py-2.5 px-4 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs shadow-sm transition cursor-pointer">
-                Send 6-Digit Login OTP
-              </button>
-            </form>
+              <!-- Link 2: SW1 <-> R1 -->
+              <line x1="214" y1="95" x2="294" y2="95" stroke="#16a34a" stroke-width="2.5" class="link-dash-active" />
+              <rect x="222" y="72" width="66" height="16" rx="4" fill="#eff6ff" stroke="#2563eb" stroke-width="1" />
+              <text x="255" y="83" text-anchor="middle" fill="#1e3a8a" font-family="JetBrains Mono, monospace" font-size="8.5" font-weight="700">.10.1/24</text>
 
-            <!-- 2. NEW STUDENT REGISTRATION FORM -->
-            <form id="gate-form-register" onsubmit="handleGateRegisterOtp(event)" class="hidden space-y-3.5">
-              <div>
-                <label for="gate-reg-name" class="block text-[11px] font-semibold text-slate-700 mb-1">Full Name</label>
-                <input id="gate-reg-name" type="text" required placeholder="Jordan Patel"
-                       class="w-full px-3.5 py-2 rounded-xl border border-slate-300 bg-white text-slate-900 text-xs focus:outline-none focus:border-blue-600 selectable-text" />
-              </div>
-              <div>
-                <label for="gate-reg-batch" class="block text-[11px] font-semibold text-slate-700 mb-1">Cohort / Track</label>
-                <select id="gate-reg-batch"
-                        class="w-full px-3.5 py-2 rounded-xl border border-slate-300 bg-white text-slate-900 text-xs font-medium focus:outline-none focus:border-blue-600">
-                  <option value="Enterprise Routing & Switching">Enterprise Routing &amp; Switching</option>
-                  <option value="OSPF, EIGRP & BGP Lab Track">OSPF, EIGRP &amp; BGP Lab Track</option>
-                  <option value="Multi-Vendor SD-WAN & Security">Multi-Vendor SD-WAN &amp; Security</option>
-                </select>
-              </div>
-              <div>
-                <label for="gate-reg-email" class="block text-[11px] font-semibold text-slate-700 mb-1">Email Address</label>
-                <input id="gate-reg-email" type="email" required placeholder="jordan.patel@example.com"
-                       class="w-full px-3.5 py-2 rounded-xl border border-slate-300 bg-white text-slate-900 font-mono text-xs focus:outline-none focus:border-blue-600 selectable-text" />
-              </div>
-              <button type="submit" id="btn-gate-send-reg-otp"
-                      class="w-full py-2.5 px-4 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs shadow-sm transition cursor-pointer">
-                Register &amp; Send OTP
-              </button>
-            </form>
+              <!-- Link 3: R1 <-> R2 (Faultable link) -->
+              <line id="show-wan-link" x1="320" y1="95" x2="416" y2="95" stroke="#16a34a" stroke-width="2.5" class="link-dash-active" />
+              <rect x="334" y="72" width="70" height="16" rx="4" fill="#eff6ff" stroke="#2563eb" stroke-width="1" />
+              <text x="369" y="83" text-anchor="middle" fill="#1e3a8a" font-family="JetBrains Mono, monospace" font-size="8.5" font-weight="700">10.1.12.0/30</text>
 
-            <!-- 3. 6-DIGIT EMAIL OTP VERIFICATION FORM -->
-            <form id="gate-form-otp" onsubmit="handleGateVerifyOtp(event)" class="hidden space-y-4">
-              <div class="p-3.5 rounded-xl bg-blue-50/80 border border-blue-200 text-slate-800">
-                <div class="font-bold text-slate-900">Enter 6-Digit Email OTP</div>
-                <div class="text-[11px] text-slate-600 mt-0.5">
-                  Code sent to <span id="gate-otp-email" class="font-mono font-bold text-blue-700"></span>
-                </div>
-              </div>
-              <div>
-                <label for="gate-otp-code" class="block text-[11px] font-semibold text-slate-700 mb-1">Verification Code</label>
-                <input id="gate-otp-code" type="text" inputmode="numeric" pattern="[0-9]{6,8}" maxlength="8" required placeholder="123456"
-                       class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 bg-white text-slate-900 font-mono text-lg font-bold tracking-[0.35em] text-center focus:outline-none focus:border-blue-600 selectable-text" />
-              </div>
-              <button type="submit" id="btn-gate-verify-otp"
-                      class="w-full py-2.5 px-4 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs shadow-sm transition cursor-pointer">
-                Verify OTP &amp; Continue
-              </button>
-              <div class="flex items-center justify-between text-[11px] pt-1">
-                <button type="button" onclick="returnToGateAuthForm()" class="text-slate-500 hover:text-slate-800 font-medium cursor-pointer">
-                  &larr; Change Email
-                </button>
-                <button type="button" id="btn-gate-resend-otp" onclick="handleGateResendOtp()"
-                        class="text-blue-600 hover:text-blue-800 font-semibold cursor-pointer disabled:opacity-40">
-                  Resend OTP (<span id="gate-otp-timer">60</span>s)
-                </button>
-              </div>
-            </form>
+              <!-- PC1 Node -->
+              <rect x="34" y="71" width="44" height="48" rx="10" fill="#ffffff" stroke="#cbd5e1" stroke-width="1.5" />
+              <text x="56" y="99" text-anchor="middle" fill="#0f172a" font-family="Inter, sans-serif" font-size="11" font-weight="800">PC1</text>
+              <text x="56" y="135" text-anchor="middle" fill="#475569" font-family="JetBrains Mono, monospace" font-size="9">192.168.10.10</text>
 
-            <!-- 4. PLAN GATE VIEW (WHEN requirePaidAccess IS TRUE AND ACCESS IS LOCKED/EXPIRED) -->
-            <div id="gate-view-plan" class="hidden space-y-4">
-              <div id="gate-plan-alert" class="p-3.5 rounded-xl bg-amber-50 border border-amber-200 text-amber-900 text-xs font-medium"></div>
-              <div id="gate-plan-account-meta" class="text-[11px] font-mono text-slate-600 bg-slate-50 px-3 py-2 rounded-lg border border-slate-200"></div>
-              <div id="gate-plans-container" class="space-y-2.5 max-h-60 overflow-y-auto"></div>
-              <div class="flex items-center justify-between gap-2 pt-1">
-                <button type="button" onclick="signOutAcademyUser()"
-                        class="px-3.5 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold cursor-pointer">
-                  Sign Out
-                </button>
-                <button type="button" onclick="refreshAcademyEntitlement()"
-                        class="px-4 py-2 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold cursor-pointer">
-                  Check Entitlement Again
-                </button>
-              </div>
+              <!-- SW1 Node -->
+              <rect x="188" y="71" width="44" height="48" rx="10" fill="#ffffff" stroke="#cbd5e1" stroke-width="1.5" />
+              <text x="210" y="99" text-anchor="middle" fill="#0f172a" font-family="Inter, sans-serif" font-size="11" font-weight="800">SW1</text>
+              <text x="210" y="135" text-anchor="middle" fill="#475569" font-family="JetBrains Mono, monospace" font-size="9">VLAN 10</text>
+
+              <!-- R1 Node -->
+              <rect x="282" y="71" width="46" height="48" rx="10" fill="#ffffff" stroke="#2563eb" stroke-width="1.8" />
+              <text x="305" y="99" text-anchor="middle" fill="#1d4ed8" font-family="Inter, sans-serif" font-size="11" font-weight="800">R1</text>
+              <text x="305" y="135" text-anchor="middle" fill="#475569" font-family="JetBrains Mono, monospace" font-size="9">OSPF Area 0</text>
+
+              <!-- R2 / SRV1 Node -->
+              <rect id="show-dst-box" x="416" y="71" width="68" height="48" rx="10" fill="#ffffff" stroke="#0f172a" stroke-width="1.5" />
+              <text x="450" y="94" text-anchor="middle" fill="#0f172a" font-family="Inter, sans-serif" font-size="10.5" font-weight="800">R2 &rarr; SRV1</text>
+              <text x="450" y="108" text-anchor="middle" fill="#2563eb" font-family="JetBrains Mono, monospace" font-size="8.5" font-weight="700">172.16.20.10</text>
+              <text x="450" y="135" text-anchor="middle" fill="#475569" font-family="JetBrains Mono, monospace" font-size="9">DC Subnet</text>
+
+              <!-- Animated Packet Dot -->
+              <circle id="show-pkt-dot" cx="133" cy="95" r="6" fill="#f59e0b" stroke="#ffffff" stroke-width="1.5" />
+            </svg>
+          </div>
+
+          <div id="showcase-diagnostics" class="p-4 space-y-2 text-xs font-mono bg-white">
+            <div class="flex items-center justify-between">
+              <span id="show-status-badge" class="px-2 py-0.5 rounded bg-emerald-100 text-emerald-800 font-bold text-[10px]">REACHABLE · 4/4 ICMP ECHO REPLY</span>
+              <span class="text-slate-400 text-[10px]">L2 Frame &rarr; L3 Route &rarr; Next Hop</span>
+            </div>
+            <div id="show-diag-text" class="text-[11px] text-slate-700 leading-relaxed">
+              PC1 (192.168.10.10) &rarr; SW1 &rarr; R1 (192.168.10.1) matches OSPF route 172.16.20.0/24 via 10.1.12.2 &rarr; R2 &rarr; SRV1 (172.16.20.10).
             </div>
           </div>
         </div>
-      </div>
+      </section>
 
-      <!-- Plans Preview Strip on Gate -->
-      <section class="space-y-3">
-        <div class="flex items-center justify-between gap-2">
-          <h2 class="text-sm font-extrabold uppercase tracking-wider text-slate-700">Available Academy Plans</h2>
-          <span id="gate-access-mode-label" class="text-[11px] font-mono text-slate-500"></span>
+      <!-- Value Proposition & Capabilities Grid -->
+      <section id="capabilities-grid" class="space-y-4">
+        <div>
+          <h2 class="text-lg sm:text-xl font-extrabold text-slate-900">Built for Hands-On Networking Mastery</h2>
+          <p class="text-xs sm:text-sm text-slate-600 mt-0.5">Everything you need to practice routing, switching, DHCP, security policies, and fault isolation.</p>
         </div>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs">
+          <div class="p-5 rounded-2xl bg-white border border-slate-200 space-y-1.5">
+            <div class="font-extrabold text-slate-900 text-sm">Authentic Vendor CLIs &amp; Shells</div>
+            <p class="text-slate-600 leading-relaxed">Switch seamlessly between Cisco IOS/IOS-XE/NX-OS, Junos, Arista EOS, Huawei VRP, MikroTik RouterOS, Palo Alto, FortiGate, and Windows/Linux host shells.</p>
+          </div>
+          <div class="p-5 rounded-2xl bg-white border border-slate-200 space-y-1.5">
+            <div class="font-extrabold text-slate-900 text-sm">Per-Port IP Callouts &amp; Link State</div>
+            <p class="text-slate-600 leading-relaxed">Inspect active UP/UP vs DOWN links, click any cable to verify port assignments and subnets, and see non-overlapping IPv4 tags right on the canvas.</p>
+          </div>
+          <div class="p-5 rounded-2xl bg-white border border-slate-200 space-y-1.5">
+            <div class="font-extrabold text-slate-900 text-sm">Hop-by-Hop Packet Tracer Mode</div>
+            <p class="text-slate-600 leading-relaxed">Step through ICMP ping, ARP requests, TCP SYN, and DHCP leases hop by hop while examining Layer 2&ndash;7 PDU headers and routing decisions.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Selectable Academy Plans Section -->
+      <section id="plans-section" class="space-y-4">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+          <div>
+            <h2 class="text-lg sm:text-xl font-extrabold text-slate-900">Available Academy Plans</h2>
+            <p id="gate-access-mode-label" class="text-xs font-mono text-slate-500 mt-0.5"></p>
+          </div>
+          <div class="flex items-center gap-2">
+            <span id="selected-plan-summary" class="text-xs font-semibold text-slate-700 bg-slate-100 px-3 py-1.5 rounded-xl border border-slate-200">
+              Selected: <strong id="selected-plan-name" class="text-blue-700">NetOps Pro Lab</strong>
+            </span>
+            <button type="button" id="landing-enroll-btn" onclick="handleSelectedPlanAction()"
+                    class="px-4 py-2 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs shadow-sm transition cursor-pointer">
+              Enroll / Continue
+            </button>
+          </div>
+        </div>
+        <div id="landing-plan-feedback" class="hidden p-3 rounded-xl bg-amber-50 border border-amber-200 text-amber-900 text-xs font-medium"></div>
         <div id="gate-plans-strip" class="grid grid-cols-1 md:grid-cols-3 gap-4"></div>
       </section>
     </main>
 
-    <footer class="bg-white border-t border-slate-200 py-4 px-4 sm:px-6 text-xs text-slate-500">
+    <!-- Footer -->
+    <footer class="bg-white border-t border-slate-200 py-5 px-4 sm:px-6 text-xs text-slate-500">
       <div class="max-w-6xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-2">
         <span class="font-semibold text-slate-700">Nexacloud Academy</span>
-        <span>Multi-Vendor Network Emulator &amp; Topology Studio</span>
+        <span>Enterprise Network Emulator &amp; Topology Studio</span>
       </div>
     </footer>
+  </div>
+
+  <!-- ===================================================================== -->
+  <!-- ON-DEMAND STUDENT / PRO LOGIN & PLAN GATE MODAL (#auth-login-modal)  -->
+  <!-- ===================================================================== -->
+  <div id="auth-login-modal" class="hidden fixed inset-0 z-50 bg-slate-900/50 backdrop-blur-2xs flex items-center justify-center p-4">
+    <div class="bg-white rounded-2xl border border-slate-200 shadow-2xl w-full max-w-md overflow-hidden">
+      <div class="px-6 py-4 bg-slate-50 border-b border-slate-200 flex items-center justify-between">
+        <div>
+          <h3 id="modal-auth-title" class="text-sm font-extrabold text-slate-900">Nexacloud Academy Access</h3>
+          <p class="text-[11px] text-slate-500 mt-0.5">Sign in with Email OTP or verify plan entitlement</p>
+        </div>
+        <button type="button" onclick="closeLoginModal()" class="p-1.5 rounded-lg text-slate-400 hover:text-slate-700 hover:bg-slate-200/70 cursor-pointer">
+          <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M18 6 6 18M6 6l12 12"/></svg>
+        </button>
+      </div>
+
+      <div id="gate-tabs-header" class="px-6 pt-4 pb-1">
+        <div class="grid grid-cols-2 bg-slate-100 p-1 rounded-xl border border-slate-200">
+          <button type="button" id="gate-tab-signin" onclick="switchGateTab('signin')"
+                  class="py-2 rounded-lg text-xs font-bold bg-white text-slate-900 shadow-2xs cursor-pointer transition">
+            Student Sign-In
+          </button>
+          <button type="button" id="gate-tab-register" onclick="switchGateTab('register')"
+                  class="py-2 rounded-lg text-xs font-semibold text-slate-600 hover:text-slate-900 cursor-pointer transition">
+            New Student Register
+          </button>
+        </div>
+      </div>
+
+      <div class="p-6 space-y-4 text-xs">
+        <div id="gate-feedback-box" class="hidden p-3 rounded-xl border text-[11px] font-medium"></div>
+
+        <!-- 1. STUDENT SIGN-IN FORM -->
+        <form id="gate-form-signin" onsubmit="handleGateLoginOtp(event)" class="space-y-4">
+          <div>
+            <label for="gate-signin-email" class="block text-[11px] font-semibold text-slate-700 mb-1">Registered Student / Admin Email</label>
+            <input id="gate-signin-email" type="email" required placeholder="vshahilrao@gmail.com"
+                   class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 bg-white text-slate-900 font-mono text-xs focus:outline-none focus:border-blue-600 selectable-text" />
+            <p id="gate-signin-hint" class="text-[11px] text-slate-500 mt-1.5">
+              We will send a 6-digit OTP code via Supabase Email. Admin accounts receive immediate full studio access.
+            </p>
+          </div>
+          <button type="submit" id="btn-gate-send-login-otp"
+                  class="w-full py-2.5 px-4 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs shadow-sm transition cursor-pointer">
+            Send Login OTP Code
+          </button>
+        </form>
+
+        <!-- 2. NEW STUDENT REGISTRATION FORM -->
+        <form id="gate-form-register" onsubmit="handleGateRegisterOtp(event)" class="hidden space-y-3.5">
+          <div>
+            <label for="gate-reg-name" class="block text-[11px] font-semibold text-slate-700 mb-1">Full Name</label>
+            <input id="gate-reg-name" type="text" required placeholder="Jordan Patel"
+                   class="w-full px-3.5 py-2 rounded-xl border border-slate-300 bg-white text-slate-900 text-xs focus:outline-none focus:border-blue-600 selectable-text" />
+          </div>
+          <div>
+            <label for="gate-reg-batch" class="block text-[11px] font-semibold text-slate-700 mb-1">Cohort / Track</label>
+            <select id="gate-reg-batch"
+                    class="w-full px-3.5 py-2 rounded-xl border border-slate-300 bg-white text-slate-900 text-xs font-medium focus:outline-none focus:border-blue-600">
+              <option value="Enterprise Routing & Switching">Enterprise Routing &amp; Switching</option>
+              <option value="OSPF, EIGRP & BGP Lab Track">OSPF, EIGRP &amp; BGP Lab Track</option>
+              <option value="Multi-Vendor SD-WAN & Security">Multi-Vendor SD-WAN &amp; Security</option>
+            </select>
+          </div>
+          <div>
+            <label for="gate-reg-email" class="block text-[11px] font-semibold text-slate-700 mb-1">Email Address</label>
+            <input id="gate-reg-email" type="email" required placeholder="jordan.patel@example.com"
+                   class="w-full px-3.5 py-2 rounded-xl border border-slate-300 bg-white text-slate-900 font-mono text-xs focus:outline-none focus:border-blue-600 selectable-text" />
+          </div>
+          <button type="submit" id="btn-gate-send-reg-otp"
+                  class="w-full py-2.5 px-4 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs shadow-sm transition cursor-pointer">
+            Register &amp; Send OTP
+          </button>
+        </form>
+
+        <!-- 3. 6-DIGIT EMAIL OTP VERIFICATION FORM -->
+        <form id="gate-form-otp" onsubmit="handleGateVerifyOtp(event)" class="hidden space-y-4">
+          <div class="p-3.5 rounded-xl bg-blue-50/80 border border-blue-200 text-slate-800">
+            <div class="font-bold text-slate-900">Enter 6-Digit Email OTP</div>
+            <div class="text-[11px] text-slate-600 mt-0.5">
+              Code sent to <span id="gate-otp-email" class="font-mono font-bold text-blue-700"></span>
+            </div>
+          </div>
+          <div>
+            <label for="gate-otp-code" class="block text-[11px] font-semibold text-slate-700 mb-1">Verification Code</label>
+            <input id="gate-otp-code" type="text" inputmode="numeric" pattern="[0-9]{6,8}" maxlength="8" required placeholder="123456"
+                   class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 bg-white text-slate-900 font-mono text-lg font-bold tracking-[0.35em] text-center focus:outline-none focus:border-blue-600 selectable-text" />
+          </div>
+          <button type="submit" id="btn-gate-verify-otp"
+                  class="w-full py-2.5 px-4 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs shadow-sm transition cursor-pointer">
+            Verify OTP &amp; Continue
+          </button>
+          <div class="flex items-center justify-between text-[11px] pt-1">
+            <button type="button" onclick="returnToGateAuthForm()" class="text-slate-500 hover:text-slate-800 font-medium cursor-pointer">
+              &larr; Change Email
+            </button>
+            <button type="button" id="btn-gate-resend-otp" onclick="handleGateResendOtp()"
+                    class="text-blue-600 hover:text-blue-800 font-semibold cursor-pointer disabled:opacity-40">
+              Resend OTP (<span id="gate-otp-timer">60</span>s)
+            </button>
+          </div>
+        </form>
+
+        <!-- 4. PLAN GATE VIEW (WHEN requirePaidAccess IS TRUE AND USER IS NOT ADMIN/ENTITLED) -->
+        <div id="gate-view-plan" class="hidden space-y-4">
+          <div id="gate-plan-alert" class="p-3.5 rounded-xl bg-amber-50 border border-amber-200 text-amber-900 text-xs font-medium"></div>
+          <div id="gate-plan-account-meta" class="text-[11px] font-mono text-slate-600 bg-slate-50 px-3 py-2 rounded-lg border border-slate-200"></div>
+          <div id="gate-plans-container" class="space-y-2.5 max-h-60 overflow-y-auto"></div>
+          <div class="flex items-center justify-between gap-2 pt-1">
+            <button type="button" onclick="signOutAcademyUser()"
+                    class="px-3.5 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold cursor-pointer">
+              Sign Out
+            </button>
+            <button type="button" onclick="refreshAcademyEntitlement()"
+                    class="px-4 py-2 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold cursor-pointer">
+              Check Entitlement Again
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 
   <!-- ===================================================================== -->
@@ -349,8 +499,9 @@
       <div class="flex items-center gap-1.5 shrink-0">
         <div id="studio-user-chip" class="hidden xl:flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-blue-50/80 border border-blue-200 text-[11px]">
           <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
-          <span id="studio-user-email" class="font-mono font-semibold text-blue-900 max-w-[140px] truncate"></span>
+          <span id="studio-user-email" class="font-mono font-semibold text-blue-900 max-w-[150px] truncate"></span>
           <span id="studio-user-plan" class="px-1.5 py-0.2 rounded bg-white text-blue-700 border border-blue-100 text-[10px] font-bold"></span>
+          <span id="studio-admin-badge" class="hidden px-1.5 py-0.2 rounded bg-amber-500 text-slate-950 text-[10px] font-extrabold uppercase tracking-wide">ADMIN</span>
         </div>
         <button onclick="openRoutingInspector()" class="flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-xs font-semibold bg-emerald-50 text-emerald-700 hover:bg-emerald-100 border border-emerald-200 transition cursor-pointer">
           <span>Routing</span>
@@ -580,6 +731,7 @@ const NEXACLOUD_SUPABASE_CONFIG = {
 
 const NEXACLOUD_ACCESS_CONFIG = {
   requirePaidAccess: false,
+  adminEmails: ['vshahilrao@gmail.com'],
   plansTable: 'academy_plans',
   entitlementsTable: 'student_entitlements',
   paymentUrl: '',
@@ -590,6 +742,7 @@ const NEXACLOUD_ACCESS_CONFIG = {
       price: 'Included',
       period: 'cohort',
       badge: 'Student',
+      paymentUrl: '',
       description: 'Core routing, switching, DHCP, and guided lab scenarios for enrolled students.',
       features: ['Multi-vendor CLI & IP/DHCP labs', 'Per-port IP badges & link inspector', 'Packet Tracer PDU step mode']
     },
@@ -599,6 +752,7 @@ const NEXACLOUD_ACCESS_CONFIG = {
       price: '₹499',
       period: '/ month',
       badge: 'Recommended',
+      paymentUrl: '',
       description: 'Full access to dynamic routing (OSPF, EIGRP, BGP), firewalls, and JSON lab import/export.',
       features: ['All Cisco, Junos, EOS & MikroTik modes', 'OSPF, EIGRP & BGP neighbor checks', 'Custom JSON topology import/export']
     },
@@ -608,6 +762,7 @@ const NEXACLOUD_ACCESS_CONFIG = {
       price: '₹1,499',
       period: '/ month',
       badge: 'Cohort',
+      paymentUrl: '',
       description: 'Designed for coaching batches, instructors, and engineering assessment labs.',
       features: ['Multi-scenario lab templates', 'Routing & neighbor verification', 'Priority access & cohort support']
     }
@@ -616,6 +771,7 @@ const NEXACLOUD_ACCESS_CONFIG = {
 
 let supabaseClient = null;
 let academyPlans = [...NEXACLOUD_ACCESS_CONFIG.fallbackPlans];
+let selectedPlanId = academyPlans[1]?.id || academyPlans[0]?.id || 'pro-monthly';
 
 const gateState = {
   tab: 'signin',
@@ -624,8 +780,117 @@ const gateState = {
   timerSec: 0,
   timerInterval: null,
   user: null,
-  entitlement: { allowed: false, planName: 'None', expiresAt: null, reason: '' }
+  entitlement: { allowed: false, isAdmin: false, planName: 'None', expiresAt: null, reason: '' }
 };
+
+function isAdminEmail(email) {
+  const norm = String(email || '').trim().toLowerCase();
+  if (!norm) return false;
+  const list = Array.isArray(NEXACLOUD_ACCESS_CONFIG.adminEmails)
+    ? NEXACLOUD_ACCESS_CONFIG.adminEmails.map(e => String(e || '').trim().toLowerCase())
+    : [];
+  return list.includes(norm);
+}
+
+function openLoginModal(tab = 'signin') {
+  const modal = document.getElementById('auth-login-modal');
+  if (modal) modal.classList.remove('hidden');
+  if (!gateState.user) {
+    switchGateTab(tab);
+  } else if (!gateState.entitlement.allowed) {
+    renderPlanGateView(gateState.user, gateState.entitlement);
+  }
+}
+
+function closeLoginModal() {
+  const modal = document.getElementById('auth-login-modal');
+  if (modal) modal.classList.add('hidden');
+}
+
+function selectAcademyPlan(planId) {
+  selectedPlanId = planId;
+  const plan = academyPlans.find(p => String(p.id) === String(planId)) || academyPlans[0];
+  const lbl = document.getElementById('selected-plan-name');
+  if (lbl && plan) lbl.textContent = `${plan.name} (${plan.price})`;
+  const fb = document.getElementById('landing-plan-feedback');
+  if (fb) fb.classList.add('hidden');
+  renderPlansStrip();
+}
+
+function handleSelectedPlanAction() {
+  const plan = academyPlans.find(p => String(p.id) === String(selectedPlanId)) || academyPlans[0];
+  const url = (plan && plan.paymentUrl) || NEXACLOUD_ACCESS_CONFIG.paymentUrl || '';
+  const fb = document.getElementById('landing-plan-feedback');
+
+  if (url) {
+    window.open(url, '_blank', 'noopener,noreferrer');
+    return;
+  }
+
+  if (!NEXACLOUD_ACCESS_CONFIG.requirePaidAccess) {
+    openLoginModal('register');
+    return;
+  }
+
+  if (fb) {
+    fb.textContent = `Plan "${plan ? plan.name : 'Selected Plan'}" is selected. No payment URL is configured yet in NEXACLOUD_ACCESS_CONFIG.paymentUrl — sign in with your account or admin email (vshahilrao@gmail.com) to test studio access.`;
+    fb.classList.remove('hidden');
+  }
+}
+
+let showcaseAnimTimer = null;
+function runShowcaseScenario(mode = 'healthy') {
+  const btnHealthy = document.getElementById('show-btn-healthy');
+  const btnTrouble = document.getElementById('show-btn-trouble');
+  const wanLink = document.getElementById('show-wan-link');
+  const badge = document.getElementById('show-status-badge');
+  const diag = document.getElementById('show-diag-text');
+  const dot = document.getElementById('show-pkt-dot');
+
+  const isTrouble = mode === 'troubleshoot';
+  if (btnHealthy && btnTrouble) {
+    btnHealthy.className = isTrouble
+      ? 'px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 font-semibold text-[11px] cursor-pointer transition'
+      : 'px-2.5 py-1 rounded-lg bg-emerald-500 text-slate-950 font-bold text-[11px] cursor-pointer transition';
+    btnTrouble.className = isTrouble
+      ? 'px-2.5 py-1 rounded-lg bg-rose-500 text-white font-bold text-[11px] cursor-pointer transition'
+      : 'px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 font-semibold text-[11px] cursor-pointer transition';
+  }
+
+  if (wanLink) {
+    if (isTrouble) {
+      wanLink.setAttribute('stroke', '#e11d48');
+      wanLink.classList.remove('link-dash-active');
+    } else {
+      wanLink.setAttribute('stroke', '#16a34a');
+      wanLink.classList.add('link-dash-active');
+    }
+  }
+
+  if (badge) {
+    badge.className = isTrouble
+      ? 'px-2 py-0.5 rounded bg-rose-100 text-rose-800 font-bold text-[10px]'
+      : 'px-2 py-0.5 rounded bg-emerald-100 text-emerald-800 font-bold text-[10px]';
+    badge.textContent = isTrouble
+      ? 'PATH BROKEN · WAN LINK DOWN (10.1.12.0/30)'
+      : 'REACHABLE · 4/4 ICMP ECHO REPLY';
+  }
+
+  if (diag) {
+    diag.textContent = isTrouble
+      ? 'Fault injected on R1 <-> R2 link: R1 drops packets destined for 172.16.20.10 because next-hop 10.1.12.2 is unreachable. Open Studio to diagnose with CLI & Packet Tracer.'
+      : 'PC1 (192.168.10.10) -> SW1 -> R1 (192.168.10.1) matches OSPF route 172.16.20.0/24 via 10.1.12.2 -> R2 -> SRV1 (172.16.20.10).';
+  }
+
+  if (showcaseAnimTimer) clearInterval(showcaseAnimTimer);
+  const stops = isTrouble ? [133, 255, 305] : [133, 255, 369, 450];
+  let idx = 0;
+  if (dot) dot.setAttribute('cx', String(stops[0]));
+  showcaseAnimTimer = setInterval(() => {
+    idx = (idx + 1) % stops.length;
+    if (dot) dot.setAttribute('cx', String(stops[idx]));
+  }, 650);
+}
 
 function initSupabaseGate() {
   const pill = document.getElementById('supabase-status-pill');
@@ -685,7 +950,7 @@ async function fetchDynamicPlans() {
   try {
     const { data, error } = await supabaseClient
       .from(NEXACLOUD_ACCESS_CONFIG.plansTable)
-      .select('id, name, price, period, badge, description, features, active')
+      .select('id, name, price, period, badge, description, features, payment_url, active')
       .order('id', { ascending: true });
 
     if (!error && Array.isArray(data) && data.length > 0) {
@@ -697,9 +962,13 @@ async function fetchDynamicPlans() {
           price: row.price || 'Custom',
           period: row.period || '',
           badge: row.badge || 'Plan',
+          paymentUrl: row.payment_url || '',
           description: row.description || '',
           features: Array.isArray(row.features) ? row.features : []
         }));
+        if (!academyPlans.some(p => String(p.id) === String(selectedPlanId))) {
+          selectedPlanId = academyPlans[0].id;
+        }
         renderPlansStrip();
       }
     }
@@ -710,12 +979,23 @@ async function fetchDynamicPlans() {
 
 async function evaluateStudentEntitlement(user) {
   if (!user) {
-    return { allowed: false, planName: 'None', expiresAt: null, reason: 'Authentication required.' };
+    return { allowed: false, isAdmin: false, planName: 'None', expiresAt: null, reason: 'Authentication required.' };
+  }
+
+  if (isAdminEmail(user.email)) {
+    return {
+      allowed: true,
+      isAdmin: true,
+      planName: 'Admin Full Access',
+      expiresAt: null,
+      reason: 'Administrator account verified'
+    };
   }
 
   if (!NEXACLOUD_ACCESS_CONFIG.requirePaidAccess) {
     return {
       allowed: true,
+      isAdmin: false,
       planName: user.user_metadata?.batch || 'Student Access',
       expiresAt: null,
       reason: 'Cohort / Open mode active'
@@ -723,7 +1003,7 @@ async function evaluateStudentEntitlement(user) {
   }
 
   if (!supabaseClient) {
-    return { allowed: false, planName: 'Unverified', expiresAt: null, reason: 'Supabase client unavailable for entitlement lookup.' };
+    return { allowed: false, isAdmin: false, planName: 'Unverified', expiresAt: null, reason: 'Supabase client unavailable for entitlement lookup.' };
   }
 
   try {
@@ -737,6 +1017,7 @@ async function evaluateStudentEntitlement(user) {
     if (error || !data) {
       return {
         allowed: false,
+        isAdmin: false,
         planName: 'No Active Plan',
         expiresAt: null,
         reason: `No active entitlement record found for ${user.email}. Choose a plan below to unlock the studio.`
@@ -750,6 +1031,7 @@ async function evaluateStudentEntitlement(user) {
     if (!statusActive) {
       return {
         allowed: false,
+        isAdmin: false,
         planName: data.plan_name || 'Locked',
         expiresAt: data.expires_at || null,
         reason: `Your access status is "${data.status}". Renew or activate a plan to continue.`
@@ -759,6 +1041,7 @@ async function evaluateStudentEntitlement(user) {
     if (isExpired) {
       return {
         allowed: false,
+        isAdmin: false,
         planName: data.plan_name || 'Expired',
         expiresAt: data.expires_at || null,
         reason: `Your lab plan expired on ${expiresAt.toLocaleDateString()}. Renew your plan to re-enter the studio.`
@@ -767,6 +1050,7 @@ async function evaluateStudentEntitlement(user) {
 
     return {
       allowed: true,
+      isAdmin: false,
       planName: data.plan_name || 'Active Plan',
       expiresAt: data.expires_at || null,
       reason: 'Active'
@@ -774,6 +1058,7 @@ async function evaluateStudentEntitlement(user) {
   } catch (err) {
     return {
       allowed: false,
+      isAdmin: false,
       planName: 'Check Failed',
       expiresAt: null,
       reason: `Entitlement verification error: ${err.message}`
@@ -788,6 +1073,7 @@ async function applyGateDecision(user) {
   const chipEl = document.getElementById('studio-user-chip');
   const chipEmail = document.getElementById('studio-user-email');
   const chipPlan = document.getElementById('studio-user-plan');
+  const adminBadge = document.getElementById('studio-admin-badge');
 
   if (!user) {
     if (shellEl) {
@@ -796,6 +1082,7 @@ async function applyGateDecision(user) {
     }
     if (gateEl) gateEl.classList.remove('hidden');
     if (chipEl) chipEl.classList.add('hidden');
+    if (adminBadge) adminBadge.classList.add('hidden');
     document.body.classList.remove('lab-active');
     return;
   }
@@ -810,11 +1097,12 @@ async function applyGateDecision(user) {
     }
     if (gateEl) gateEl.classList.remove('hidden');
     document.body.classList.remove('lab-active');
+    openLoginModal('signin');
     renderPlanGateView(user, ent);
     return;
   }
 
-  // Authenticated & entitled -> reveal studio shell
+  closeLoginModal();
   if (gateEl) gateEl.classList.add('hidden');
   if (shellEl) {
     shellEl.classList.remove('hidden');
@@ -825,6 +1113,10 @@ async function applyGateDecision(user) {
   if (chipEl) chipEl.classList.remove('hidden');
   if (chipEmail) chipEmail.textContent = user.email || '';
   if (chipPlan) chipPlan.textContent = ent.planName || 'Active';
+  if (adminBadge) {
+    if (ent.isAdmin) adminBadge.classList.remove('hidden');
+    else adminBadge.classList.add('hidden');
+  }
 
   if (!state.nodes.length) {
     loadPrebuiltEnterpriseLab();
@@ -853,19 +1145,24 @@ function renderPlanGateView(user, ent) {
 
   const container = document.getElementById('gate-plans-container');
   if (container) {
-    container.innerHTML = academyPlans.map(p => `
-      <div class="p-3.5 rounded-xl border border-slate-200 bg-slate-50/70 flex items-center justify-between gap-3">
-        <div>
-          <div class="font-bold text-slate-900">${escapeHtml(p.name)}</div>
-          <div class="text-[11px] text-slate-500 mt-0.5">${escapeHtml(p.description)}</div>
+    container.innerHTML = academyPlans.map(p => {
+      const linkUrl = p.paymentUrl || NEXACLOUD_ACCESS_CONFIG.paymentUrl || '';
+      const isSelected = String(p.id) === String(selectedPlanId);
+      return `
+        <div onclick="selectAcademyPlan('${escapeHtml(String(p.id))}')"
+             class="p-3.5 rounded-xl border ${isSelected ? 'border-blue-600 bg-blue-50/50' : 'border-slate-200 bg-slate-50/70'} flex items-center justify-between gap-3 cursor-pointer transition">
+          <div>
+            <div class="font-bold text-slate-900">${escapeHtml(p.name)}</div>
+            <div class="text-[11px] text-slate-500 mt-0.5">${escapeHtml(p.description)}</div>
+          </div>
+          <div class="text-right shrink-0">
+            <div class="font-extrabold text-blue-700 text-sm">${escapeHtml(p.price)}</div>
+            <div class="text-[10px] text-slate-500">${escapeHtml(p.period)}</div>
+            ${linkUrl ? `<a href="${escapeHtml(linkUrl)}" target="_blank" rel="noopener noreferrer" onclick="event.stopPropagation()" class="inline-block mt-1.5 px-2.5 py-1 rounded-lg bg-blue-600 hover:bg-blue-700 text-white text-[10px] font-bold">Pay / Enroll</a>` : ''}
+          </div>
         </div>
-        <div class="text-right shrink-0">
-          <div class="font-extrabold text-blue-700 text-sm">${escapeHtml(p.price)}</div>
-          <div class="text-[10px] text-slate-500">${escapeHtml(p.period)}</div>
-          ${NEXACLOUD_ACCESS_CONFIG.paymentUrl ? `<a href="${escapeHtml(NEXACLOUD_ACCESS_CONFIG.paymentUrl)}" target="_blank" rel="noopener noreferrer" class="inline-block mt-1.5 px-2.5 py-1 rounded-lg bg-blue-600 hover:bg-blue-700 text-white text-[10px] font-bold">Select Plan</a>` : ''}
-        </div>
-      </div>
-    `).join('');
+      `;
+    }).join('');
   }
 }
 
@@ -980,14 +1277,19 @@ async function handleGateLoginOtp(e) {
   const btn = document.getElementById('btn-gate-send-login-otp');
   if (btn) { btn.disabled = true; btn.textContent = 'Sending OTP...'; }
 
+  const adminUser = isAdminEmail(email);
   const ok = await requestEmailOtp(email, {
-    shouldCreateUser: !NEXACLOUD_SUPABASE_CONFIG.requireRegisteredStudent
+    shouldCreateUser: adminUser ? true : !NEXACLOUD_SUPABASE_CONFIG.requireRegisteredStudent
   });
 
-  if (btn) { btn.disabled = false; btn.textContent = 'Send 6-Digit Login OTP'; }
+  if (btn) { btn.disabled = false; btn.textContent = 'Send Login OTP Code'; }
   if (ok) {
     openGateOtpStep(email, 'signin');
-    setGateFeedback(`6-digit OTP sent to ${email}.`);
+    setGateFeedback(
+      adminUser
+        ? `Admin OTP sent to ${email}. Enter the verification code from your email.`
+        : `6-digit OTP sent to ${email}. Check your inbox (and spam folder).`
+    );
   }
 }
 
@@ -1010,7 +1312,7 @@ async function handleGateRegisterOtp(e) {
   if (btn) { btn.disabled = false; btn.textContent = 'Register & Send OTP'; }
   if (ok) {
     openGateOtpStep(email, 'register');
-    setGateFeedback(`Registration OTP sent to ${email}.`);
+    setGateFeedback(`Verification OTP sent to ${email}.`);
   }
 }
 
@@ -1020,15 +1322,16 @@ async function handleGateResendOtp() {
   const isReg = gateState.pendingFlow === 'register';
   const fullName = (document.getElementById('gate-reg-name')?.value || '').trim();
   const batch = document.getElementById('gate-reg-batch')?.value || 'Enterprise Routing & Switching';
+  const adminUser = isAdminEmail(gateState.pendingEmail);
 
   const ok = await requestEmailOtp(gateState.pendingEmail, {
-    shouldCreateUser: isReg ? true : !NEXACLOUD_SUPABASE_CONFIG.requireRegisteredStudent,
+    shouldCreateUser: isReg || adminUser ? true : !NEXACLOUD_SUPABASE_CONFIG.requireRegisteredStudent,
     data: isReg ? { full_name: fullName, batch, academy: 'Nexacloud Academy' } : undefined
   });
 
   if (ok) {
     startGateOtpTimer(60);
-    setGateFeedback(`A new OTP code was sent to ${gateState.pendingEmail}.`);
+    setGateFeedback(`A new verification OTP was sent to ${gateState.pendingEmail}.`);
   }
 }
 
@@ -1078,31 +1381,51 @@ async function signOutAcademyUser() {
 function renderPlansStrip() {
   const strip = document.getElementById('gate-plans-strip');
   const modeLbl = document.getElementById('gate-access-mode-label');
+  const selName = document.getElementById('selected-plan-name');
+
+  const activePlan = academyPlans.find(p => String(p.id) === String(selectedPlanId)) || academyPlans[0];
+  if (selName && activePlan) {
+    selName.textContent = `${activePlan.name} (${activePlan.price})`;
+  }
+
   if (modeLbl) {
     modeLbl.textContent = NEXACLOUD_ACCESS_CONFIG.requirePaidAccess
-      ? 'Plan & Expiry Verification: ON'
-      : 'Plan & Expiry Verification: OFF (Cohort Access)';
+      ? 'Plan & Expiry Verification: ON · Admin Bypass: vshahilrao@gmail.com'
+      : 'Cohort / Open Access: ON · Admin Bypass: vshahilrao@gmail.com';
   }
   if (!strip) return;
 
-  strip.innerHTML = academyPlans.map((p, i) => `
-    <div class="rounded-2xl bg-white p-4 border ${i === 1 ? 'border-blue-600 ring-2 ring-blue-600/10' : 'border-slate-200'} flex flex-col justify-between">
-      <div class="space-y-2">
-        <div class="flex items-center justify-between gap-2">
-          <div class="font-bold text-slate-900 text-sm">${escapeHtml(p.name)}</div>
-          <span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-blue-50 text-blue-700 border border-blue-200">${escapeHtml(p.badge || 'Plan')}</span>
+  strip.innerHTML = academyPlans.map((p) => {
+    const isSelected = String(p.id) === String(selectedPlanId);
+    const linkUrl = p.paymentUrl || NEXACLOUD_ACCESS_CONFIG.paymentUrl || '';
+    return `
+      <div onclick="selectAcademyPlan('${escapeHtml(String(p.id))}')"
+           role="button" tabindex="0"
+           onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();selectAcademyPlan('${escapeHtml(String(p.id))}');}"
+           class="rounded-2xl bg-white p-5 border ${isSelected ? 'border-blue-600 ring-2 ring-blue-600/20 shadow-sm' : 'border-slate-200 hover:border-blue-300'} flex flex-col justify-between cursor-pointer transition">
+        <div class="space-y-2">
+          <div class="flex items-center justify-between gap-2">
+            <div class="font-bold text-slate-900 text-sm">${escapeHtml(p.name)}</div>
+            <span class="px-2 py-0.5 rounded-full text-[10px] font-bold ${isSelected ? 'bg-blue-600 text-white' : 'bg-blue-50 text-blue-700 border border-blue-200'}">${isSelected ? 'Selected' : escapeHtml(p.badge || 'Plan')}</span>
+          </div>
+          <div class="flex items-baseline gap-1">
+            <span class="text-xl font-extrabold text-slate-900">${escapeHtml(p.price)}</span>
+            <span class="text-[11px] text-slate-500">${escapeHtml(p.period)}</span>
+          </div>
+          <p class="text-[11px] text-slate-600 leading-relaxed">${escapeHtml(p.description)}</p>
         </div>
-        <div class="flex items-baseline gap-1">
-          <span class="text-xl font-extrabold text-slate-900">${escapeHtml(p.price)}</span>
-          <span class="text-[11px] text-slate-500">${escapeHtml(p.period)}</span>
+        <div class="mt-3 pt-2.5 border-t border-slate-100 space-y-2">
+          <ul class="space-y-1 text-[11px] text-slate-700">
+            ${(p.features || []).map(f => `<li class="flex items-center gap-1.5"><span class="w-1.5 h-1.5 rounded-full bg-blue-600"></span><span>${escapeHtml(f)}</span></li>`).join('')}
+          </ul>
+          <div class="pt-1 flex items-center justify-between gap-2">
+            <span class="text-[10px] font-semibold ${isSelected ? 'text-blue-700' : 'text-slate-400'}">${isSelected ? 'Active selection' : 'Click to select plan'}</span>
+            ${linkUrl ? `<a href="${escapeHtml(linkUrl)}" target="_blank" rel="noopener noreferrer" onclick="event.stopPropagation()" class="px-2.5 py-1 rounded-lg bg-blue-600 hover:bg-blue-700 text-white text-[10px] font-bold">Enroll Link</a>` : ''}
+          </div>
         </div>
-        <p class="text-[11px] text-slate-600">${escapeHtml(p.description)}</p>
       </div>
-      <ul class="mt-3 pt-2.5 border-t border-slate-100 space-y-1 text-[11px] text-slate-700">
-        ${(p.features || []).map(f => `<li class="flex items-center gap-1.5"><span class="w-1.5 h-1.5 rounded-full bg-blue-600"></span><span>${escapeHtml(f)}</span></li>`).join('')}
-      </ul>
-    </div>
-  `).join('');
+    `;
+  }).join('');
 }
 
 // ============================================================================
@@ -3835,14 +4158,14 @@ function toggleSidebarCollapse() {
 
 function onCatalogDragStart(e, catalogType) {
   e.dataTransfer.setData('text/plain', catalogType);
+  e.dataTransfer.effectAllowed = 'copy';
 }
 
 function spawnDeviceAtCenter(catalogType) {
-  const vp = document.getElementById('canvas-viewport');
-  const rect = vp ? vp.getBoundingClientRect() : { width: 800, height: 500 };
-  const worldX = (rect.width * 0.45 - state.pan.x) / state.zoom + (Math.random() * 40 - 20);
-  const worldY = (rect.height * 0.42 - state.pan.y) / state.zoom + (Math.random() * 40 - 20);
-  const node = createDeviceNode(catalogType, Math.round(worldX), Math.round(worldY));
+  const rect = document.getElementById('canvas-viewport').getBoundingClientRect();
+  const wx = (rect.width / 2 - state.pan.x) / state.zoom + (Math.random() * 50 - 25);
+  const wy = (rect.height / 2 - state.pan.y) / state.zoom + (Math.random() * 50 - 25);
+  const node = createDeviceNode(catalogType, Math.round(wx), Math.round(wy));
   state.nodes.push(node);
   state.selectedNodeId = node.id;
   refreshAllViews();
@@ -3852,33 +4175,34 @@ function spawnDeviceAtCenter(catalogType) {
 function toggleInspectorCollapse() {
   const panel = document.getElementById('inspector-panel');
   if (!panel) return;
-  panel.classList.toggle('hidden');
-  if (!panel.classList.contains('hidden')) {
+  if (panel.classList.contains('hidden')) {
+    panel.classList.remove('hidden');
     renderInspector();
+  } else {
+    panel.classList.add('hidden');
   }
 }
 
 function closeInspector() {
-  const panel = document.getElementById('inspector-panel');
-  if (panel) panel.classList.add('hidden');
+  document.getElementById('inspector-panel')?.classList.add('hidden');
 }
 
 function renderInspector() {
   const panel = document.getElementById('inspector-panel');
-  const body = document.getElementById('insp-body');
-  if (!panel || panel.classList.contains('hidden') || !body) return;
-
+  if (!panel || panel.classList.contains('hidden')) return;
   const node = state.nodes.find(n => n.id === state.selectedNodeId) || state.nodes[0];
+  const badge = document.getElementById('insp-vendor-badge');
+  const title = document.getElementById('insp-title');
+  const body = document.getElementById('insp-body');
   if (!node) {
-    document.getElementById('insp-title').textContent = 'No Device Selected';
-    body.innerHTML = `<div class="text-slate-400 text-center py-8">Click or double-click any device on the canvas.</div>`;
+    title.textContent = 'No Device Selected';
+    body.innerHTML = `<div class="text-slate-400 py-8 text-center">Click a device on the canvas or add one from the hardware dock.</div>`;
     return;
   }
+  badge.textContent = `${node.vendor.toUpperCase()} · ${node.os}`;
+  title.textContent = `${node.config.hostname} (${node.label})`;
 
-  document.getElementById('insp-vendor-badge').textContent = `${node.vendor.toUpperCase()} \u00b7 ${node.os}`;
-  document.getElementById('insp-title').textContent = `${node.config.hostname} (${node.label})`;
-
-  const ifHtml = node.config.interfaces.map((inf, i) => {
+  const ifHtml = node.config.interfaces.map((inf, idx) => {
     const st = computeInterfaceStatus(node, inf);
     return `
       <div class="p-2.5 rounded-xl border border-slate-200 bg-slate-50/70 space-y-2">
@@ -3887,12 +4211,12 @@ function renderInspector() {
           <span class="px-1.5 py-0.5 rounded text-[10px] font-bold ${st.isUp ? 'bg-emerald-100 text-emerald-700' : 'bg-rose-100 text-rose-700'}">${st.isUp ? 'UP/UP' : 'DOWN'}</span>
         </div>
         <div class="grid grid-cols-3 gap-1.5">
-          <input id="insp-ip-${node.id}-${i}" type="text" value="${escapeHtml(inf.ip || '')}" placeholder="IPv4" class="col-span-2 px-2 py-1 rounded border border-slate-300 bg-white font-mono text-[11px] selectable-text" />
-          <input id="insp-pfx-${node.id}-${i}" type="number" min="1" max="32" value="${inf.prefix || 24}" class="px-2 py-1 rounded border border-slate-300 bg-white font-mono text-[11px] selectable-text" />
+          <input id="insp-ip-${node.id}-${idx}" type="text" value="${escapeHtml(inf.ip || '')}" placeholder="IPv4" class="col-span-2 px-2 py-1 rounded border border-slate-300 bg-white font-mono text-[11px] selectable-text" />
+          <input id="insp-pfx-${node.id}-${idx}" type="number" min="1" max="32" value="${inf.prefix || 24}" class="px-2 py-1 rounded border border-slate-300 bg-white font-mono text-[11px] selectable-text" />
         </div>
-        <div class="flex justify-between gap-1.5">
-          <button onclick="saveInspectorInterface('${node.id}', ${i})" class="px-2.5 py-1 rounded bg-blue-600 hover:bg-blue-700 text-white font-semibold text-[11px] cursor-pointer">Apply IP</button>
-          <button onclick="toggleInterfaceAdminFromWeb('${node.id}', ${i})" class="px-2.5 py-1 rounded bg-white hover:bg-slate-100 text-slate-700 border border-slate-300 font-semibold text-[11px] cursor-pointer">${inf.adminUp ? 'Shutdown' : 'No Shut'}</button>
+        <div class="flex items-center justify-between gap-1.5">
+          <button onclick="saveInspectorInterface('${node.id}', ${idx})" class="px-2.5 py-1 rounded bg-blue-600 hover:bg-blue-700 text-white font-semibold text-[11px] cursor-pointer">Apply IP</button>
+          <button onclick="toggleInterfaceAdminFromWeb('${node.id}', ${idx})" class="px-2 py-1 rounded bg-white hover:bg-slate-100 text-slate-700 border border-slate-300 font-semibold text-[11px] cursor-pointer">${inf.adminUp ? 'Shutdown' : 'No Shut'}</button>
         </div>
       </div>
     `;
@@ -3900,18 +4224,18 @@ function renderInspector() {
 
   body.innerHTML = `
     <div class="flex gap-1.5">
-      <button onclick="spawnFloatingWindow('${node.id}', 'cli')" class="flex-1 py-2 px-3 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-bold cursor-pointer">Open CLI</button>
-      <button onclick="spawnFloatingWindow('${node.id}', '${node.role === 'host' ? 'ipcfg' : 'webui'}')" class="flex-1 py-2 px-3 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold cursor-pointer">${node.role === 'host' ? 'IP / DHCP' : 'WebUI'}</button>
+      <button onclick="spawnFloatingWindow('${node.id}', 'cli')" class="flex-1 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-bold text-[11px] cursor-pointer">Open Console</button>
+      <button onclick="spawnFloatingWindow('${node.id}', '${node.role === 'host' ? 'ipcfg' : 'webui'}')" class="flex-1 py-2 rounded-xl bg-blue-50 hover:bg-blue-100 text-blue-700 border border-blue-200 font-bold text-[11px] cursor-pointer">${node.role === 'host' ? 'IP/DHCP' : 'WebUI'}</button>
     </div>
     <div>
       <label class="block text-[11px] font-semibold text-slate-600 mb-1">Hostname</label>
       <div class="flex gap-1.5">
         <input id="insp-hostname-${node.id}" type="text" value="${escapeHtml(node.config.hostname)}" class="flex-1 px-2.5 py-1.5 rounded-lg border border-slate-300 font-mono text-xs selectable-text" />
-        <button onclick="saveInspectorHostname('${node.id}')" class="px-3 py-1.5 rounded-lg bg-slate-800 text-white font-semibold cursor-pointer">Save</button>
+        <button onclick="saveInspectorHostname('${node.id}')" class="px-3 py-1.5 rounded-lg bg-slate-800 text-white font-semibold text-[11px] cursor-pointer">Save</button>
       </div>
     </div>
     <div class="space-y-2">
-      <div class="text-[11px] font-bold text-slate-700">Interfaces &amp; Per-Port IPv4</div>
+      <div class="font-bold text-slate-800">Interfaces (${node.config.interfaces.length})</div>
       ${ifHtml}
     </div>
   `;
@@ -3920,27 +4244,26 @@ function renderInspector() {
 function saveInspectorHostname(nodeId) {
   const node = state.nodes.find(n => n.id === nodeId);
   const val = document.getElementById(`insp-hostname-${nodeId}`)?.value.trim();
-  if (node && val) {
-    node.config.hostname = val;
-    refreshAllViews();
-    showToast(`Renamed device to ${val}`);
-  }
+  if (!node || !val) return;
+  node.config.hostname = val;
+  refreshAllViews();
+  showToast(`Renamed device to ${val}`);
 }
 
 function saveInspectorInterface(nodeId, idx) {
   const node = state.nodes.find(n => n.id === nodeId);
   if (!node || !node.config.interfaces[idx]) return;
-  const ipVal = (document.getElementById(`insp-ip-${nodeId}-${idx}`)?.value || '').trim();
+  const ipStr = document.getElementById(`insp-ip-${nodeId}-${idx}`)?.value.trim();
   const pfxVal = Number(document.getElementById(`insp-pfx-${nodeId}-${idx}`)?.value) || 24;
-  if (ipVal && ipToInt(ipVal) === null) {
-    showToast(`Invalid IPv4 address: ${ipVal}`, true);
+  if (!ipStr) {
+    node.config.interfaces[idx].ip = null;
+    refreshAllViews();
+    showToast(`Cleared IP on ${node.config.interfaces[idx].name}`);
     return;
   }
-  node.config.interfaces[idx].ip = ipVal || null;
-  node.config.interfaces[idx].prefix = pfxVal;
-  node.config.interfaces[idx].adminUp = true;
-  refreshAllViews();
-  showToast(`Updated ${node.config.hostname} [${compactPortLabel(node.config.interfaces[idx].name)}] \u2192 ${ipVal || 'unassigned'}`);
+  const res = setStaticIpConfig(node, ipStr, pfxVal, node.config.gateway, node.config.interfaces[idx].name);
+  if (!res.ok) { showToast(res.msg, true); return; }
+  showToast(`Set ${res.ip}/${res.prefix} on ${node.config.hostname} [${compactPortLabel(res.iface)}]`);
 }
 
 function openRoutingInspector() {
@@ -3948,24 +4271,52 @@ function openRoutingInspector() {
   const body = document.getElementById('routing-modal-body');
   if (!modal || !body) return;
 
-  body.innerHTML = state.nodes.map(node => {
-    const routes = getEffectiveRoutes(node);
-    const ospfAdj = getProtocolAdjacencies(node, 'ospf');
-    const eigrpAdj = getProtocolAdjacencies(node, 'eigrp');
-    const bgpAdj = getProtocolAdjacencies(node, 'bgp');
+  if (!state.nodes.length) {
+    body.innerHTML = `<div class="text-slate-400 text-center py-8">No devices in topology.</div>`;
+    modal.classList.remove('hidden');
+    return;
+  }
+
+  body.innerHTML = state.nodes.map(n => {
+    const routes = getEffectiveRoutes(n);
+    const eigrpAdj = getProtocolAdjacencies(n, 'eigrp');
+    const ospfAdj = getProtocolAdjacencies(n, 'ospf');
+    const bgpAdj = getProtocolAdjacencies(n, 'bgp');
+
+    const routeRows = routes.map(r => `
+      <tr class="border-b border-slate-100 font-mono text-[11px]">
+        <td class="py-1 font-bold text-blue-700">${escapeHtml(r.protocol)}</td>
+        <td class="py-1">${escapeHtml(r.prefix)}</td>
+        <td class="py-1">[${r.ad}/${r.metric}]</td>
+        <td class="py-1">${escapeHtml(r.nextHop)}</td>
+        <td class="py-1 text-slate-500">${escapeHtml(compactPortLabel(r.outIf || ''))}</td>
+      </tr>
+    `).join('');
+
     return `
-      <div class="p-3.5 rounded-xl border border-slate-200 bg-slate-50/60 space-y-2">
+      <div class="p-3.5 rounded-xl border border-slate-200 bg-slate-50/50 space-y-2">
         <div class="flex items-center justify-between flex-wrap gap-2">
-          <div class="font-bold text-slate-900">${escapeHtml(node.config.hostname)} <span class="text-slate-500 font-normal">(${escapeHtml(node.os)})</span></div>
+          <div class="font-bold text-slate-900">${escapeHtml(n.config.hostname)} <span class="text-slate-500 font-normal">(${escapeHtml(n.os)})</span></div>
           <div class="flex gap-1.5 font-mono text-[10px]">
-            <span class="px-2 py-0.5 rounded bg-blue-100 text-blue-800">OSPF Peers: ${ospfAdj.length}</span>
-            <span class="px-2 py-0.5 rounded bg-indigo-100 text-indigo-800">EIGRP Peers: ${eigrpAdj.length}</span>
-            <span class="px-2 py-0.5 rounded bg-emerald-100 text-emerald-800">BGP Peers: ${bgpAdj.length}</span>
+            <span class="px-2 py-0.5 rounded bg-blue-50 text-blue-700 border border-blue-200">EIGRP(${n.config.eigrp.asNumber}): ${n.config.eigrp.enabled ? 'ON' : 'OFF'} (${eigrpAdj.length} nbr)</span>
+            <span class="px-2 py-0.5 rounded bg-emerald-50 text-emerald-700 border border-emerald-200">OSPF(${n.config.ospf.processId}): ${n.config.ospf.enabled ? 'ON' : 'OFF'} (${ospfAdj.length} nbr)</span>
+            <span class="px-2 py-0.5 rounded bg-indigo-50 text-indigo-700 border border-indigo-200">BGP(${n.config.bgp.asn}): ${n.config.bgp.enabled ? 'ON' : 'OFF'} (${bgpAdj.length} nbr)</span>
           </div>
         </div>
-        <div class="font-mono text-[11px] bg-white p-2.5 rounded-lg border border-slate-200 space-y-0.5">
-          ${routes.length ? routes.map(r => `<div>${escapeHtml(r.protocol.padEnd(3))} ${escapeHtml(r.prefix.padEnd(18))} [${r.ad}/${r.metric}] via ${escapeHtml(r.nextHop)}${r.outIf ? ' (' + escapeHtml(compactPortLabel(r.outIf)) + ')' : ''}</div>`).join('') : '<div class="text-slate-400">No active routes</div>'}
-        </div>
+        ${routes.length ? `
+          <table class="w-full text-left bg-white rounded-lg border border-slate-200">
+            <thead>
+              <tr class="text-[10px] uppercase text-slate-400 border-b border-slate-200">
+                <th class="py-1 px-2">Proto</th>
+                <th class="py-1 px-2">Prefix</th>
+                <th class="py-1 px-2">AD/Metric</th>
+                <th class="py-1 px-2">Next Hop</th>
+                <th class="py-1 px-2">Egress If</th>
+              </tr>
+            </thead>
+            <tbody>${routeRows.replace(/<td /g, '<td class="px-2 "')}</tbody>
+          </table>
+        ` : `<div class="text-[11px] text-slate-400 font-mono">No active IPv4 routes.</div>`}
       </div>
     `;
   }).join('');
@@ -3974,10 +4325,20 @@ function openRoutingInspector() {
 }
 
 // ============================================================================
-// 11. TOPOLOGY CANVAS RENDERING, NON-OVERLAPPING PER-PORT IP BADGES & DRAG
+// 11. CANVAS INTERACTION, NON-OVERLAPPING PORT IP LABELS & CABLE MODALS
 // ============================================================================
+const NODE_BOX_W = 64;
+const NODE_BOX_H = 64;
+
+function getNodeCenter(node) {
+  return {
+    x: node.x + NODE_BOX_W / 2,
+    y: node.y + NODE_BOX_H / 2
+  };
+}
+
 function compactPortLabel(portName) {
-  if (!portName) return 'eth0';
+  if (!portName) return '';
   return portName
     .replace(/^GigabitEthernet/i, 'Gi')
     .replace(/^TenGigabitEthernet/i, 'Te')
@@ -3985,203 +4346,44 @@ function compactPortLabel(portName) {
     .replace(/^FastEthernet/i, 'Fa');
 }
 
-function getNodeCenter(node) {
-  return { x: node.x + 36, y: node.y + 36 };
+function formatPortIpTag(node, portName) {
+  if (!node || !portName) return '';
+  const inf = getInterface(node, portName);
+  const pTag = compactPortLabel(portName);
+  if (inf && inf.ip) {
+    return `${pTag}: ${inf.ip}/${inf.prefix || 24}`;
+  }
+  return pTag;
 }
 
-function getAnchorPoint(fromPt, toPt, radius = 36) {
-  const dx = toPt.x - fromPt.x;
-  const dy = toPt.y - fromPt.y;
-  const dist = Math.hypot(dx, dy) || 1;
-  return {
-    x: fromPt.x + (dx / dist) * radius,
-    y: fromPt.y + (dy / dist) * radius
-  };
-}
-
-function renderLinksLayer() {
-  const svg = document.getElementById('links-svg');
-  if (!svg) return;
-
-  const parts = [];
-  for (const link of state.links) {
-    const src = state.nodes.find(n => n.id === link.sourceId);
-    const dst = state.nodes.find(n => n.id === link.targetId);
-    if (!src || !dst) continue;
-
-    const c1 = getNodeCenter(src);
-    const c2 = getNodeCenter(dst);
-    const p1 = getAnchorPoint(c1, c2, 36);
-    const p2 = getAnchorPoint(c2, c1, 36);
-    const up = isLinkOperationallyUp(link);
-    const strokeColor = up ? '#16a34a' : '#e11d48';
-
-    parts.push(`<line x1="${p1.x}" y1="${p1.y}" x2="${p2.x}" y2="${p2.y}" stroke="transparent" stroke-width="14" class="pointer-events-auto cursor-pointer" onclick="openLinkInspector('${link.id}')"/>`);
-    parts.push(`<line x1="${p1.x}" y1="${p1.y}" x2="${p2.x}" y2="${p2.y}" stroke="${strokeColor}" stroke-width="2.5" class="${up ? 'link-dash-active' : ''}"/>`);
-
-    if (state.showInterfaceLabels) {
-      const srcIf = getInterface(src, link.sourcePort);
-      const dstIf = getInterface(dst, link.targetPort);
-      const srcPortText = compactPortLabel(link.sourcePort);
-      const dstPortText = compactPortLabel(link.targetPort);
-      const srcIpText = (srcIf && srcIf.ip) ? `${srcIf.ip}/${srcIf.prefix || 24}` : null;
-      const dstIpText = (dstIf && dstIf.ip) ? `${dstIf.ip}/${dstIf.prefix || 24}` : null;
-
-      const dx = p2.x - p1.x;
-      const dy = p2.y - p1.y;
-      const len = Math.hypot(dx, dy) || 1;
-      const ux = dx / len;
-      const uy = dy / len;
-      const nx = -uy;
-      const ny = ux;
-      const perpOffset = 14;
-
-      const sAnchorX = p1.x + ux * 42 + nx * perpOffset;
-      const sAnchorY = p1.y + uy * 42 + ny * perpOffset;
-      const dAnchorX = p2.x - ux * 42 + nx * perpOffset;
-      const dAnchorY = p2.y - uy * 42 + ny * perpOffset;
-
-      parts.push(renderPortAndIpBadgeGroup(sAnchorX, sAnchorY, srcPortText, srcIpText, up, link.id));
-      parts.push(renderPortAndIpBadgeGroup(dAnchorX, dAnchorY, dstPortText, dstIpText, up, link.id));
+function setTool(toolName) {
+  state.tool = toolName;
+  state.connectSourceId = null;
+  document.querySelectorAll('.tool-btn').forEach(btn => {
+    btn.classList.remove('bg-white', 'text-slate-900', 'shadow-2xs', 'border', 'border-slate-200');
+    btn.classList.add('text-slate-600');
+  });
+  const activeBtn = document.getElementById(`tool-${toolName}`);
+  if (activeBtn) {
+    activeBtn.classList.remove('text-slate-600');
+    activeBtn.classList.add('bg-white', 'text-slate-900', 'shadow-2xs', 'border', 'border-slate-200');
+  }
+  const banner = document.getElementById('connect-banner');
+  if (banner) {
+    if (toolName === 'connect') {
+      banner.classList.remove('hidden');
+      document.getElementById('connect-banner-text').textContent = 'Click a source device to begin patching a cable...';
+    } else {
+      banner.classList.add('hidden');
     }
   }
-
-  svg.innerHTML = parts.join('');
 }
 
-function renderPortAndIpBadgeGroup(cx, cy, portLabel, ipLabel, isUp, linkId) {
-  const portW = Math.max(34, portLabel.length * 6.4 + 12);
-  const portH = 16;
-  const portX = cx - portW / 2;
-  const portY = cy - portH / 2;
-
-  let svgGroup = `
-    <g class="pointer-events-auto cursor-pointer" onclick="openLinkInspector('${linkId}')">
-      <rect x="${portX}" y="${portY}" width="${portW}" height="${portH}" rx="5" fill="#ffffff" stroke="${isUp ? '#16a34a' : '#e11d48'}" stroke-width="1.2"/>
-      <text x="${cx}" y="${cy + 3.5}" text-anchor="middle" fill="#0f172a" font-family="JetBrains Mono, monospace" font-size="9" font-weight="600">${escapeHtml(portLabel)}</text>
-    </g>
-  `;
-
-  if (ipLabel) {
-    const ipW = Math.max(58, ipLabel.length * 5.9 + 12);
-    const ipH = 16;
-    const ipX = cx - ipW / 2;
-    const ipY = portY + portH + 3;
-    svgGroup += `
-      <g class="pointer-events-auto cursor-pointer" onclick="openLinkInspector('${linkId}')">
-        <rect x="${ipX}" y="${ipY}" width="${ipW}" height="${ipH}" rx="5" fill="#eff6ff" stroke="#2563eb" stroke-width="1.15"/>
-        <text x="${cx}" y="${ipY + 11.2}" text-anchor="middle" fill="#1e3a8a" font-family="JetBrains Mono, monospace" font-size="8.6" font-weight="700">${escapeHtml(ipLabel)}</text>
-      </g>
-    `;
-  }
-
-  return svgGroup;
-}
-
-function renderNodesLayer() {
-  const layer = document.getElementById('nodes-layer');
-  if (!layer) return;
-
-  layer.innerHTML = state.nodes.map(node => {
-    const isSel = node.id === state.selectedNodeId;
-    const sum = getDeviceStatusSummary(node);
-    const hasUpLink = getAttachedLinks(node.id).some(isLinkOperationallyUp);
-    const dotCls = hasUpLink ? 'bg-emerald-500' : 'bg-slate-400';
-
-    return `
-      <div id="node-card-${node.id}"
-           style="left:${node.x}px; top:${node.y}px;"
-           onmousedown="onNodeMouseDown(event, '${node.id}')"
-           ondblclick="onNodeDoubleClick(event, '${node.id}')"
-           class="node-card no-select-drag absolute w-24 flex flex-col items-center cursor-pointer ${isSel ? 'node-selected' : ''}">
-        <div class="relative w-14 h-14 rounded-2xl bg-white border ${isSel ? 'border-blue-600' : 'border-slate-200'} shadow-sm flex items-center justify-center">
-          ${getHardwareSVG(node.type, 46)}
-          <span class="w-2.5 h-2.5 rounded-full ${dotCls} ring-2 ring-white absolute -top-0.5 -right-0.5"></span>
-        </div>
-        <div class="mt-1 px-2 py-0.5 rounded-md bg-white/95 border border-slate-200 shadow-2xs text-center max-w-[118px]">
-          <div class="text-[11px] font-bold text-slate-900 truncate leading-tight">${escapeHtml(node.config.hostname)}</div>
-          <div class="text-[9.5px] font-mono text-blue-700 truncate leading-tight">${escapeHtml(sum.ipLine)}</div>
-        </div>
-      </div>
-    `;
-  }).join('');
-
-  updateSelectedDeviceToolbar();
-}
-
-function updateSelectedDeviceToolbar() {
-  const bar = document.getElementById('selected-device-toolbar');
-  const badge = document.getElementById('sel-dev-badge');
-  const cliBtn = document.getElementById('sel-dev-console-btn');
-  const ipBtn = document.getElementById('sel-dev-ip-btn');
-  if (!bar || !badge || !cliBtn || !ipBtn) return;
-
-  const node = state.nodes.find(n => n.id === state.selectedNodeId);
-  if (!node) {
-    bar.classList.add('hidden');
-    return;
-  }
-
-  bar.classList.remove('hidden');
-  badge.textContent = `${node.config.hostname} \u00b7 ${node.vendor.toUpperCase()}`;
-  cliBtn.onclick = () => spawnFloatingWindow(node.id, 'cli');
-  ipBtn.onclick = () => spawnFloatingWindow(node.id, node.role === 'host' ? 'ipcfg' : 'webui');
-}
-
-function renderPacketsLayer() {
-  const svg = document.getElementById('packets-svg');
-  if (!svg) return;
-  const anim = state.sim.activeAnim;
-  if (!anim) {
-    svg.innerHTML = '';
-    return;
-  }
-  const fromNode = state.nodes.find(n => n.id === anim.fromId);
-  const toNode = state.nodes.find(n => n.id === anim.toId);
-  if (!fromNode || !toNode) {
-    svg.innerHTML = '';
-    return;
-  }
-  const p1 = getNodeCenter(fromNode);
-  const p2 = getNodeCenter(toNode);
-  const midX = (p1.x + p2.x) / 2;
-  const midY = (p1.y + p2.y) / 2;
-
-  svg.innerHTML = `
-    <line x1="${p1.x}" y1="${p1.y}" x2="${p2.x}" y2="${p2.y}" stroke="#f59e0b" stroke-width="3.5" stroke-dasharray="5 3"/>
-    <circle cx="${midX}" cy="${midY}" r="9" fill="#f59e0b" class="pkt-pulse"/>
-    <circle cx="${midX}" cy="${midY}" r="6" fill="#d97706" stroke="#ffffff" stroke-width="1.5"/>
-    <rect x="${midX + 10}" y="${midY - 12}" width="${Math.min(240, anim.stepLabel.length * 5.8 + 12)}" height="18" rx="5" fill="#0f172a"/>
-    <text x="${midX + 16}" y="${midY}" fill="#fef3c7" font-family="JetBrains Mono, monospace" font-size="9.5" font-weight="600">${escapeHtml(anim.stepLabel)}</text>
-  `;
-}
-
-function refreshAllViews() {
+function toggleInterfaceLabels() {
+  state.showInterfaceLabels = !state.showInterfaceLabels;
+  const lbl = document.getElementById('lbl-state');
+  if (lbl) lbl.textContent = state.showInterfaceLabels ? 'ON' : 'OFF';
   renderLinksLayer();
-  renderNodesLayer();
-  renderPacketsLayer();
-  renderInspector();
-  refreshAllFloatingWindowsContent();
-  const sNodes = document.getElementById('stat-nodes');
-  const sLinks = document.getElementById('stat-links');
-  if (sNodes) sNodes.textContent = String(state.nodes.length);
-  if (sLinks) sLinks.textContent = String(state.links.length);
-  if (state.engineMode === 'simulation') {
-    populateSimSourceDropdown();
-    renderSimulationPanel();
-  }
-}
-
-// ============================================================================
-// 12. CANVAS PAN / ZOOM / NODE DRAG / DOUBLE-CLICK CLI / CABLE PATCHING
-// ============================================================================
-function applyCanvasTransform() {
-  const world = document.getElementById('canvas-world');
-  if (world) {
-    world.style.transform = `translate(${state.pan.x}px, ${state.pan.y}px) scale(${state.zoom})`;
-  }
-  const readout = document.getElementById('zoom-readout');
-  if (readout) readout.textContent = `${Math.round(state.zoom * 100)}%`;
 }
 
 function zoomCanvas(delta) {
@@ -4195,67 +4397,138 @@ function resetView() {
   applyCanvasTransform();
 }
 
-function setTool(newTool) {
-  state.tool = newTool;
-  state.connectSourceId = null;
-  document.querySelectorAll('.tool-btn').forEach(b => {
-    b.className = 'tool-btn flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-xs font-semibold text-slate-600 hover:text-slate-900 hover:bg-white/70 transition cursor-pointer';
-  });
-  const activeBtn = document.getElementById(`tool-${newTool}`);
-  if (activeBtn) {
-    activeBtn.className = 'tool-btn flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-xs font-semibold bg-white text-slate-900 shadow-2xs border border-slate-200 transition cursor-pointer';
+function applyCanvasTransform() {
+  const world = document.getElementById('canvas-world');
+  const readout = document.getElementById('zoom-readout');
+  if (world) {
+    world.style.transform = `translate(${state.pan.x}px, ${state.pan.y}px) scale(${state.zoom})`;
   }
-  const banner = document.getElementById('connect-banner');
-  if (banner) {
-    if (newTool === 'connect') {
-      banner.classList.remove('hidden');
-      document.getElementById('connect-banner-text').textContent = 'Click a source device to begin patching a cable...';
-    } else {
-      banner.classList.add('hidden');
-    }
+  if (readout) {
+    readout.textContent = `${Math.round(state.zoom * 100)}%`;
   }
 }
 
-function toggleInterfaceLabels() {
-  state.showInterfaceLabels = !state.showInterfaceLabels;
-  const el = document.getElementById('lbl-state');
-  if (el) el.textContent = state.showInterfaceLabels ? 'ON' : 'OFF';
-  renderLinksLayer();
+function setupCanvasViewportEvents() {
+  const viewport = document.getElementById('canvas-viewport');
+  if (!viewport) return;
+
+  let isPanning = false;
+  let panStartX = 0;
+  let panStartY = 0;
+
+  viewport.addEventListener('mousedown', (e) => {
+    if (e.target.closest('.node-card') || e.target.closest('button') || e.target.closest('input') || e.target.closest('select')) {
+      return;
+    }
+    isPanning = true;
+    panStartX = e.clientX - state.pan.x;
+    panStartY = e.clientY - state.pan.y;
+  });
+
+  window.addEventListener('mousemove', (e) => {
+    if (!isPanning) return;
+    state.pan.x = e.clientX - panStartX;
+    state.pan.y = e.clientY - panStartY;
+    applyCanvasTransform();
+  });
+
+  window.addEventListener('mouseup', () => {
+    isPanning = false;
+  });
+
+  viewport.addEventListener('wheel', (e) => {
+    e.preventDefault();
+    zoomCanvas(e.deltaY < 0 ? 0.1 : -0.1);
+  }, { passive: false });
+
+  viewport.addEventListener('dragover', (e) => {
+    e.preventDefault();
+    e.dataTransfer.dropEffect = 'copy';
+  });
+
+  viewport.addEventListener('drop', (e) => {
+    e.preventDefault();
+    const catalogType = e.dataTransfer.getData('text/plain');
+    if (!catalogType) return;
+    const rect = viewport.getBoundingClientRect();
+    const wx = (e.clientX - rect.left - state.pan.x) / state.zoom - NODE_BOX_W / 2;
+    const wy = (e.clientY - rect.top - state.pan.y) / state.zoom - NODE_BOX_H / 2;
+    const node = createDeviceNode(catalogType, Math.round(wx), Math.round(wy));
+    state.nodes.push(node);
+    state.selectedNodeId = node.id;
+    refreshAllViews();
+    showToast(`Placed ${node.config.hostname} (${node.label})`);
+  });
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
+      setTool('select');
+      closePortModal();
+      closeLinkModal();
+      closeLoginModal();
+    }
+  });
+}
+
+function renderNodesLayer() {
+  const layer = document.getElementById('nodes-layer');
+  if (!layer) return;
+
+  layer.innerHTML = state.nodes.map(node => {
+    const isSelected = node.id === state.selectedNodeId;
+    const isConnectSrc = node.id === state.connectSourceId;
+    const statusInfo = getDeviceStatusSummary(node);
+    const hasDhcpServer = Boolean(node.config.dhcpServer && node.config.dhcpServer.enabled);
+
+    return `
+      <div id="node-${node.id}"
+           style="left:${node.x}px; top:${node.y}px; width:${NODE_BOX_W}px;"
+           onmousedown="onNodeMouseDown(event, '${node.id}')"
+           onclick="onNodeClick(event, '${node.id}')"
+           ondblclick="onNodeDoubleClick(event, '${node.id}')"
+           class="node-card no-select-drag absolute flex flex-col items-center cursor-pointer ${isSelected ? 'node-selected' : ''} ${isConnectSrc ? 'ring-2 ring-emerald-500 rounded-2xl' : ''}">
+        <div class="relative w-14 h-14 rounded-2xl bg-white border border-slate-200/90 shadow-sm flex items-center justify-center">
+          ${getHardwareSVG(node.type, 46)}
+          ${hasDhcpServer ? `<span title="DHCP Server Active" class="absolute -top-1.5 -right-1.5 px-1 py-0.2 rounded bg-emerald-600 text-white font-mono text-[8px] font-bold shadow-2xs">DHCP</span>` : ''}
+        </div>
+        <div class="mt-1 px-1.5 py-0.5 rounded bg-white/95 border border-slate-200/90 shadow-2xs text-center leading-tight max-w-[112px]">
+          <div class="text-[11px] font-extrabold text-slate-900 truncate">${escapeHtml(node.config.hostname)}</div>
+          <div class="text-[9px] font-mono font-semibold text-blue-700 truncate">${escapeHtml(statusInfo.ipLine)}</div>
+        </div>
+      </div>
+    `;
+  }).join('');
+
+  updateSelectedDeviceToolbar();
+}
+
+function updateSelectedDeviceToolbar() {
+  const bar = document.getElementById('selected-device-toolbar');
+  const badge = document.getElementById('sel-dev-badge');
+  const cliBtn = document.getElementById('sel-dev-console-btn');
+  const ipBtn = document.getElementById('sel-dev-ip-btn');
+  const node = state.nodes.find(n => n.id === state.selectedNodeId);
+
+  if (!bar || !badge || !cliBtn || !ipBtn) return;
+  if (!node) {
+    bar.classList.add('hidden');
+    return;
+  }
+  bar.classList.remove('hidden');
+  badge.textContent = `${node.config.hostname}`;
+  cliBtn.onclick = () => spawnFloatingWindow(node.id, 'cli');
+  ipBtn.onclick = () => spawnFloatingWindow(node.id, node.role === 'host' ? 'ipcfg' : 'webui');
 }
 
 function onNodeMouseDown(e, nodeId) {
   if (e.button !== 0) return;
+  if (state.tool !== 'select') return;
   const node = state.nodes.find(n => n.id === nodeId);
   if (!node) return;
 
-  if (state.tool === 'delete') {
-    e.stopPropagation();
-    state.nodes = state.nodes.filter(n => n.id !== nodeId);
-    state.links = state.links.filter(l => l.sourceId !== nodeId && l.targetId !== nodeId);
-    if (state.selectedNodeId === nodeId) state.selectedNodeId = null;
-    refreshAllViews();
-    showToast(`Deleted ${node.config.hostname}`);
-    return;
-  }
-
-  if (state.tool === 'connect') {
-    e.stopPropagation();
-    if (!state.connectSourceId) {
-      state.connectSourceId = nodeId;
-      state.selectedNodeId = nodeId;
-      renderNodesLayer();
-      document.getElementById('connect-banner-text').textContent = `Source: ${node.config.hostname} — now click a destination device`;
-    } else if (state.connectSourceId !== nodeId) {
-      openPortModal(state.connectSourceId, nodeId);
-      state.connectSourceId = null;
-      setTool('select');
-    }
-    return;
-  }
-
   e.stopPropagation();
-  state.selectedNodeId = nodeId;
-  renderNodesLayer();
+  state.selectedNodeId = node.id;
+  updateSelectedDeviceToolbar();
   renderInspector();
 
   const startX = e.clientX;
@@ -4263,42 +4536,228 @@ function onNodeMouseDown(e, nodeId) {
   const origX = node.x;
   const origY = node.y;
   let moved = false;
-  const cardEl = document.getElementById(`node-card-${nodeId}`);
 
-  function onMouseMove(ev) {
+  function onMove(ev) {
     const dx = (ev.clientX - startX) / state.zoom;
     const dy = (ev.clientY - startY) / state.zoom;
     if (Math.abs(dx) > 2 || Math.abs(dy) > 2) moved = true;
     node.x = Math.round(origX + dx);
     node.y = Math.round(origY + dy);
-    if (cardEl) {
-      cardEl.style.left = `${node.x}px`;
-      cardEl.style.top = `${node.y}px`;
-    }
+    const el = document.getElementById(`node-${node.id}`);
+    if (el) { el.style.left = `${node.x}px`; el.style.top = `${node.y}px`; }
     renderLinksLayer();
     renderPacketsLayer();
   }
 
-  function onMouseUp() {
-    window.removeEventListener('mousemove', onMouseMove);
-    window.removeEventListener('mouseup', onMouseUp);
-    if (!moved) {
-      state.selectedNodeId = nodeId;
-      updateSelectedDeviceToolbar();
+  function onUp() {
+    window.removeEventListener('mousemove', onMove);
+    window.removeEventListener('mouseup', onUp);
+    if (moved) {
+      renderNodesLayer();
     }
   }
 
-  window.addEventListener('mousemove', onMouseMove);
-  window.addEventListener('mouseup', onMouseUp);
+  window.addEventListener('mousemove', onMove);
+  window.addEventListener('mouseup', onUp);
+}
+
+function onNodeClick(e, nodeId) {
+  e.stopPropagation();
+  const node = state.nodes.find(n => n.id === nodeId);
+  if (!node) return;
+
+  if (state.tool === 'delete') {
+    state.nodes = state.nodes.filter(n => n.id !== nodeId);
+    state.links = state.links.filter(l => l.sourceId !== nodeId && l.targetId !== nodeId);
+    state.floatingWindows = state.floatingWindows.filter(w => w.nodeId !== nodeId);
+    if (state.selectedNodeId === nodeId) state.selectedNodeId = null;
+    refreshAllViews();
+    showToast(`Deleted ${node.config.hostname}`);
+    return;
+  }
+
+  if (state.tool === 'connect') {
+    if (!state.connectSourceId) {
+      state.connectSourceId = nodeId;
+      document.getElementById('connect-banner-text').textContent = `Source: ${node.config.hostname} — now click destination device...`;
+      renderNodesLayer();
+    } else if (state.connectSourceId === nodeId) {
+      state.connectSourceId = null;
+      document.getElementById('connect-banner-text').textContent = 'Click a source device to begin patching a cable...';
+      renderNodesLayer();
+    } else {
+      openPortModal(state.connectSourceId, nodeId);
+      state.connectSourceId = null;
+      setTool('select');
+    }
+    return;
+  }
+
+  state.selectedNodeId = nodeId;
+  renderNodesLayer();
+  renderInspector();
 }
 
 function onNodeDoubleClick(e, nodeId) {
   e.stopPropagation();
   const node = state.nodes.find(n => n.id === nodeId);
   if (!node) return;
-  state.selectedNodeId = nodeId;
+  state.selectedNodeId = node.id;
   renderNodesLayer();
   spawnFloatingWindow(node.id, 'cli');
+}
+
+function renderLinksLayer() {
+  const svg = document.getElementById('links-svg');
+  if (!svg) return;
+
+  const placedLabelBoxes = [];
+  function placeNonOverlappingCallout(anchorX, anchorY, perpX, perpY, text) {
+    const charW = 5.6;
+    const boxW = Math.max(44, text.length * charW + 12);
+    const boxH = 16;
+
+    const candidates = [
+      { cx: anchorX + perpX * 22, cy: anchorY + perpY * 22 },
+      { cx: anchorX - perpX * 22, cy: anchorY - perpY * 22 },
+      { cx: anchorX + perpX * 38, cy: anchorY + perpY * 38 },
+      { cx: anchorX - perpX * 38, cy: anchorY - perpY * 38 },
+      { cx: anchorX, cy: anchorY - 26 },
+      { cx: anchorX, cy: anchorY + 26 }
+    ];
+
+    for (const c of candidates) {
+      const rect = {
+        left: c.cx - boxW / 2,
+        right: c.cx + boxW / 2,
+        top: c.cy - boxH / 2,
+        bottom: c.cy + boxH / 2
+      };
+      const overlaps = placedLabelBoxes.some(b =>
+        !(rect.right < b.left - 3 || rect.left > b.right + 3 || rect.bottom < b.top - 3 || rect.top > b.bottom + 3)
+      );
+      if (!overlaps) {
+        placedLabelBoxes.push(rect);
+        return { x: c.cx, y: c.cy, w: boxW, h: boxH };
+      }
+    }
+
+    const fallback = candidates[0];
+    placedLabelBoxes.push({
+      left: fallback.cx - boxW / 2,
+      right: fallback.cx + boxW / 2,
+      top: fallback.cy - boxH / 2,
+      bottom: fallback.cy + boxH / 2
+    });
+    return { x: fallback.cx, y: fallback.cy, w: boxW, h: boxH };
+  }
+
+  const parts = [];
+  for (const link of state.links) {
+    const nA = state.nodes.find(n => n.id === link.sourceId);
+    const nB = state.nodes.find(n => n.id === link.targetId);
+    if (!nA || !nB) continue;
+
+    const cA = getNodeCenter(nA);
+    const cB = getNodeCenter(nB);
+    const up = isLinkOperationallyUp(link);
+    const strokeColor = up ? '#16a34a' : '#e11d48';
+
+    const dx = cB.x - cA.x;
+    const dy = cB.y - cA.y;
+    const len = Math.hypot(dx, dy) || 1;
+    const ux = dx / len;
+    const uy = dy / len;
+    const perpX = -uy;
+    const perpY = ux;
+
+    parts.push(`
+      <line x1="${cA.x}" y1="${cA.y}" x2="${cB.x}" y2="${cB.y}"
+            stroke="transparent" stroke-width="14" class="pointer-events-auto cursor-pointer"
+            onclick="onLinkClick('${link.id}')" />
+      <line x1="${cA.x}" y1="${cA.y}" x2="${cB.x}" y2="${cB.y}"
+            stroke="${strokeColor}" stroke-width="2.5"
+            class="pointer-events-none ${up ? 'link-dash-active' : ''}" />
+    `);
+
+    if (state.showInterfaceLabels) {
+      const tagA = formatPortIpTag(nA, link.sourcePort);
+      const tagB = formatPortIpTag(nB, link.targetPort);
+
+      const anchorAX = cA.x + ux * Math.min(64, len * 0.28);
+      const anchorAY = cA.y + uy * Math.min(64, len * 0.28);
+      const boxA = placeNonOverlappingCallout(anchorAX, anchorAY, perpX, perpY, tagA);
+
+      const anchorBX = cB.x - ux * Math.min(64, len * 0.28);
+      const anchorBY = cB.y - uy * Math.min(64, len * 0.28);
+      const boxB = placeNonOverlappingCallout(anchorBX, anchorBY, perpX, perpY, tagB);
+
+      const ifA = getInterface(nA, link.sourcePort);
+      const ifB = getInterface(nB, link.targetPort);
+      const fillA = (ifA && ifA.ip) ? '#eff6ff' : '#ffffff';
+      const strokeA = (ifA && ifA.ip) ? '#2563eb' : '#cbd5e1';
+      const textA = (ifA && ifA.ip) ? '#1e3a8a' : '#334155';
+
+      const fillB = (ifB && ifB.ip) ? '#eff6ff' : '#ffffff';
+      const strokeB = (ifB && ifB.ip) ? '#2563eb' : '#cbd5e1';
+      const textB = (ifB && ifB.ip) ? '#1e3a8a' : '#334155';
+
+      parts.push(`
+        <g onclick="onLinkClick('${link.id}')" class="pointer-events-auto cursor-pointer">
+          <line x1="${anchorAX}" y1="${anchorAY}" x2="${boxA.x}" y2="${boxA.y}" stroke="#94a3b8" stroke-width="1" stroke-dasharray="2,2" />
+          <rect x="${boxA.x - boxA.w / 2}" y="${boxA.y - boxA.h / 2}" width="${boxA.w}" height="${boxA.h}" rx="5" fill="${fillA}" stroke="${strokeA}" stroke-width="1" />
+          <text x="${boxA.x}" y="${boxA.y + 3.5}" text-anchor="middle" fill="${textA}" font-family="JetBrains Mono, monospace" font-size="8.5" font-weight="700">${escapeHtml(tagA)}</text>
+        </g>
+        <g onclick="onLinkClick('${link.id}')" class="pointer-events-auto cursor-pointer">
+          <line x1="${anchorBX}" y1="${anchorBY}" x2="${boxB.x}" y2="${boxB.y}" stroke="#94a3b8" stroke-width="1" stroke-dasharray="2,2" />
+          <rect x="${boxB.x - boxB.w / 2}" y="${boxB.y - boxB.h / 2}" width="${boxB.w}" height="${boxB.h}" rx="5" fill="${fillB}" stroke="${strokeB}" stroke-width="1" />
+          <text x="${boxB.x}" y="${boxB.y + 3.5}" text-anchor="middle" fill="${textB}" font-family="JetBrains Mono, monospace" font-size="8.5" font-weight="700">${escapeHtml(tagB)}</text>
+        </g>
+      `);
+    }
+  }
+
+  svg.innerHTML = parts.join('');
+}
+
+function renderPacketsLayer() {
+  const svg = document.getElementById('packets-svg');
+  if (!svg) return;
+  const anim = state.sim.activeAnim;
+  if (!anim) {
+    svg.innerHTML = '';
+    return;
+  }
+  const fromN = state.nodes.find(n => n.id === anim.fromId);
+  const toN = state.nodes.find(n => n.id === anim.toId);
+  if (!fromN || !toN) {
+    svg.innerHTML = '';
+    return;
+  }
+  const cFrom = getNodeCenter(fromN);
+  const cTo = getNodeCenter(toN);
+  const midX = (cFrom.x + cTo.x) / 2;
+  const midY = (cFrom.y + cTo.y) / 2;
+
+  svg.innerHTML = `
+    <line x1="${cFrom.x}" y1="${cFrom.y}" x2="${cTo.x}" y2="${cTo.y}" stroke="#f59e0b" stroke-width="4" opacity="0.7" />
+    <circle cx="${midX}" cy="${midY}" r="9" fill="#f59e0b" opacity="0.35" class="pkt-pulse" />
+    <circle cx="${midX}" cy="${midY}" r="6" fill="#f59e0b" stroke="#ffffff" stroke-width="1.5" />
+    <rect x="${midX - 95}" y="${midY - 28}" width="190" height="17" rx="5" fill="#0f172a" />
+    <text x="${midX}" y="${midY - 16.5}" text-anchor="middle" fill="#fde68a" font-family="JetBrains Mono, monospace" font-size="9" font-weight="700">${escapeHtml(anim.stepLabel)}</text>
+  `;
+}
+
+function onLinkClick(linkId) {
+  const link = state.links.find(l => l.id === linkId);
+  if (!link) return;
+  if (state.tool === 'delete') {
+    state.links = state.links.filter(l => l.id !== linkId);
+    refreshAllViews();
+    showToast('Disconnected cable');
+    return;
+  }
+  openLinkModal(linkId);
 }
 
 function openPortModal(srcId, dstId) {
@@ -4310,29 +4769,25 @@ function openPortModal(srcId, dstId) {
   document.getElementById('pm-src-label').textContent = `Source: ${srcNode.config.hostname} (${srcNode.label})`;
   document.getElementById('pm-dst-label').textContent = `Destination: ${dstNode.config.hostname} (${dstNode.label})`;
 
+  const busyPorts = new Set();
+  for (const l of state.links) {
+    if (l.sourceId === srcId) busyPorts.add(l.sourcePort);
+    if (l.targetId === srcId) busyPorts.add(l.targetPort);
+    if (l.sourceId === dstId) busyPorts.add(l.sourcePort);
+    if (l.targetId === dstId) busyPorts.add(l.targetPort);
+  }
+
   const srcSel = document.getElementById('pm-src-select');
   const dstSel = document.getElementById('pm-dst-select');
-
-  const usedPortsOf = (nid) => new Set(
-    state.links.flatMap(l => [
-      l.sourceId === nid ? l.sourcePort : null,
-      l.targetId === nid ? l.targetPort : null
-    ]).filter(Boolean)
-  );
-
-  const srcUsed = usedPortsOf(srcId);
-  const dstUsed = usedPortsOf(dstId);
-
   srcSel.innerHTML = srcNode.config.interfaces.map(i =>
-    `<option value="${i.name}" ${srcUsed.has(i.name) ? 'disabled' : ''}>${i.name}${srcUsed.has(i.name) ? ' (in use)' : (i.ip ? ' [' + i.ip + ']' : '')}</option>`
+    `<option value="${i.name}" ${busyPorts.has(i.name) ? 'disabled' : ''}>${i.name} ${busyPorts.has(i.name) ? '(in use)' : (i.ip ? `[${i.ip}]` : '')}</option>`
   ).join('');
-
   dstSel.innerHTML = dstNode.config.interfaces.map(i =>
-    `<option value="${i.name}" ${dstUsed.has(i.name) ? 'disabled' : ''}>${i.name}${dstUsed.has(i.name) ? ' (in use)' : (i.ip ? ' [' + i.ip + ']' : '')}</option>`
+    `<option value="${i.name}" ${busyPorts.has(i.name) ? 'disabled' : ''}>${i.name} ${busyPorts.has(i.name) ? '(in use)' : (i.ip ? `[${i.ip}]` : '')}</option>`
   ).join('');
 
-  const firstFreeSrc = srcNode.config.interfaces.find(i => !srcUsed.has(i.name));
-  const firstFreeDst = dstNode.config.interfaces.find(i => !dstUsed.has(i.name));
+  const firstFreeSrc = srcNode.config.interfaces.find(i => !busyPorts.has(i.name));
+  const firstFreeDst = dstNode.config.interfaces.find(i => !busyPorts.has(i.name));
   if (firstFreeSrc) srcSel.value = firstFreeSrc.name;
   if (firstFreeDst) dstSel.value = firstFreeDst.name;
 
@@ -4341,69 +4796,65 @@ function openPortModal(srcId, dstId) {
 
 function closePortModal() {
   state.pendingPatch = null;
-  document.getElementById('port-modal').classList.add('hidden');
+  document.getElementById('port-modal')?.classList.add('hidden');
 }
 
 function confirmPortLink() {
   if (!state.pendingPatch) return;
-  const sPort = document.getElementById('pm-src-select').value;
-  const dPort = document.getElementById('pm-dst-select').value;
-  const { srcId, dstId } = state.pendingPatch;
+  const srcPort = document.getElementById('pm-src-select').value;
+  const dstPort = document.getElementById('pm-dst-select').value;
+  addCableLink(state.pendingPatch.srcId, srcPort, state.pendingPatch.dstId, dstPort);
   closePortModal();
-  addCableLink(srcId, sPort, dstId, dPort);
 }
 
-function openLinkInspector(linkId) {
+function openLinkModal(linkId) {
   const link = state.links.find(l => l.id === linkId);
   if (!link) return;
-  const src = state.nodes.find(n => n.id === link.sourceId);
-  const dst = state.nodes.find(n => n.id === link.targetId);
-  if (!src || !dst) return;
-
-  const sIf = getInterface(src, link.sourcePort);
-  const dIf = getInterface(dst, link.targetPort);
+  const nA = state.nodes.find(n => n.id === link.sourceId);
+  const nB = state.nodes.find(n => n.id === link.targetId);
+  const ifA = nA ? getInterface(nA, link.sourcePort) : null;
+  const ifB = nB ? getInterface(nB, link.targetPort) : null;
   const up = isLinkOperationallyUp(link);
 
   document.getElementById('link-modal-body').innerHTML = `
     <div class="flex items-center justify-between p-3 rounded-xl bg-slate-50 border border-slate-200">
-      <span class="font-bold text-slate-800">Operational State</span>
-      <span class="px-2 py-0.5 rounded-full text-[11px] font-bold ${up ? 'bg-emerald-100 text-emerald-800' : 'bg-rose-100 text-rose-800'}">${up ? 'UP / UP' : 'DOWN'}</span>
+      <span class="font-bold text-slate-800">Operational Status</span>
+      <span class="px-2 py-0.5 rounded font-mono text-[11px] font-bold ${up ? 'bg-emerald-100 text-emerald-700' : 'bg-rose-100 text-rose-700'}">${up ? 'UP / UP' : 'DOWN'}</span>
     </div>
     <div class="grid grid-cols-2 gap-3">
-      <div class="p-3 rounded-xl border border-slate-200">
-        <div class="font-bold text-slate-900">${escapeHtml(src.config.hostname)}</div>
-        <div class="font-mono text-blue-700 mt-0.5">${escapeHtml(link.sourcePort)}</div>
-        <div class="font-mono text-slate-600 mt-1">${escapeHtml(sIf?.ip ? `${sIf.ip}/${sIf.prefix || 24}` : 'No IPv4')}</div>
+      <div class="p-3 rounded-xl border border-slate-200 space-y-1">
+        <div class="font-bold text-slate-900">${escapeHtml(nA?.config.hostname || 'Node A')}</div>
+        <div class="font-mono text-[11px] text-blue-700">${escapeHtml(link.sourcePort)}</div>
+        <div class="font-mono text-[11px] text-slate-600">IP: ${escapeHtml(ifA?.ip ? `${ifA.ip}/${ifA.prefix || 24}` : 'unassigned')}</div>
       </div>
-      <div class="p-3 rounded-xl border border-slate-200">
-        <div class="font-bold text-slate-900">${escapeHtml(dst.config.hostname)}</div>
-        <div class="font-mono text-blue-700 mt-0.5">${escapeHtml(link.targetPort)}</div>
-        <div class="font-mono text-slate-600 mt-1">${escapeHtml(dIf?.ip ? `${dIf.ip}/${dIf.prefix || 24}` : 'No IPv4')}</div>
+      <div class="p-3 rounded-xl border border-slate-200 space-y-1">
+        <div class="font-bold text-slate-900">${escapeHtml(nB?.config.hostname || 'Node B')}</div>
+        <div class="font-mono text-[11px] text-blue-700">${escapeHtml(link.targetPort)}</div>
+        <div class="font-mono text-[11px] text-slate-600">IP: ${escapeHtml(ifB?.ip ? `${ifB.ip}/${ifB.prefix || 24}` : 'unassigned')}</div>
       </div>
     </div>
   `;
 
-  const discBtn = document.getElementById('link-modal-disconnect-btn');
-  discBtn.onclick = () => {
+  document.getElementById('link-modal-disconnect-btn').onclick = () => {
     state.links = state.links.filter(l => l.id !== linkId);
     closeLinkModal();
     refreshAllViews();
-    showToast('Disconnected cable');
+    showToast('Cable disconnected');
   };
 
   document.getElementById('link-modal').classList.remove('hidden');
 }
 
 function closeLinkModal() {
-  document.getElementById('link-modal').classList.add('hidden');
+  document.getElementById('link-modal')?.classList.add('hidden');
 }
 
 // ============================================================================
-// 13. EXPORT / IMPORT JSON, TOASTS & INITIALIZATION
+// 12. TOPOLOGY JSON EXPORT / IMPORT & GLOBAL REFRESH
 // ============================================================================
 function exportTopologyJSON() {
   const payload = {
-    app: 'Nexacloud Studio v4',
+    version: 'nexacloud-v4',
     exportedAt: new Date().toISOString(),
     nodes: state.nodes,
     links: state.links
@@ -4422,37 +4873,45 @@ function importTopologyJSON(event) {
   const file = event.target.files?.[0];
   if (!file) return;
   const reader = new FileReader();
-  reader.onload = (e) => {
+  reader.onload = () => {
     try {
-      const parsed = JSON.parse(String(e.target.result || '{}'));
+      const parsed = JSON.parse(String(reader.result || '{}'));
       if (!Array.isArray(parsed.nodes) || !Array.isArray(parsed.links)) {
-        throw new Error('Invalid topology JSON format');
+        showToast('Invalid topology JSON format', true);
+        return;
       }
       state.nodes = parsed.nodes;
       state.links = parsed.links;
       state.floatingWindows = [];
       state.selectedNodeId = state.nodes[0]?.id || null;
       refreshAllViews();
-      showToast(`Imported ${state.nodes.length} devices & ${state.links.length} links`);
+      showToast(`Imported ${state.nodes.length} devices and ${state.links.length} links`);
     } catch (err) {
       showToast(`Import failed: ${err.message}`, true);
     }
-    event.target.value = '';
   };
   reader.readAsText(file);
+  event.target.value = '';
 }
 
-let toastTimer = null;
-function showToast(message, isError = false) {
-  const box = document.getElementById('toast-box');
-  const msg = document.getElementById('toast-msg');
-  const dot = document.getElementById('toast-dot');
-  if (!box || !msg) return;
-  msg.textContent = message;
-  if (dot) dot.className = `w-2 h-2 rounded-full ${isError ? 'bg-rose-400' : 'bg-emerald-400'}`;
-  box.classList.remove('hidden');
-  if (toastTimer) clearTimeout(toastTimer);
-  toastTimer = setTimeout(() => box.classList.add('hidden'), 2800);
+function updateStatsFooter() {
+  const nEl = document.getElementById('stat-nodes');
+  const lEl = document.getElementById('stat-links');
+  if (nEl) nEl.textContent = String(state.nodes.length);
+  if (lEl) lEl.textContent = String(state.links.length);
+}
+
+function refreshAllViews() {
+  updateStatsFooter();
+  renderNodesLayer();
+  renderLinksLayer();
+  renderPacketsLayer();
+  renderInspector();
+  refreshAllFloatingWindowsContent();
+  if (state.engineMode === 'simulation') {
+    populateSimSourceDropdown();
+    renderSimulationPanel();
+  }
 }
 
 function escapeHtml(str) {
@@ -4460,71 +4919,29 @@ function escapeHtml(str) {
     .replace(/&/g, '&amp;')
     .replace(/</g, '&lt;')
     .replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;');
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+}
+
+let toastTimer = null;
+function showToast(msg, isError = false) {
+  const box = document.getElementById('toast-box');
+  const text = document.getElementById('toast-msg');
+  const dot = document.getElementById('toast-dot');
+  if (!box || !text) return;
+  text.textContent = msg;
+  if (dot) dot.className = `w-2 h-2 rounded-full ${isError ? 'bg-rose-400' : 'bg-emerald-400'}`;
+  box.classList.remove('hidden');
+  if (toastTimer) clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => box.classList.add('hidden'), 2800);
 }
 
 window.addEventListener('DOMContentLoaded', () => {
   renderCategorySidebar();
-  renderPlansStrip();
+  setupCanvasViewportEvents();
   applyCanvasTransform();
-
-  const vp = document.getElementById('canvas-viewport');
-  if (vp) {
-    vp.addEventListener('dragover', (e) => e.preventDefault());
-    vp.addEventListener('drop', (e) => {
-      e.preventDefault();
-      const type = e.dataTransfer.getData('text/plain');
-      if (!type) return;
-      const rect = vp.getBoundingClientRect();
-      const worldX = Math.round((e.clientX - rect.left - state.pan.x) / state.zoom - 36);
-      const worldY = Math.round((e.clientY - rect.top - state.pan.y) / state.zoom - 36);
-      const node = createDeviceNode(type, worldX, worldY);
-      state.nodes.push(node);
-      state.selectedNodeId = node.id;
-      refreshAllViews();
-      showToast(`Placed ${node.config.hostname} (${node.label})`);
-    });
-
-    vp.addEventListener('mousedown', (e) => {
-      if (e.target !== vp && e.target.id !== 'canvas-world' && e.target.id !== 'links-svg' && e.target.id !== 'packets-svg') return;
-      if (e.button !== 0) return;
-      state.selectedNodeId = null;
-      updateSelectedDeviceToolbar();
-      renderNodesLayer();
-
-      const startX = e.clientX - state.pan.x;
-      const startY = e.clientY - state.pan.y;
-
-      function onPanMove(ev) {
-        state.pan.x = ev.clientX - startX;
-        state.pan.y = ev.clientY - startY;
-        applyCanvasTransform();
-      }
-      function onPanUp() {
-        window.removeEventListener('mousemove', onPanMove);
-        window.removeEventListener('mouseup', onPanUp);
-      }
-      window.addEventListener('mousemove', onPanMove);
-      window.addEventListener('mouseup', onPanUp);
-    });
-
-    vp.addEventListener('wheel', (e) => {
-      if (e.ctrlKey || e.metaKey || Math.abs(e.deltaY) > 0) {
-        e.preventDefault();
-        zoomCanvas(e.deltaY < 0 ? 0.08 : -0.08);
-      }
-    }, { passive: false });
-  }
-
-  window.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape') {
-      if (state.tool === 'connect') setTool('select');
-      closePortModal();
-      closeLinkModal();
-      document.getElementById('routing-modal')?.classList.add('hidden');
-    }
-  });
-
+  renderPlansStrip();
+  runShowcaseScenario('healthy');
   initSupabaseGate();
 });
 </script>
